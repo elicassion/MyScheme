@@ -1,3 +1,6 @@
+#ifndef compare_h
+#define compare_h
+
 #include "opt.h"
 #include "float.h"
 #include "rational.h"
@@ -12,16 +15,13 @@
 
 class Add : public Opt {
     /* Use the lowest level type */
-    Number *calc(Cons *con) {
-		
+    Number *calc(Cons *con)
+    {
 		Number *res = new Rational(0,1);
-		Number *last;	
+		Number *last;
         for (; con; con = con->cdr)
         {
-			if(con->car->type_>3||con->car->type_<1)
-			{
-				throw 0;
-			}
+			if(con->car->type_>3||con->car->type_<1) { throw 0; }
             Number *opr = con->car, *conv;
             last = res;
             if (res->type_ > opr->type_)
@@ -32,10 +32,10 @@ class Add : public Opt {
 			{
                 res = (conv = opr->convert(res))->add(opr);
 			}
-			
+
             delete last;
             delete conv;
-			
+
         }
         return res;
     }
@@ -157,3 +157,6 @@ class Div:public Opt{
 		return res;
 	}
 };
+
+
+#endif // compare_h

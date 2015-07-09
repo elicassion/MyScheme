@@ -4,10 +4,33 @@
 #include <cstdio>
 #include <cstring>
 
-Rational::Rational(BigInt num, BigInt den):num_(num),den_(den)
+class Rational:public Number{
+public:
+    BigInt num_;
+	BigInt den_;
+
+	Rational(BigInt num=0, BigInt den=1):num_(num),den_(den)
+    {
+        type_=RATIONAL;
+        reduce();
+    }
+    ~Rational();
+
+	void reduce();
+	Number *convert(Number *number2);
+	Number *add(Number *number2);
+	Number *sub(Number *number2);
+	Number *mul(Number *number2);
+	Number *div(Number *number2);
+	void print();
+	static Rational *from_string(char *expression);
+
+
+};
+
+Rational::~Rational()
 {
-	type_=RATIONAL;
-	reduce();
+
 }
 void Rational::reduce()
 {
@@ -24,20 +47,24 @@ void Rational::reduce()
 	big=max(absnum_, absden_);
 	small=min(absnum_,absden_);
 	tmp=big%small;
+	//cout<<big<<' '<<small<<' '<<tmp<<endl;
 	while(tmp!=0)
     {
 		big=small;
 		small=tmp;
 		tmp=big%small;
+        //cout<<big<<' '<<small<<' '<<tmp<<endl;
+		//system("pause");
 	}
 	num_=num_/small;
 	den_= den_/small;
 
 	if(den_<BigInt(0))
     {
-		num_ = BigInt(0)-num_;
-		den_ = BigInt(0)-den_;
+		num_ = num_.minus();
+		den_ = den_.minus();
 	}
+	//cout<<num_<<' '<<den_<<endl;
 }
 
 
@@ -96,7 +123,9 @@ Number *Rational::div(Number *number2)
 	Rational *tmp = SCAST_RATIONAL(number2);
 	Rational *result = new Rational();
 	result->num_ = num_ * tmp->den_;
+	//cout<<result->num_<<endl;
 	result->den_ = den_ * tmp->num_;
+	//cout<<result->den_<<endl;
 	result->reduce();
 	return result;
 }
@@ -104,7 +133,7 @@ Number *Rational::div(Number *number2)
 void Rational::print()
 {
 	cout<<num_;
-	if(den_ != (BigInt)1)
+	if(den_ != 1)
     {
 		printf("/");
 		cout<<den_;

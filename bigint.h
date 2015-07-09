@@ -52,13 +52,14 @@ class BigInt{
     vector<int> s;
 
     //构造函数
-    BigInt(long long int num = 0) {*this = num;}
+    BigInt(long long int num = 0) { *this = num; }
     BigInt(const BigInt& b)
     {
         int b_size=b.s.size();
         for (int i=0;i<b_size;++i)
             s.push_back(b.s[i]);
     }
+    BigInt(const string& str) { *this = str; }
 
     //赋值运算符
     BigInt operator = (long long num)
@@ -69,7 +70,7 @@ class BigInt{
             num /= BASE;
         }while(num > 0);
         while (!s.back() && !s.empty())
-                s.pop_back();
+            s.pop_back();
         if (s.empty())
             s.push_back(0);
         return *this;
@@ -87,7 +88,7 @@ class BigInt{
             s.push_back(x);
         }
         while (!s.back() && !s.empty())
-                s.pop_back();
+            s.pop_back();
         if (s.empty())
             s.push_back(0);
         return *this;
@@ -99,19 +100,37 @@ class BigInt{
         BigInt c;
         c.s.clear();
         int this_size = s.size(), b_size = b.s.size();
-        for (int i = 0, g = 0; ; ++i)
+        if (*this>=0 && b>=0)
         {
-            if (g == 0 && i >= this_size && i >= b_size) break;
-            int x = g;
-            if (i < this_size) x += s[i];
-            if (i < b_size) x += b.s[i];
-            c.s.push_back(x % BASE);
-            g = x / BASE;
+            for (int i=0, g=0; ; ++i)
+            {
+                if (g == 0 && i >= this_size && i >= b_size) break;
+                int x = g;
+                if (i < this_size) x += s[i];
+                if (i < b_size) x += b.s[i];
+                c.s.push_back(x % BASE);
+                g = x / BASE;
+            }
+            return c;
         }
-        return c;
+        if (*this<0 && b<0)
+        {
+            BigInt c = this->abs() + b.abs();
+            return c.minus();
+        }
+        if (*this<0 && b>0)
+        {
+            return (b-this->abs());
+        }
+        if (*this>0 && b<0)
+        {
+            return (*this-b.abs());
+        }
+
     }
     BigInt operator += (const BigInt& b)
     {
+        //cout<<"FUCK"<<b<<endl;
         *this=*this+b;
         return *this;
     }
@@ -121,42 +140,69 @@ class BigInt{
         c.s.clear();
         int this_size = s.size(), b_size = b.s.size();
         if (*this == b) {c = 0; return c; }
-        else if (*this > b)
+        if (*this>=0 && b>=0)
         {
-            for(int i = 0, g = 0; ; ++i)
+            if (*this > b)
             {
-                if (g == 0 && i >= this_size && i >= b_size) break;
-                int x = g;
-                if (i < this_size) x += s[i];
-                if (i < b_size) x -= b.s[i];
-                if (x < 0) {x += BASE; g = -1; }
-                c.s.push_back(x);
+                //cout<<"ok"<<endl;
+                //cout<<this_size<<' '<<b_size<<endl;
+                for(int i = 0, g = 0; ; ++i)
+                {
+                    if (g == 0 && i >= this_size && i >= b_size) break;
+                    int x = g;
+                    if (i < this_size) x += s[i];
+                    if (i < b_size) x -= b.s[i];
+                    //cout<<x<<endl;
+                    if (x < 0) {x += BASE; g = -1; }
+                    else g=0;
+                    c.s.push_back(x);
+
+                    //system("pause");
+                }
+                while (!c.s.back())
+                    c.s.pop_back();
+                if (c.s.empty())
+                    c.s.push_back(0);
+                return c;
             }
-            while (!c.s.back())
-                c.s.pop_back();
-            if (c.s.empty())
-                c.s.push_back(0);
-            return c;
+
+            else
+            {
+                /*for(int i = 0, g = 0; ; ++i)
+                {
+                    if (g == 0 && i >= this_size && i >= b_size) break;
+                    int x = g;
+                    if (i < b_size) x += b.s[i];
+                    if (i < this_size) x -= s[i];
+                    if (x < 0) {x += BASE; g = -1; }
+                    c.s.push_back(x);
+                }
+                c.s.back() = 0 - c.s.back();
+                while (!c.s.back())
+                    c.s.pop_back();
+                if (c.s.empty())
+                    c.s.push_back(0);
+                return c;*/
+                //cout<<"FUCK"<<endl;
+                //cout<<b<<' '<<*this<<endl;
+                BigInt d = b-*this;
+                return d.minus();
+            }
+        }
+        if (*this>0 && b<0)
+        {
+            return *this+b.abs();
+        }
+        if (*this<0 && b>0)
+        {
+            BigInt d = this->abs() + b;
+            return d.minus();
+        }
+        if (*this<0 && b<0)
+        {
+            return b.abs()-this->abs();
         }
 
-        else
-        {
-            for(int i = 0, g = 0; ; ++i)
-            {
-                if (g == 0 && i >= this_size && i >= b_size) break;
-                int x = g;
-                if (i < b_size) x += b.s[i];
-                if (i < this_size) x -= s[i];
-                if (x < 0) {x += BASE; g = -1; }
-                c.s.push_back(x);
-            }
-            c.s.back() = 0 - c.s.back();
-            while (!c.s.back())
-                c.s.pop_back();
-            if (c.s.empty())
-                c.s.push_back(0);
-            return c;
-        }
 
     }
 
@@ -168,10 +214,15 @@ class BigInt{
 
     BigInt operator * (const BigInt& b) const
     {
+        if (*this==0 || b==0)
+            return 0;
         BigInt c;
         c.s.clear();
         c = 0;
         int this_size = s.size(), b_size = b.s.size();
+        bool MINUS=(b<0)^(*this<0);
+        BigInt p_b = b.abs();
+        BigInt p_this = this->abs();
         for (int i=0;i<b_size;++i)
         {
             BigInt tmp;
@@ -187,14 +238,18 @@ class BigInt{
             {
                 if (g == 0 && j >= this_size ) break;
                 long long int x = g;
-                if (j < this_size) x += (long long int)s[j] * b.s[i];
+                if (j < this_size) x += (long long int)p_this.s[j] * p_b.s[i];
                 tmp.s.push_back(x % BASE);
                 g = x / BASE;
-
             }
-            c += tmp;
+            //cout<<tmp<<endl;
+            c+=tmp;
+            //cout<<c<<endl;
         }
-        return c;
+        //cout<<c<<endl;
+        if (!MINUS)
+            return c;
+        else return c.minus();
     }
 
     BigInt operator *= (const BigInt& b)
@@ -208,9 +263,24 @@ class BigInt{
     //比较运算符
     bool operator < (const BigInt& b) const
     {
-        if (s.size() != b.s.size()) return (s.size() < b.s.size() );
-        for (int i=s.size()-1;i>=0;--i) if(s[i] != b.s[i]) return (s[i] < b.s[i]);
-        return false;
+        if (this->s.back()>=0 && b.s.back()>=0)
+        {
+            if (s.size() != b.s.size()) return (s.size() < b.s.size() );
+            for (int i=s.size()-1;i>=0;--i) if(s[i] != b.s[i]) return (s[i] < b.s[i]);
+            return false;
+        }
+        else if (this->s.back()<0 && b.s.back()>=0)
+            return true;
+        else if (this->s.back()>=0 && b.s.back()<0)
+            return false;
+        else if (this->s.back()<0 && b.s.back()<0)
+        {
+            if (s.size() != b.s.size()) return (s.size() > b.s.size() );
+            if (s.back() < b.s.back()) return true;
+            for (int i=s.size()-2;i>=0;--i) if(s[i] != b.s[i]) return (s[i] > b.s[i]);
+            return false;
+        }
+
     }
     bool operator > (const BigInt& b) const { return b < *this; }
     bool operator <= (const BigInt& b) const { return !(b < *this); }
@@ -252,6 +322,7 @@ class BigInt{
         assert(b!=0 && "divide 0");
         BigInt tmp_b = b.abs();
         BigInt tmp_this = this->abs();
+        //cout<<tmp_this<<' '<<tmp_b<<endl;
         bool MINUS=(b<0)^(*this<0); //0 positive
         if (tmp_this<tmp_b) return 0;
         int this_size = tmp_this.s.size();
@@ -260,13 +331,15 @@ class BigInt{
         BigInt right = tmp_this;
         BigInt tmpsum = left+right;
         BigInt mid = tmpsum.div_two();
-        while (!(tmp_this >= mid*tmp_b && tmp_this < (tmp_b+mid*tmp_b)))
+        //cout<<mid<<' '<<mid*tmp_b<<endl;
+        while ( !(tmp_this >= mid*tmp_b && tmp_this < (tmp_b+mid*tmp_b)) )
         {
-
             if (mid*tmp_b < tmp_this) left=mid+1;
             else right=mid;
             tmpsum = left+right;
             mid = tmpsum.div_two();
+            //cout<<mid<<endl;
+            //system("pause");
         }
         if (!MINUS)
             return mid;
@@ -280,14 +353,17 @@ class BigInt{
         return c;
     }
 
+
     BigInt abs () const
     {
+        //cout<<"FUCK"<<endl;
         BigInt tmp=*this;
         if (*this>=0)
             return tmp;
         else
         {
             tmp.s.back()=-tmp.s.back();
+            //cout<<tmp<<endl;
             return tmp;
         }
     }

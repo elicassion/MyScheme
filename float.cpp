@@ -25,23 +25,30 @@ Number *Float::convert(Number *number2)
 		case RATIONAL:
         {
 			Rational *tmp_r = SCAST_RATIONAL(number2);
-			BigInt quo = (tmp_r->num_ * BigInt::BASE) / tmp_r->den_;
-			//cout<<quo<<endl;
+			int mul_count=0;
+			double f_base = 1;
+			BigInt quo = tmp_r->num_ / tmp_r->den_;
 			bool MINUS = (quo<=0);
 			BigInt a_quo = quo.abs();
-			cout<<a_quo<<endl;
-			int q_size=a_quo.s.size();
-			//cout<<q_size<<endl;
-			double tmp_f = 0;
-			for (int i=q_size-1;i>=0;--i)
+			BigInt mul_num_ = tmp_r->num_.abs();
+			BigInt a_den_ = tmp_r->den_.abs();
+			while (a_quo == 0 || a_quo.s.size()<2)
             {
-                tmp_f += a_quo.s[i];
-                if (i!=0)
-                    tmp_f *= BigInt::BASE;
+                mul_num_ *= BigInt::BASE;
+                a_quo = mul_num_ / a_den_;
+                ++mul_count;
+                f_base /= BigInt::BASE;
+                cout<<a_quo<<' '<<f_base<<endl;
             }
-            //cout<<tmp_f<<endl;
-            tmp_f /= BigInt::BASE;
-            cout<<tmp_f<<endl;
+			double tmp_f = 0;
+			int aq_size = a_quo.s.size();
+			for (int i=aq_size-1;i>=0;--i)
+            {
+                tmp_f += (double)a_quo.s[i] * f_base;
+                if (i)
+                    tmp_f = tmp_f * BigInt::BASE;
+                cout<<tmp_f<<' '<<(double)a_quo.s[i] * f_base<<endl;
+            }
             if (!MINUS) result->number_=tmp_f;
             else result->number_=-tmp_f;
 			break;
@@ -56,6 +63,7 @@ Number *Float::convert(Number *number2)
 			assert(0 && "type_ not defined");
 	}
 	return result;
+
 }
 
 Number *Float::add(Number *number2)
@@ -87,10 +95,7 @@ Number *Float::div(Number *number2)
 	return result;
 }
 
-void Float::print()
-{
-	printf("%lf\n", number_);
-}
+void Float::print() { cout<<number_; }
 
 Float *Float::from_string(char *expression)
 {

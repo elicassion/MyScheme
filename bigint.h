@@ -55,6 +55,7 @@ class BigInt{
     BigInt(long long int num = 0) { *this = num; }
     BigInt(const BigInt& b)
     {
+        s.clear();
         int b_size=b.s.size();
         for (int i=0;i<b_size;++i)
             s.push_back(b.s[i]);

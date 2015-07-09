@@ -168,23 +168,6 @@ class BigInt{
 
             else
             {
-                /*for(int i = 0, g = 0; ; ++i)
-                {
-                    if (g == 0 && i >= this_size && i >= b_size) break;
-                    int x = g;
-                    if (i < b_size) x += b.s[i];
-                    if (i < this_size) x -= s[i];
-                    if (x < 0) {x += BASE; g = -1; }
-                    c.s.push_back(x);
-                }
-                c.s.back() = 0 - c.s.back();
-                while (!c.s.back())
-                    c.s.pop_back();
-                if (c.s.empty())
-                    c.s.push_back(0);
-                return c;*/
-                //cout<<"FUCK"<<endl;
-                //cout<<b<<' '<<*this<<endl;
                 BigInt d = b-*this;
                 return d.minus();
             }
@@ -227,11 +210,11 @@ class BigInt{
         {
             BigInt tmp;
             tmp.s.clear();
+            BigInt sufzero=1;
             if (i != 0)
             {
-                string sufzero = "";
-                for (int j=1;j<=i;++j)  sufzero += "00000000";
-                tmp = sufzero;
+                for (int j=1;j<=i;++j)
+                    tmp.s.push_back(0);
             }
             long long int g = 0;
             for (int j = 0; ; ++j)

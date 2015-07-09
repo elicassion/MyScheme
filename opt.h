@@ -1,4 +1,6 @@
-#pragma once
+#ifndef opt_h
+#define opt_h
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -31,8 +33,11 @@ struct Cons {
         return l == len;
     }
 };
- 
+
 class Opt {
     public:
         virtual Number *calc(Cons *con) = 0;
 };
+
+
+#endif // opt_h

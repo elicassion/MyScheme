@@ -1,4 +1,7 @@
-#pragma once
+#ifndef next_token_h
+#define next_token_h
+
+
 #include <cstdio>
 #include <cassert>
 #include <cctype>
@@ -60,3 +63,6 @@ char *next_token() {
     }
     return res; //传回所读内容
 }
+
+
+#endif // next_token_h

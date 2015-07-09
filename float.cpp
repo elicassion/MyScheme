@@ -20,13 +20,34 @@ Number *Float::convert(Number *number2)
 {
 	assert(number2->type_ <= type_);
 	Float *result = new Float();
-	switch(number2->type_){
-		case RATIONAL:{
-			Rational *tmp = SCAST_RATIONAL(number2);
-			result->number_ = (double)tmp->numerator_ / (double)tmp->denominator_;
+	switch(number2->type_)
+	{
+		case RATIONAL:
+        {
+			Rational *tmp_r = SCAST_RATIONAL(number2);
+			BigInt quo = (tmp_r->num_ * BigInt::BASE) / tmp_r->den_;
+			//cout<<quo<<endl;
+			bool MINUS = (quo<=0);
+			BigInt a_quo = quo.abs();
+			cout<<a_quo<<endl;
+			int q_size=a_quo.s.size();
+			//cout<<q_size<<endl;
+			double tmp_f = 0;
+			for (int i=q_size-1;i>=0;--i)
+            {
+                tmp_f += a_quo.s[i];
+                if (i!=0)
+                    tmp_f *= BigInt::BASE;
+            }
+            //cout<<tmp_f<<endl;
+            tmp_f /= BigInt::BASE;
+            cout<<tmp_f<<endl;
+            if (!MINUS) result->number_=tmp_f;
+            else result->number_=-tmp_f;
 			break;
 		}
-		case FLOAT:{
+		case FLOAT:
+        {
 			Float *tmp = SCAST_FLOAT(number2);
 			result->number_ = tmp->number_;
 			break;

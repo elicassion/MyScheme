@@ -89,7 +89,8 @@ class Sub:public Opt{
 };
 class Mul : public Opt {
     /* Use the lowest level type */
-    Number *calc(Cons *con) {
+    Number *calc(Cons *con)
+    {
         Number *res = new Rational(1, 1), *last;
         for (; con; con = con->cdr)
         {

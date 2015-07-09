@@ -7,6 +7,7 @@
 #include<iomanip>
 #include<cstdlib>
 #include<cstring>
+#include<cassert>
 #include<string>
 #include<cmath>
 #include<algorithm>
@@ -248,6 +249,7 @@ class BigInt{
     //高精度除以高精度(二分试商)
     BigInt operator / (const BigInt& b) const
     {
+        assert(b!=0 && "divide 0");
         BigInt tmp_b = b.abs();
         BigInt tmp_this = this->abs();
         bool MINUS=(b<0)^(*this<0); //0 positive

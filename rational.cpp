@@ -114,30 +114,42 @@ void Rational::print()
 
 Rational *Rational::from_string(char *expression)
 {
-    char* end_pointerr;
-    char *separate_pos = strchr(expression, '/');
+    char* separate_pos = strchr(expression, '/');
+    char* end_pos = strchr(expression,'\0');
     if(separate_pos)
     {
-        BigInt num = (BigInt)strtol(expression,&end_pointerr,10);
-        if( end_pointerr == expression || end_pointerr != separate_pos )
-        	return NULL;
-        BigInt den = (BigInt)strtol(separate_pos + 1,&end_pointerr,10);
-        if( end_pointerr == separate_pos + 1 || end_pointerr != expression + strlen(expression) )
-        	return NULL;
+        int num_len = separate_pos - expression;
+        char* tmp_numexp_cstr = new char [num_len+2];
+        strncpy(tmp_numexp_cstr, expression, num_len);
+        tmp_numexp_cstr[num_len]='\0';
+        string tmp_numexp=tmp_numexp_cstr;
+        BigInt num = tmp_numexp;
+        delete [] tmp_numexp_cstr;
+        //if( end_pointerr == expression || end_pointerr != separate_pos )
+        	//return NULL;
+        int den_len = end_pos - separate_pos - 1;
+        char* tmp_denexp_cstr = new char [den_len+2];
+        strncpy(tmp_denexp_cstr, separate_pos+1, den_len);
+        tmp_denexp_cstr[den_len]='\0';
+        string tmp_denexp=tmp_denexp_cstr;
+        BigInt den = tmp_denexp;
+        delete [] tmp_denexp_cstr;
+        //if( end_pointerr == separate_pos + 1 || end_pointerr != expression + strlen(expression) )
+        	//return NULL;
         return new Rational(num,den);
     }
     else
     {
-    	BigInt num = (BigInt)strtol(expression,&end_pointerr,10);
-        if( end_pointerr == expression || end_pointerr != expression + strlen(expression) )
-        	return NULL;
+    	int num_len = end_pos - expression;
+        char* tmp_numexp_cstr = new char [num_len+2];
+        strncpy(tmp_numexp_cstr, expression, num_len);
+        tmp_numexp_cstr[num_len]='\0';
+        string tmp_numexp=tmp_numexp_cstr;
+        BigInt num = tmp_numexp;
+        delete [] tmp_numexp_cstr;
+        //if( end_pointerr == expression || end_pointerr != expression + strlen(expression) )
+        	//return NULL;
         return new Rational(num , 1);
     }
 }
 
-// int main(){
-// 	Rational *a = new Rational(-18,18);
-// 	// Rational *b = new Rational(4,5);
-// 	printf("%d %d\n", a->numerator_.number_, a->denominator_.number_);
-// 	// (a->div(b))->print();
-// }

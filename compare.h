@@ -24,7 +24,8 @@ class Add : public Opt {
 			if(con->car->type_>3||con->car->type_<1) { throw 0; }
             Number *opr = con->car, *conv;
             last = res;
-            if (res->type_ > opr->type_)
+            //cout<<"opr type: "<<opr->type_<<endl;
+            if (res->type_ >= opr->type_)
 			{
 				res = res->add(conv = res->convert(opr));
 			}

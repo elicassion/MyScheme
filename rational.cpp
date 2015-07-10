@@ -4,29 +4,11 @@
 #include <cstdio>
 #include <cstring>
 
-class Rational:public Number{
-public:
-    BigInt num_;
-	BigInt den_;
-
-	Rational(BigInt num=0, BigInt den=1):num_(num),den_(den)
-    {
+Rational::Rational(BigInt num, BigInt den):num_(num),den_(den)
+{
         type_=RATIONAL;
         reduce();
-    }
-    ~Rational();
-
-	void reduce();
-	Number *convert(Number *number2);
-	Number *add(Number *number2);
-	Number *sub(Number *number2);
-	Number *mul(Number *number2);
-	Number *div(Number *number2);
-	void print();
-	static Rational *from_string(char *expression);
-
-
-};
+}
 
 Rational::~Rational()
 {
@@ -135,16 +117,18 @@ void Rational::print()
 	cout<<num_;
 	if(den_ != 1)
     {
-		printf("/");
+		cout<<'/';
 		cout<<den_;
 	}
-	printf("\n");
+	cout<<endl;
 }
 
 Rational *Rational::from_string(char *expression)
 {
     char* separate_pos = strchr(expression, '/');
     char* end_pos = strchr(expression,'\0');
+    char* dot_pos = strchr(expression,'.');
+    if (dot_pos) return NULL;
     if(separate_pos)
     {
         int num_len = separate_pos - expression;
@@ -170,15 +154,20 @@ Rational *Rational::from_string(char *expression)
     else
     {
     	int num_len = end_pos - expression;
+    	//cout<<num_len<<endl;
         char* tmp_numexp_cstr = new char [num_len+2];
         strncpy(tmp_numexp_cstr, expression, num_len);
         tmp_numexp_cstr[num_len]='\0';
         string tmp_numexp=tmp_numexp_cstr;
         BigInt num = tmp_numexp;
         delete [] tmp_numexp_cstr;
+        //Rational ttt(num,1);
+        //cout<<"ttt: ";
+        //ttt.print();
         //if( end_pointerr == expression || end_pointerr != expression + strlen(expression) )
         	//return NULL;
-        return new Rational(num , 1);
+        return new Rational(num,1);
     }
+    return NULL;
 }
 

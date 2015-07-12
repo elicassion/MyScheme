@@ -26,42 +26,8 @@ Number *Float::convert(Number *number2)
 		case RATIONAL:
         {
 			Rational *tmp_r = SCAST_RATIONAL(number2);
-			//cout<<"tmp_r: ";
-			//tmp_r->print();
-			//if (tmp_r)
-			int mul_count=0;
-			double f_base = 1;
-			if (tmp_r->num_==0)
-			{
-			    result->number_=0;
-			    break;
-			}
-
-			BigInt quo = tmp_r->num_ / tmp_r->den_;
-			bool MINUS = (tmp_r->num_<0) ^ (tmp_r->den_<0);
-			BigInt a_quo = quo.abs();
-			BigInt mul_num_ = tmp_r->num_.abs();
-			BigInt a_den_ = tmp_r->den_.abs();
-			//cout<<"a_quo: "<<a_quo<<endl;
-			while (a_quo == 0 || a_quo.s.size()<2)
-            {
-                mul_num_ *= BigInt::BASE;
-                a_quo = mul_num_ / a_den_;
-                ++mul_count;
-                f_base /= BigInt::BASE;
-                //cout<<a_quo<<' '<<f_base<<endl;
-            }
-			double tmp_f = 0;
-			int aq_size = a_quo.s.size();
-			for (int i=aq_size-1;i>=0;--i)
-            {
-                tmp_f += (double)a_quo.s[i] * f_base;
-                if (i)
-                    tmp_f = tmp_f * BigInt::BASE;
-                //cout<<tmp_f<<' '<<(double)a_quo.s[i] * f_base<<endl;
-            }
-            if (!MINUS) result->number_=tmp_f;
-            else result->number_=-tmp_f;
+			result->number_ = (double) *tmp_r;
+			//result->number_ = (double) tmp_r->num_ / (double)tmp_r->den_;
 			break;
 		}
 		case FLOAT:

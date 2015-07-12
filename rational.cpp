@@ -128,7 +128,9 @@ Rational *Rational::from_string(char *expression)
     char* separate_pos = strchr(expression, '/');
     char* end_pos = strchr(expression,'\0');
     char* dot_pos = strchr(expression,'.');
-    if (dot_pos) return NULL;
+    char* E_pos = strchr(expression,'E');
+    char* e_pos = strchr(expression,'e');
+    if (dot_pos || E_pos || e_pos) return NULL;
     if(separate_pos)
     {
         int num_len = separate_pos - expression;
@@ -169,5 +171,45 @@ Rational *Rational::from_string(char *expression)
         return new Rational(num,1);
     }
     return NULL;
+}
+
+Rational::operator double()
+{
+    Rational* tmp_r=this;
+    double number;
+    int mul_count=0;
+    double f_base = 1;
+    if (tmp_r->num_==0)
+    {
+        number=0.0;
+        return number;
+    }
+
+    BigInt quo = tmp_r->num_ / tmp_r->den_;
+    bool MINUS = (tmp_r->num_<0) ^ (tmp_r->den_<0);
+    BigInt a_quo = quo.abs();
+    BigInt mul_num_ = tmp_r->num_.abs();
+    BigInt a_den_ = tmp_r->den_.abs();
+    //cout<<"a_quo: "<<a_quo<<endl;
+    while (a_quo == 0 || a_quo.s.size()<2)
+    {
+        mul_num_ *= BigInt::BASE;
+        a_quo = mul_num_ / a_den_;
+        ++mul_count;
+        f_base /= BigInt::BASE;
+        //cout<<a_quo<<' '<<f_base<<endl;
+    }
+    double tmp_f = 0;
+    int aq_size = a_quo.s.size();
+    for (int i=aq_size-1;i>=0;--i)
+    {
+        tmp_f += (double)a_quo.s[i] * f_base;
+        if (i)
+            tmp_f = tmp_f * BigInt::BASE;
+        //cout<<tmp_f<<' '<<(double)a_quo.s[i] * f_base<<endl;
+    }
+    if (!MINUS) number=tmp_f;
+    else number=-tmp_f;
+    return number;
 }
 

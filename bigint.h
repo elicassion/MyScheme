@@ -69,7 +69,7 @@ class BigInt{
         do{
             s.push_back(num % BASE);
             num /= BASE;
-        }while(num > 0);
+        }while(num != 0);
         while (!s.back() && !s.empty())
             s.pop_back();
         if (s.empty())
@@ -119,11 +119,11 @@ class BigInt{
             BigInt c = this->abs() + b.abs();
             return c.minus();
         }
-        if (*this<0 && b>0)
+        if (*this<0 && b>=0)
         {
             return (b-this->abs());
         }
-        if (*this>0 && b<0)
+        if (*this>=0 && b<0)
         {
             return (*this-b.abs());
         }
@@ -173,11 +173,11 @@ class BigInt{
                 return d.minus();
             }
         }
-        if (*this>0 && b<0)
+        if (*this>=0 && b<0)
         {
             return *this+b.abs();
         }
-        if (*this<0 && b>0)
+        if (*this<0 && b>=0)
         {
             BigInt d = this->abs() + b;
             return d.minus();
@@ -337,6 +337,22 @@ class BigInt{
         return c;
     }
 
+
+    /*operator double () const
+    {
+        bool MINUS = (b<0);
+        BigInt a_b = this->abs();
+        int a_b_size = a_b.s.size();
+        double d_num = 0;
+        for (int i=a_b_size-1; i>=0; --i)
+        {
+            d_num += a_b.s[i];
+            if (i!=0)
+                d_num *= BASE;
+        }
+        if (!MINUS) return d_num;
+        else return -d_num;
+    }*/
 
     BigInt abs () const
     {

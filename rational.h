@@ -23,6 +23,7 @@ public:
 	virtual Number *div(Number *number2);
 	virtual void print();
 	static Rational *from_string(char *expression);
+	operator double ();
 
 
 };

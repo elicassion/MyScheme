@@ -25,7 +25,7 @@ class Add : public Opt {
             Number *opr = con->car, *conv;
             last = res;
             //cout<<"opr type: "<<opr->type_<<endl;
-            if (res->type_ >= opr->type_)
+            if (res->type_ > opr->type_)
 			{
 				res = res->add(conv = res->convert(opr));
 			}

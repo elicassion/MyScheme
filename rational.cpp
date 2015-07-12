@@ -16,11 +16,14 @@ Rational::~Rational()
 }
 void Rational::reduce()
 {
-	int expression = (den_!=0) ? 1 : 0;
+	//BigInt ZERO="0";
+	int expression = (den_!=ZERO_) ? 1 : 0;
 	assert(expression && "denominator is zero");
-	if(!num_)
+
+	if(num_==ZERO_)
     {
-		den_=1;
+		den_.number_="1";
+		den_.sgn_=0;
 		return;
 	}
 	BigInt big, small, tmp;
@@ -30,7 +33,7 @@ void Rational::reduce()
 	small=min(absnum_,absden_);
 	tmp=big%small;
 	//cout<<big<<' '<<small<<' '<<tmp<<endl;
-	while(tmp!=0)
+	while(tmp!=ZERO_)
     {
 		big=small;
 		small=tmp;
@@ -41,10 +44,10 @@ void Rational::reduce()
 	num_=num_/small;
 	den_= den_/small;
 
-	if(den_<BigInt(0))
+	if(den_.sgn_)
     {
-		num_ = num_.minus();
-		den_ = den_.minus();
+		num_=num_.minus();
+		den_=den_.minus();
 	}
 	//cout<<num_<<' '<<den_<<endl;
 }
@@ -103,6 +106,7 @@ Number *Rational::mul(Number *number2)
 Number *Rational::div(Number *number2)
 {
 	Rational *tmp = SCAST_RATIONAL(number2);
+	assert( tmp->num_!=ZERO_ && "divided by zero");
 	Rational *result = new Rational();
 	result->num_ = num_ * tmp->den_;
 	//cout<<result->num_<<endl;
@@ -114,11 +118,11 @@ Number *Rational::div(Number *number2)
 
 void Rational::print()
 {
-	cout<<num_;
-	if(den_ != 1)
+	num_.print();
+	if(den_ != ONE_)
     {
 		cout<<'/';
-		cout<<den_;
+		den_.print();
 	}
 	cout<<endl;
 }
@@ -151,6 +155,9 @@ Rational *Rational::from_string(char *expression)
         delete [] tmp_denexp_cstr;
         //if( end_pointerr == separate_pos + 1 || end_pointerr != expression + strlen(expression) )
         	//return NULL;
+        //Rational ttt(num,den);
+        //cout<<"ttt: ";
+        //ttt.print();
         return new Rational(num,den);
     }
     else
@@ -163,53 +170,14 @@ Rational *Rational::from_string(char *expression)
         string tmp_numexp=tmp_numexp_cstr;
         BigInt num = tmp_numexp;
         delete [] tmp_numexp_cstr;
-        //Rational ttt(num,1);
+        //Rational ttt(num,ONE_);
         //cout<<"ttt: ";
         //ttt.print();
         //if( end_pointerr == expression || end_pointerr != expression + strlen(expression) )
         	//return NULL;
-        return new Rational(num,1);
+        return new Rational(num,ONE_);
     }
     return NULL;
 }
 
-Rational::operator double()
-{
-    Rational* tmp_r=this;
-    double number;
-    int mul_count=0;
-    double f_base = 1;
-    if (tmp_r->num_==0)
-    {
-        number=0.0;
-        return number;
-    }
-
-    BigInt quo = tmp_r->num_ / tmp_r->den_;
-    bool MINUS = (tmp_r->num_<0) ^ (tmp_r->den_<0);
-    BigInt a_quo = quo.abs();
-    BigInt mul_num_ = tmp_r->num_.abs();
-    BigInt a_den_ = tmp_r->den_.abs();
-    //cout<<"a_quo: "<<a_quo<<endl;
-    while (a_quo == 0 || a_quo.s.size()<2)
-    {
-        mul_num_ *= BigInt::BASE;
-        a_quo = mul_num_ / a_den_;
-        ++mul_count;
-        f_base /= BigInt::BASE;
-        //cout<<a_quo<<' '<<f_base<<endl;
-    }
-    double tmp_f = 0;
-    int aq_size = a_quo.s.size();
-    for (int i=aq_size-1;i>=0;--i)
-    {
-        tmp_f += (double)a_quo.s[i] * f_base;
-        if (i)
-            tmp_f = tmp_f * BigInt::BASE;
-        //cout<<tmp_f<<' '<<(double)a_quo.s[i] * f_base<<endl;
-    }
-    if (!MINUS) number=tmp_f;
-    else number=-tmp_f;
-    return number;
-}
 

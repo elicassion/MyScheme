@@ -17,7 +17,7 @@ class Add : public Opt {
     /* Use the lowest level type */
     Number *calc(Cons *con)
     {
-		Number *res = new Rational(0,1);
+		Number *res = new Rational(ZERO_,ONE_);
 		Number *last;
         for (; con; con = con->cdr)
         {
@@ -54,7 +54,7 @@ class Sub:public Opt{
 			}
 			cnt++;
 		}
-		Number *res=new Rational(0, 1),*last;
+		Number *res=new Rational(ZERO_, ONE_),*last;
 		Number *opr = con->car, *conv;
 		last=res;
 		if(cnt==1)
@@ -92,7 +92,7 @@ class Mul : public Opt {
     /* Use the lowest level type */
     Number *calc(Cons *con)
     {
-        Number *res = new Rational(1, 1), *last;
+        Number *res = new Rational(ONE_, ONE_), *last;
         for (; con; con = con->cdr)
         {
 			if(con->car->type_>3||con->car->type_<1)
@@ -124,7 +124,7 @@ class Div:public Opt{
 			}
 			cnt++;
 		}
-		Number *res=new Rational(1,1),*last;
+		Number *res=new Rational(ONE_,ONE_),*last;
 		Number *opr=con->car,*conv;
 		last=res;
 		Number *zero = new Float(0.0);

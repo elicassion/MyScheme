@@ -26,8 +26,8 @@ Number *Float::convert(Number *number2)
 		case RATIONAL:
         {
 			Rational *tmp_r = SCAST_RATIONAL(number2);
-			result->number_ = (double) *tmp_r;
-			//result->number_ = (double) tmp_r->num_ / (double)tmp_r->den_;
+			//result->number_ = (double) *tmp_r;
+			result->number_ = (double) tmp_r->num_ / (double)tmp_r->den_;
 			break;
 		}
 		case FLOAT:
@@ -68,7 +68,7 @@ Number *Float::mul(Number *number2)
 Number *Float::div(Number *number2)
 {
 	Float *tmp = SCAST_FLOAT(number2);
-	assert(ABS(tmp->number_)>1e-123 && "divide zero");
+	assert(ABS(tmp->number_)>1e-300 && "divide zero");
 	Float *result = new Float(number_ / tmp->number_);
 	return result;
 }

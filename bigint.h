@@ -1,7 +1,5 @@
 #ifndef bigint_h
 #define bigint_h
-
-
 #include<iostream>
 #include<fstream>
 #include<iomanip>
@@ -14,6 +12,7 @@
 #include<cstdio>
 #include<vector>
 using namespace std;
+
 class BigInt{
 public:
     string number_; //natrual
@@ -23,6 +22,7 @@ public:
 	BigInt(string s="0"):number_(""),sgn_(0)
 	{
 	    if (s[0]=='-') { sgn_=1; s.erase(0,1); }
+	    else if (s[0]=='+') { sgn_=0; s.erase(0,1); }
 	    s.erase(0,s.find_first_not_of('0'));
         int len=s.length();
         if (len==0) { number_="0"; sgn_=0; }
@@ -41,21 +41,19 @@ public:
         else if(a_l<b_l)  return -1;
         else return a.compare(b);
     }
+
+    // add sub mul div are abs calc funcs.
     string add(string a, string b) const
     {
         string res="";
         int a_l=a.length();
         int b_l=b.length();
-        if(a_l<b_l)
-        {
+        if(a_l<b_l) //complete zeros
             for(int i=1;i<=b_l-a_l;i++)
-            a="0"+a;
-        }
+                a="0"+a;
         else
-        {
             for(int i=1;i<=a_l-b_l;i++)
-            b="0"+b;
-        }
+                b="0"+b;
         a_l=a.length();
         int g=0;
         int x;
@@ -112,25 +110,34 @@ public:
         int a_l=a.length();
         int b_l=b.length();
         string temp_res;
-        for(int i=b_l-1;i>=0;i--)
+        string try_prod[10];
+        bool v[10]={0};
+        for (int i=b_l-1;i>=0;i--)
         {
             temp_res="";
+            string temp_zeros="";
             int x=b[i]-'0';
             int t=0;
             int g=0;
-            if(x!=0)
+            if (x!=0)
             {
-                for(int j=1;j<=b_l-1-i;j++)
-                temp_res+="0";
-                for(int j=a_l-1;j>=0;j--)
+                for (int j=1;j<=b_l-1-i;j++)
+                    temp_zeros+="0";
+                if (!v[x])
                 {
-                    t=(x*(a[j]-'0')+g)%10;
-                    g=(x*(a[j]-'0')+g)/10;
-                    temp_res=char(t+'0')+temp_res;
+                    for (int j=a_l-1;j>=0;j--)
+                    {
+                        t=(x*(a[j]-'0')+g)%10;
+                        g=(x*(a[j]-'0')+g)/10;
+                        temp_res=char(t+'0')+temp_res;
+                    }
+                    if (g!=0) temp_res=char(g+'0')+temp_res;
+                    try_prod[x] = temp_res;
+                    v[x]=1;
                 }
-                if(g!=0) temp_res=char(g+'0')+temp_res;
+                else temp_res = try_prod[x];
             }
-            res=add(res,temp_res);
+            res=add(res,temp_res+temp_zeros);
         }
         res.erase(0,res.find_first_not_of('0'));
         return res;
@@ -139,52 +146,65 @@ public:
     void div(string a,string b,string &quotient,string &residue) const
     {
         quotient=residue="";
-        if(b=="0")
-        {
-            quotient=residue="ERROR";
-            return;
-        }
+        assert(a!="0" && "divided by zero");
         if(a=="0")
         {
             quotient=residue="0";
             return;
         }
         int res=abs_cmp(a,b);
-        if(res<0)
-        {
-            quotient="0";
-            residue=a;
-            return;
-        }
-        else if(res==0)
-        {
-            quotient="1";
-            residue="0";
-            return;
-        }
+        if(res<0) { quotient="0"; residue=a; return; }
+        else if(res==0) { quotient="1"; residue="0"; return; }
         else
         {
             int a_l=a.length();
             int b_l=b.length();
             string tempstr;
             tempstr.append(a,0,b_l-1);
-            for(int i=b_l-1;i<a_l;i++)
+
+            string try_quo[10];
+            bool v[10]={0};
+            /*for (char ch='9'; ch>='0'; --ch)
+            {
+                string s="";
+                s+=ch;
+                try_quo[ch-'0']=mul(b,s);
+            }*/
+
+            for (int i=b_l-1;i<a_l;i++)
             {
                 tempstr=tempstr+a[i];
                 tempstr.erase(0,tempstr.find_first_not_of('0'));
                 if(tempstr.empty())
                     tempstr="0";
-                for(char ch='9';ch>='0';ch--)
+                for (char ch='9'; ch>='0'; --ch)
                 {
-                    string str,tmp;
+                    /*string str,tmp;
                     str=str+ch;
-                    tmp=mul(b,str);
-                    if(abs_cmp(tmp,tempstr)<=0)
+                    tmp=mul(b,str);*/
+                    if (v[ch-'0'])
                     {
-                        quotient=quotient+ch;
-                        tempstr=sub(tempstr,tmp);
-                        break;
+                        if(abs_cmp(try_quo[ch-'0'],tempstr)<=0)
+                        {
+                            quotient=quotient+ch;
+                            tempstr=sub(tempstr,try_quo[ch-'0']);
+                            break;
+                        }
                     }
+                    else
+                    {
+                        string s="";
+                        s+=ch;
+                        try_quo[ch-'0']=mul(b,s);
+                        v[ch-'0']=1;
+                        if(abs_cmp(try_quo[ch-'0'],tempstr)<=0)
+                        {
+                            quotient=quotient+ch;
+                            tempstr=sub(tempstr,try_quo[ch-'0']);
+                            break;
+                        }
+                    }
+
                 }
             }
             residue=tempstr;
@@ -221,9 +241,8 @@ public:
                 else
                 {
                     for (int i=0; i<a_l; ++i)
-                    {
-                        if (number_[i]!=b.number_[i]) return number_[i]<b.number_[i];
-                    }
+                        if (number_[i]!=b.number_[i])
+                            return number_[i]<b.number_[i];
                     return false;
                 }
             }
@@ -235,9 +254,8 @@ public:
                 else
                 {
                     for (int i=0; i<a_l; ++i)
-                    {
-                        if (number_[i]!=b.number_[i]) return !(number_[i]<b.number_[i]);
-                    }
+                        if (number_[i]!=b.number_[i])
+                            return !(number_[i]<b.number_[i]);
                     return false;
                 }
             }
@@ -251,6 +269,7 @@ public:
 	    return *this;
 	}
 
+    //+ - * / % judge sign and use abs calc funcs
 	BigInt operator+(const BigInt &obj) const
 	{
 	    if(number_=="0" && obj.number_=="0") { return BigInt("0"); }
@@ -270,37 +289,15 @@ public:
         }
         else if(sgn_ && !obj.sgn_)
         {
-            if(abs_cmp(a,b)==1)
-            {
-                res.number_=sub(a,b);
-                res.sgn_=1;
-            }
-            else if(abs_cmp(a,b)==0)
-            {
-                res.number_="0";
-                res.sgn_=0;
-            }
-            else if(abs_cmp(a,b)==-1)
-            {
-                res.number_=sub(b,a);
-            }
+            if(abs_cmp(a,b)==1) { res.number_=sub(a,b); res.sgn_=1; }
+            else if(abs_cmp(a,b)==0) { res.number_="0"; res.sgn_=0; }
+            else if(abs_cmp(a,b)==-1) { res.number_=sub(b,a); }
         }
         else if(!sgn_ && obj.sgn_)
         {
-            if(abs_cmp(a,b)==1)
-            {
-                res.number_=sub(a,b);
-            }
-            else if(abs_cmp(a,b)==0)
-            {
-                res.number_="0";
-                res.sgn_=0;
-            }
-            else if(abs_cmp(a,b)==-1)
-            {
-                res.number_=sub(b,a);
-                res.sgn_=1;
-            }
+            if(abs_cmp(a,b)==1) { res.number_=sub(a,b); }
+            else if(abs_cmp(a,b)==0) { res.number_="0"; res.sgn_=0; }
+            else if(abs_cmp(a,b)==-1) { res.number_=sub(b,a); res.sgn_=1; }
         }
         return res;
 	}
@@ -315,37 +312,15 @@ public:
         b=obj.number_;
         if(!sgn_ && !obj.sgn_)
         {
-            if(abs_cmp(a,b)==1)
-            {
-                res.number_=sub(a,b);
-            }
-            if(abs_cmp(a,b)==0)
-            {
-                res.number_="0";
-                res.sgn_=0;
-            }
-            if(abs_cmp(a,b)==-1)
-            {
-                res.number_=sub(b,a);
-                res.sgn_=1;
-            }
+            if(abs_cmp(a,b)==1) { res.number_=sub(a,b); }
+            if(abs_cmp(a,b)==0) { res.number_="0"; res.sgn_=0; }
+            if(abs_cmp(a,b)==-1) { res.number_=sub(b,a); res.sgn_=1; }
         }
         else if(sgn_ && obj.sgn_)
         {
-            if(abs_cmp(a,b)==1)
-            {
-                res.number_=sub(a,b);
-                res.sgn_=1;
-            }
-            if(abs_cmp(a,b)==0)
-            {
-                res.number_="0";
-                res.sgn_=0;
-            }
-            if(abs_cmp(a,b)==-1)
-            {
-                res.number_=sub(b,a);
-            }
+            if(abs_cmp(a,b)==1) { res.number_=sub(a,b); res.sgn_=1; }
+            if(abs_cmp(a,b)==0) { res.number_="0"; res.sgn_=0; }
+            if(abs_cmp(a,b)==-1) { res.number_=sub(b,a); }
 
         }
         else if(!sgn_ && obj.sgn_)
@@ -422,7 +397,7 @@ public:
 
 	void print() const
 	{
-	    if (sgn_) cout<<'-';
+	    if (sgn_) printf("-");
 	    cout<<number_;
 	}
 

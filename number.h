@@ -7,8 +7,10 @@ class Number {
 public:
 	enum{
 		RATIONAL = 1,
-		FLOAT = 2
+		FLOAT = 2,
+		COMPLEX = 3
 	} type_;
+	bool exact_;
 	Number(){}
 	virtual ~Number(){}
 	virtual Number *convert(Number *number2) = 0;

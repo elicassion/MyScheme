@@ -1,14 +1,17 @@
 #include "float.h"
 #include "rational.h"
+#include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
+#include<iomanip>
 #define ABS(x) ((x)<0?(-(x)):(x))
-
+using namespace std;
 Float::Float(double number) : number_(number)
 {
 	type_ = FLOAT;
+	exact_=false;
 }
 
 Float::~Float()
@@ -28,6 +31,7 @@ Number *Float::convert(Number *number2)
 			Rational *tmp_r = SCAST_RATIONAL(number2);
 			//result->number_ = (double) *tmp_r;
 			result->number_ = (double) tmp_r->num_ / (double)tmp_r->den_;
+            //cout<<result->number_<<endl;
 			break;
 		}
 		case FLOAT:
@@ -73,11 +77,13 @@ Number *Float::div(Number *number2)
 	return result;
 }
 
-void Float::print() { cout<<number_<<endl; }
+void Float::print() { cout<<setprecision(20)<<number_; }
 
 Float *Float::from_string(char *expression)
 {
     char *end_pointer;
+    char* i_pos = strchr(expression, 'i');
+    if (i_pos) return NULL;
     double val = 0;
     val = strtod(expression, &end_pointer);
     if (end_pointer == expression || end_pointer != expression + strlen(expression))

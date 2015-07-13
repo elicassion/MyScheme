@@ -4,6 +4,7 @@
 #include "opt.h"
 #include "float.h"
 #include "rational.h"
+#include "complex.h"
 #include "number.h"
 #include <cmath>
 #include <iomanip>
@@ -26,9 +27,13 @@ class Add : public Opt {
             last = res;
             //cout<<"opr type: "<<opr->type_<<endl;
             if (res->type_ > opr->type_)
-			{
+            {
 				res = res->add(conv = res->convert(opr));
 			}
+			else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+            {
+                res = res->add(conv = res->convert(opr));
+            }
             else
 			{
                 res = (conv = opr->convert(res))->add(opr);
@@ -60,7 +65,13 @@ class Sub:public Opt{
 		if(cnt==1)
 		{
 			if (res->type_ > opr->type_)
-				res = res->sub(conv = res->convert(opr));
+            {
+                res = res->sub(conv = res->convert(opr));
+            }
+            else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+            {
+                res = res->sub(conv = res->convert(opr));
+            }
 			else
 				res = (conv = opr->convert(res))->sub(opr);
 			delete last;
@@ -68,9 +79,17 @@ class Sub:public Opt{
 			return res;
 		}
 		if (res->type_ > opr->type_)
+        {
             res = res->add(conv = res->convert(opr));
+        }
+        else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+        {
+            res = res->add(conv = res->convert(opr));
+        }
         else
+        {
             res = (conv = opr->convert(res))->add(opr);
+        }
         con=con->cdr;
         delete last;
         delete conv;
@@ -79,9 +98,17 @@ class Sub:public Opt{
 			opr=con->car;
 			last=res;
 			if(res->type_>opr->type_)
-				res=res->sub(conv=res->convert(opr));
+            {
+                res=res->sub(conv=res->convert(opr));
+            }
+            else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+            {
+                res = res->sub(conv = res->convert(opr));
+            }
 			else
-				res=(conv=opr->convert(res))->sub(opr);
+            {
+                res=(conv=opr->convert(res))->sub(opr);
+            }
 			delete last;
 			delete conv;
 		}
@@ -90,7 +117,7 @@ class Sub:public Opt{
 };
 class Mul : public Opt {
     /* Use the lowest level type */
-    Number *calc(Cons *con)
+    Number* calc(Cons *con)
     {
         Number *res = new Rational(ONE_, ONE_), *last;
         for (; con; con = con->cdr)
@@ -102,9 +129,17 @@ class Mul : public Opt {
             Number *opr = con->car, *conv;
             last = res;
             if (res->type_ > opr->type_)
+            {
                 res = res->mul(conv = res->convert(opr));
+            }
+            else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+            {
+                res = res->mul(conv = res->convert(opr));
+            }
             else
+            {
                 res = (conv = opr->convert(res))->mul(opr);
+            }
             delete last;
             delete conv;
         }
@@ -124,24 +159,40 @@ class Div:public Opt{
 			}
 			cnt++;
 		}
-		Number *res=new Rational(ONE_,ONE_),*last;
-		Number *opr=con->car,*conv;
+		Number *res = new Rational(ONE_,ONE_),*last;
+		Number *opr = con->car,*conv;
 		last=res;
 		Number *zero = new Float(0.0);
 		if(cnt==1)
 		{
 			if(res->type_>opr->type_)
-				res=res->div(conv=res->convert(opr));
+            {
+                res = res->div(conv=res->convert(opr));
+            }
+            else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+            {
+                res = res->div(conv = res->convert(opr));
+            }
 			else
-				res=(conv=opr->convert(res))->div(opr);
+            {
+                res = (conv=opr->convert(res))->div(opr);
+            }
 			delete last;
 			delete conv;
 			return res;
 		}
 		if(res->type_>opr->type_)
-			res=res->mul(conv=res->convert(opr));
+        {
+            res = res->mul(conv=res->convert(opr));
+        }
+        else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+        {
+            res = res->mul(conv = res->convert(opr));
+        }
 		else
-			res=(conv=opr->convert(res))->mul(opr);
+        {
+            res = (conv=opr->convert(res))->mul(opr);
+        }
 		con=con->cdr;
 		delete last;
 		delete conv;
@@ -150,9 +201,17 @@ class Div:public Opt{
 			opr=con->car;
 			last=res;
 			if(res->type_>opr->type_)
-				res=res->div(conv=res->convert(opr));
+            {
+                res = res->div(conv=res->convert(opr));
+            }
+            else if (res->type_ == opr->type_ && res->exact_ < opr->exact_)
+            {
+                res = res->div(conv = res->convert(opr));
+            }
 			else
-				res=(conv=opr->convert(res))->div(opr);
+            {
+                res = (conv=opr->convert(res))->div(opr);
+            }
 			delete last;
 			delete conv;
 		}

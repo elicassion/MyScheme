@@ -7,6 +7,7 @@
 Rational::Rational(BigInt num, BigInt den):num_(num),den_(den)
 {
         type_=RATIONAL;
+        exact_=true;
         reduce();
 }
 
@@ -124,7 +125,7 @@ void Rational::print()
 		cout<<'/';
 		den_.print();
 	}
-	cout<<endl;
+	//cout<<endl;
 }
 
 Rational *Rational::from_string(char *expression)
@@ -134,7 +135,9 @@ Rational *Rational::from_string(char *expression)
     char* dot_pos = strchr(expression,'.');
     char* E_pos = strchr(expression,'E');
     char* e_pos = strchr(expression,'e');
-    if (dot_pos || E_pos || e_pos) return NULL;
+    char* i_pos = strchr(expression, 'i');
+    if (i_pos) return NULL;
+    if (dot_pos || E_pos || e_pos ) return NULL;
     if(separate_pos)
     {
         int num_len = separate_pos - expression;

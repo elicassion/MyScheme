@@ -38,7 +38,8 @@ Number *calc_exp(){
     else
     {
 		res=Rational::from_string(tk0);
-		if(!res) {res = Float::from_string(tk0);}
+		if(!res) {res = Float::from_string(tk0); }
+		if(!res) {res = Complex::from_string(tk0); }
 		if(res==NULL){throw 0;}
     }
     return res;

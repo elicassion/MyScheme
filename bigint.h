@@ -21,12 +21,15 @@ public:
 
 	BigInt(string s="0"):number_(""),sgn_(0)
 	{
-	    if (s[0]=='-') { sgn_=1; s.erase(0,1); }
+	    //cout<<"S: "<<s<<endl;
+	    if (s=="-") {sgn_=1; number_="1";}
+	    else if (s[0]=='-') { sgn_=1; s.erase(0,1); }
 	    else if (s[0]=='+') { sgn_=0; s.erase(0,1); }
 	    s.erase(0,s.find_first_not_of('0'));
         int len=s.length();
         if (len==0) { number_="0"; sgn_=0; }
         else number_=s;
+        //cout<<number_<<endl;
     }
 
 	BigInt(const BigInt &b) { number_=b.number_; sgn_=b.sgn_; }
@@ -103,114 +106,136 @@ public:
         return res;
     }
 
-
-    string mul(string a,string b) const
+    string mul(string a, string b) const
     {
-        string res;
-        int a_l=a.length();
-        int b_l=b.length();
-        string temp_res;
-        string try_prod[10];
-        bool v[10]={0};
-        for (int i=b_l-1;i>=0;i--)
+        int a_l=a.size(), b_l=b.size();
+        int max_l = a_l + b_l;
+        int *p = new int [max_l];
+        for (int i=0; i<max_l; ++i) p[i]=0;
+        //mul
+        for (int i=0; i<b_l; ++i)
+            for (int j=0; j<a_l; ++j)
+                p[max_l-j-i-1] += (a[a_l-j-1]-'0') * (b[b_l-i-1]-'0');
+        //carry
+        for (int i=0;i<max_l-1;++i)
         {
-            temp_res="";
-            string temp_zeros="";
-            int x=b[i]-'0';
-            int t=0;
-            int g=0;
-            if (x!=0)
-            {
-                for (int j=1;j<=b_l-1-i;j++)
-                    temp_zeros+="0";
-                if (!v[x])
-                {
-                    for (int j=a_l-1;j>=0;j--)
-                    {
-                        t=(x*(a[j]-'0')+g)%10;
-                        g=(x*(a[j]-'0')+g)/10;
-                        temp_res=char(t+'0')+temp_res;
-                    }
-                    if (g!=0) temp_res=char(g+'0')+temp_res;
-                    try_prod[x] = temp_res;
-                    v[x]=1;
-                }
-                else temp_res = try_prod[x];
-            }
-            res=add(res,temp_res+temp_zeros);
+            p[max_l-i-2] += p[max_l-i-1]/10;
+            p[max_l-i-1] %= 10;
         }
-        res.erase(0,res.find_first_not_of('0'));
+        string res="";
+        if (p[0]!=0)
+            res+=p[0]+'0';
+        for (int i=1; i<max_l; ++i)
+            res+=p[i]+'0';
+        delete [] p;
         return res;
     }
 
-    void div(string a,string b,string &quotient,string &residue) const
+
+    string div(string a, string b) const
     {
-        quotient=residue="";
-        assert(a!="0" && "divided by zero");
-        if(a=="0")
+        //remove more zeros
+        a.erase(0,a.find_first_not_of('0'));
+        b.erase(0,b.find_first_not_of('0'));
+        int a_l=a.size();
+        string res="", tmp="";
+        int mark=0, ct=0;
+        while (a.size()==b.size()&&a>=b || a.size()>b.size())
         {
-            quotient=residue="0";
-            return;
-        }
-        int res=abs_cmp(a,b);
-        if(res<0) { quotient="0"; residue=a; return; }
-        else if(res==0) { quotient="1"; residue="0"; return; }
-        else
-        {
-            int a_l=a.length();
-            int b_l=b.length();
-            string tempstr;
-            tempstr.append(a,0,b_l-1);
-
-            string try_quo[10];
-            bool v[10]={0};
-            /*for (char ch='9'; ch>='0'; --ch)
+            for (int i=tmp.size();i<tmp.size()+b.size()+1;++i)
             {
-                string s="";
-                s+=ch;
-                try_quo[ch-'0']=mul(b,s);
-            }*/
-
-            for (int i=b_l-1;i<a_l;i++)
-            {
-                tempstr=tempstr+a[i];
-                tempstr.erase(0,tempstr.find_first_not_of('0'));
-                if(tempstr.empty())
-                    tempstr="0";
-                for (char ch='9'; ch>='0'; --ch)
+                tmp += a[i];
+                ct += 1;
+                if (tmp.size()==b.size()&&tmp>=b || tmp.size()>b.size())
                 {
-                    /*string str,tmp;
-                    str=str+ch;
-                    tmp=mul(b,str);*/
-                    if (v[ch-'0'])
-                    {
-                        if(abs_cmp(try_quo[ch-'0'],tempstr)<=0)
-                        {
-                            quotient=quotient+ch;
-                            tempstr=sub(tempstr,try_quo[ch-'0']);
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        string s="";
-                        s+=ch;
-                        try_quo[ch-'0']=mul(b,s);
-                        v[ch-'0']=1;
-                        if(abs_cmp(try_quo[ch-'0'],tempstr)<=0)
-                        {
-                            quotient=quotient+ch;
-                            tempstr=sub(tempstr,try_quo[ch-'0']);
-                            break;
-                        }
-                    }
-
+                    tmp = process_divide_positive(tmp,b,ct,&res);
+                    a = tmp + a.substr(ct,a.size()-ct);
+                    ct = tmp.size();
+                    break;
                 }
+                else res += "0";
             }
-            residue=tempstr;
         }
-        quotient.erase(0,quotient.find_first_not_of('0'));
-        if(quotient.empty()) quotient="0";
+        int gap=a_l-res.size();
+        for (int i=0;i<gap;++i) res += "0";
+        return res.erase(0,res.find_first_not_of('0'));
+    }
+
+    string process_divide_positive(string tmp, string str2, int ct, string *p) const
+    {
+        int n=str2.size()+1;
+        int* a= new int [n];
+        int x;
+        string b;
+        bool FLAG=false;
+        if (tmp.size()>str2.size()) FLAG=true;
+        tmp = "0"+tmp;
+        for (int i=1;b<=tmp;++i)
+        {
+            b="";
+            if (FLAG) b+="0";
+            for (int j=0;j<n;++j) a[j]=0;
+            for (int j=0;j<n-1;++j)
+            {
+                a[n-1-j] = (str2[n-2-j]-'0') * i;
+            }
+            //carry
+            for (int k=0;k<n-1;++k)
+            {
+                a[n-k-2] += a[n-k-1]/10;
+                a[n-k-1] %= 10;
+            }
+            for (int j=0;j<n;++j)
+            {
+                b += (a[j]+'0');
+            }
+            x=i-1;
+        }
+
+        b="";
+        if (FLAG) b+="0";
+        for (int j=0;j<n;++j) a[j]=0;
+        for (int j=0;j<n-1;++j)
+        {
+            a[n-1-j] = (str2[n-2-j]-'0') * x;
+        }
+        for (int k=0;k<n-1;++k)
+        {
+            a[n-k-2] += a[n-k-1]/10;
+            a[n-k-1] %= 10;
+        }
+        for (int j=0;j<n;++j)
+        {
+            b += (a[j]+'0');
+        }
+        *p += (x+'0');
+
+        int* m = new int [ct+1];
+        for (int i=0;i<ct+1;++i)
+        {
+            m[i] = (tmp[i]-'0') - (b[i]-'0');
+        }
+        //carry
+        for (int i=0;i<ct;++i)
+        {
+            if (m[ct-i]<0)
+            {
+                m[ct-i]+=10;
+                m[ct-i-1]-=1;
+            }
+        }
+        int num=0;
+        string c="";
+        for (int i=0;i<ct+1;++i)
+        {
+            if (m[i]==0) ++num;
+            else break;
+        }
+        for (int i=num;i<ct+1;++i)
+            c += (m[i]+'0');
+        delete [] a;
+        delete [] m;
+        return c;
     }
 
 
@@ -342,8 +367,8 @@ public:
 	    BigInt res;
         a=number_;
         b=obj.number_;
-        if( !((sgn_)^(obj.sgn_)) ) { res.number_=mul(a,b); }
-        else if( (sgn_)^(obj.sgn_) ) { res.number_=mul(a,b); res.sgn_=1; }
+        if( !((sgn_)^(obj.sgn_)) ) { res.number_ = mul(a,b); }
+        else if( (sgn_)^(obj.sgn_) ) { res.number_ = mul(a,b); res.sgn_=1; }
         return res;
 	}
 
@@ -351,12 +376,12 @@ public:
 	{
         assert(obj.number_!="0" && "divided by zero");
         if(number_=="0") { return BigInt("0"); }
-        string a="",b="",resi="";
+        string a="",b="";
         BigInt res;
         a=number_;
         b=obj.number_;
-        if( !((sgn_)^(obj.sgn_)) ) { div(a,b,res.number_,resi); }
-        else if( (sgn_)^(obj.sgn_) ) { div(a,b,res.number_,resi); res.sgn_=1; }
+        if( !((sgn_)^(obj.sgn_)) ) { res.number_=div(a,b); }
+        else if( (sgn_)^(obj.sgn_) ) { res.number_=div(a,b); res.sgn_=1; }
         if (res.number_=="0" || res.number_=="") { res.number_="0"; res.sgn_=0; }
         return res;
     }
@@ -365,13 +390,8 @@ public:
 	{
 	    assert(obj.number_!="0" && "divided by zero");
         if(number_=="0") { return BigInt("0"); }
-        string a="",b="",quo="";
-        BigInt res;
-        a=number_;
-        b=obj.number_;
-        if( !((sgn_)^(obj.sgn_)) ) { div(a,b,quo,res.number_); }
-        else if( (sgn_)^(obj.sgn_) ) { div(a,b,quo,res.number_); res.sgn_=1; }
-        if (res.number_=="0" || res.number_=="") { res.number_="0"; res.sgn_=0; }
+        BigInt quo = *this / obj;
+        BigInt res = *this - obj*quo;
         return res;
 	}
 

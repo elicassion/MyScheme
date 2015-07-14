@@ -4,7 +4,8 @@
 #include "next_token.h"
 #include <cstdio>
 
-Number *calc_exp(){
+Number *calc_exp()
+{
     char *tk0 = next_token();
     Number *res;
     if (*tk0 == '(')
@@ -18,6 +19,20 @@ Number *calc_exp(){
 		else if(strcmp(tk1,"-")==0)opt=new Sub();
 		else if(strcmp(tk1,"*")==0)opt=new Mul();
 		else if(strcmp(tk1,"/")==0)opt=new Div();
+		else if(strcmp(tk1,"abs")==0)opt=new Abs();
+		else if(strcmp(tk1,"quotient")==0)opt=new Quo();
+		else if(strcmp(tk1,"remainder")==0)opt=new Rem();
+		else if(strcmp(tk1,"modulo")==0)opt=new Mod();
+		else if(strcmp(tk1,"gcd")==0)opt=new Gcd();
+		else if(strcmp(tk1,"lcm")==0)opt=new Lcm();
+		else if(strcmp(tk1,"expt")==0)opt=new Expt();
+		else if(strcmp(tk1,"sqrt")==0)opt=new Sqrt();
+		else if(strcmp(tk1,"floor")==0)opt=new Flr();
+		else if(strcmp(tk1,"ceiling")==0)opt=new Cel();
+		else if(strcmp(tk1,"truncate")==0)opt=new Trc();
+		else if(strcmp(tk1,"round")==0)opt=new Rnd();
+		else if(strcmp(tk1,"max")==0)opt=new Maxi();
+		else if(strcmp(tk1,"min")==0)opt=new Mini();
 		else throw 0;
         while ((val = calc_exp()))
         {

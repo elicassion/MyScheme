@@ -5,11 +5,57 @@
 #include <cstdio>
 #include <cstring>
 #define ABS(x) ((x)<0?(-(x)):(x))
-Complex::Complex(Number* real=NULL, Number* imag=NULL): real_(real), imag_(imag)
+Complex::Complex(string r_s, string i_s):real_(NULL) , imag_(NULL)
 {
+    //cout<<"real s: "<<r_s<<" imag s:"<<i_s<<endl;
     type_=COMPLEX;
-    //exact_ = 1;
-    //if ()
+    Number* real = NULL;
+    Number* imag = NULL;
+    bool isExact=1;
+    bool r_isExact=1, i_isExact=1;
+    //convert string to char*
+    int r_s_l = r_s.length(), i_s_l = i_s.length();
+    char* crs = new char [r_s_l+2];
+    char* cis = new char [i_s_l+2];
+    for (int i=0; i<r_s_l; ++i) crs[i]=r_s[i];
+    crs[r_s_l]='\0';
+    for (int i=0; i<i_s_l; ++i) cis[i]=i_s[i];
+    cis[i_s_l]='\0';
+
+    //get pointer
+    real = Rational::from_string(crs);
+    if (!real) { real = Float::from_string(crs); if (real) { isExact=0; r_isExact=0;} }
+    if (!real) assert(0 && "input error no such type");
+
+    imag = Rational::from_string(cis);
+    if (!imag) { imag = Float::from_string(cis); if (imag) { isExact=0; i_isExact=0;} }
+    if (!imag) assert(0 && "input error no such type");
+
+    //check exact
+    if (isExact) {real_ = real; imag_ = imag; exact_ = true; }
+    else
+    {
+        exact_ = false;
+        if (r_isExact && !i_isExact)
+        {
+            Float* tmp2 = SCAST_FLOAT(imag);
+            Number* pre_r = real;
+            real = tmp2->convert(real);
+            delete pre_r;
+            real_ = real;
+            imag_ = imag;
+        }
+        else if (!r_isExact && !i_isExact)
+        {
+            Float* tmp1 = SCAST_FLOAT(real);
+            Number* pre_i = imag;
+            imag = tmp1->convert(imag);
+            delete pre_i;
+            real_ = real;
+            imag_ = imag;
+        }
+    }
+
 }
 
 Complex::~Complex()
@@ -17,7 +63,6 @@ Complex::~Complex()
     delete real_;
     delete imag_;
 }
-
 
 Number* Complex::convert(Number* number2)
 {
@@ -139,31 +184,9 @@ Number* Complex::add(Number *number2)
 {
 	Complex* tmp2 = SCAST_COMPLEX(number2);
 	Complex* result = new Complex;
-	if (exact_)
-    {
-        Rational* tmp1_real_ = SCAST_RATIONAL(real_);
-        Rational* tmp1_imag_ = SCAST_RATIONAL(imag_);
-        Rational* tmp2_real_ = SCAST_RATIONAL(tmp2->real_);
-        Rational* tmp2_imag_ = SCAST_RATIONAL(tmp2->imag_);
-        result->real_ = tmp1_real_->add(tmp2_real_);
-        result->imag_ = tmp1_imag_->add(tmp2_imag_);
-        result->exact_ = exact_;
-    }
-    else
-    {
-        /*cout<<endl;
-        cout<<"in add func: ";*/
-        Float* tmp1_real_ = SCAST_FLOAT(real_);
-        Float* tmp1_imag_ = SCAST_FLOAT(imag_);
-        Float* tmp2_real_ = SCAST_FLOAT(tmp2->real_);
-        Float* tmp2_imag_ = SCAST_FLOAT(tmp2->imag_);
-        result->real_ = tmp1_real_->add(tmp2_real_);
-        result->imag_ = tmp1_imag_->add(tmp2_imag_);
-        result->exact_ = exact_;
-    }
-    /*cout<<endl;
-    cout<<"in add func final: ";
-    result->print();*/
+	result->real_ = real_->add(tmp2->real_);
+	result->imag_ = imag_->add(tmp2->imag_);
+	result->exact_ = exact_;
 	return result;
 }
 
@@ -171,26 +194,9 @@ Number* Complex::sub(Number* number2)
 {
 	Complex* tmp2 = SCAST_COMPLEX(number2);
 	Complex* result = new Complex;
-	if (exact_)
-    {
-        Rational* tmp1_real_ = SCAST_RATIONAL(real_);
-        Rational* tmp1_imag_ = SCAST_RATIONAL(imag_);
-        Rational* tmp2_real_ = SCAST_RATIONAL(tmp2->real_);
-        Rational* tmp2_imag_ = SCAST_RATIONAL(tmp2->imag_);
-        result->real_ = tmp1_real_->sub(tmp2_real_);
-        result->imag_ = tmp1_imag_->sub(tmp2_imag_);
-        result->exact_ = exact_;
-    }
-    else
-    {
-        Float* tmp1_real_ = SCAST_FLOAT(real_);
-        Float* tmp1_imag_ = SCAST_FLOAT(imag_);
-        Float* tmp2_real_ = SCAST_FLOAT(tmp2->real_);
-        Float* tmp2_imag_ = SCAST_FLOAT(tmp2->imag_);
-        result->real_ = tmp1_real_->sub(tmp2_real_);
-        result->imag_ = tmp1_imag_->sub(tmp2_imag_);
-        result->exact_ = exact_;
-    }
+	result->real_ = real_->sub(tmp2->real_);
+	result->imag_ = imag_->sub(tmp2->imag_);
+	result->exact_ = exact_;
 	return result;
 }
 
@@ -198,26 +204,9 @@ Number* Complex::mul(Number* number2)
 {
 	Complex* tmp2 = SCAST_COMPLEX(number2);
 	Complex* result = new Complex;
-	if (exact_)
-    {
-        Rational* tmp1_real_ = SCAST_RATIONAL(real_);
-        Rational* tmp1_imag_ = SCAST_RATIONAL(imag_);
-        Rational* tmp2_real_ = SCAST_RATIONAL(tmp2->real_);
-        Rational* tmp2_imag_ = SCAST_RATIONAL(tmp2->imag_);
-        result->real_ = SCAST_RATIONAL(tmp1_real_->mul(tmp2_real_))->sub(SCAST_RATIONAL(tmp1_imag_->mul(tmp2_imag_)));
-        result->imag_ = SCAST_RATIONAL(tmp1_real_->mul(tmp2_imag_))->add(SCAST_RATIONAL(tmp1_imag_->mul(tmp2_real_)));
-        result->exact_ = exact_;
-    }
-    else
-    {
-        Float* tmp1_real_ = SCAST_FLOAT(real_);
-        Float* tmp1_imag_ = SCAST_FLOAT(imag_);
-        Float* tmp2_real_ = SCAST_FLOAT(tmp2->real_);
-        Float* tmp2_imag_ = SCAST_FLOAT(tmp2->imag_);
-        result->real_ = SCAST_FLOAT(tmp1_real_->mul(tmp2_real_))->sub(SCAST_FLOAT(tmp1_imag_->mul(tmp2_imag_)));
-        result->imag_ = SCAST_FLOAT(tmp1_real_->mul(tmp2_imag_))->add(SCAST_FLOAT(tmp1_imag_->mul(tmp2_real_)));
-        result->exact_ = exact_;
-    }
+	result->real_ = (real_->mul(tmp2->real_))->sub(imag_->mul(tmp2->imag_));
+    result->imag_ = (real_->mul(tmp2->imag_))->add(imag_->mul(tmp2->real_));
+    result->exact_ = exact_;
 	return result;
 }
 
@@ -225,152 +214,37 @@ Number* Complex::div(Number* number2)
 {
 	Complex* tmp2 = SCAST_COMPLEX(number2);
 	Complex* result = new Complex;
-	//assert( tmp2->real_->num_!=ZERO_ && "divided by zero");
-	if (exact_)
-    {
-        Rational* tmp1_real_ = SCAST_RATIONAL(real_);
-        Rational* tmp1_imag_ = SCAST_RATIONAL(imag_);
-        Rational* tmp2_real_ = SCAST_RATIONAL(tmp2->real_);
-        Rational* tmp2_imag_ = SCAST_RATIONAL(tmp2->imag_);
-        /*ENTER;
-        tmp2_real_->print();
-        ENTER;
-        tmp2_imag_->print();
-        */
-        Rational* sqrsum;
-        sqrsum = SCAST_RATIONAL(SCAST_RATIONAL(tmp2_real_->mul(tmp2_real_))->add(SCAST_RATIONAL(tmp2_imag_->mul(tmp2_imag_))));
-
-        /*ENTER;
-        (tmp2_real_->mul(tmp2_real_))->print();
-        ENTER;
-        (tmp2_imag_->mul(tmp2_imag_))->print();
-        ENTER;
-        cout<<"sqrsum: ";
-        sqrsum->print();
-        ENTER;*/
-
-        result->real_ = SCAST_RATIONAL(SCAST_RATIONAL(tmp1_real_->mul(tmp2_real_))->add(SCAST_RATIONAL(tmp1_imag_->mul(tmp2_imag_))))->div(sqrsum);
-        result->imag_ = SCAST_RATIONAL(SCAST_RATIONAL(tmp1_imag_->mul(tmp2_real_))->sub(SCAST_RATIONAL(tmp1_real_->mul(tmp2_imag_))))->div(sqrsum);
-        result->exact_ = exact_;
-    }
-    else
-    {
-        Float* tmp1_real_ = SCAST_FLOAT(real_);
-        Float* tmp1_imag_ = SCAST_FLOAT(imag_);
-        Float* tmp2_real_ = SCAST_FLOAT(tmp2->real_);
-        Float* tmp2_imag_ = SCAST_FLOAT(tmp2->imag_);
-        Float* sqrsum;
-        sqrsum = SCAST_FLOAT(SCAST_FLOAT(tmp2_real_->mul(tmp2_real_))->add(SCAST_FLOAT(tmp2_imag_->mul(tmp2_imag_))));
-        result->real_ = SCAST_FLOAT(SCAST_FLOAT(tmp1_real_->mul(tmp2_real_))->add(SCAST_FLOAT(tmp1_imag_->mul(tmp2_imag_))))->div(sqrsum);
-        result->imag_ = SCAST_FLOAT(SCAST_FLOAT(tmp1_imag_->mul(tmp2_real_))->sub(SCAST_FLOAT(tmp1_real_->mul(tmp2_imag_))))->div(sqrsum);
-        result->exact_ = exact_;
-    }
+	Number* sqrsum;
+	sqrsum = (tmp2->real_->mul(tmp2->real_))->add(tmp2->imag_->mul(tmp2->imag_));
+	result->real_ = ((real_->mul(tmp2->real_))->add(imag_->mul(tmp2->imag_)))->div(sqrsum);
+	result->imag_ = ((imag_->mul(tmp2->real_))->sub(real_->mul(tmp2->imag_)))->div(sqrsum);
+	result->exact_ = exact_;
 	return result;
 }
 
 
 Complex* Complex::from_string(char* expression)
 {
-    char* i_pos = strchr(expression, 'i');
-    char* sgn_pos;
-    Number* real = NULL;
-    Number* imag = NULL;
-    //Complex* res = new Complex;
-    if (i_pos)
+    string str = expression;
+    string real_str, imag_str;
+    int len = str.length();
+    if (str[len-1]!='i') return NULL;
+    if (len==1 && str[0]=='i') { real_str = "0"; imag_str = "1"; }
+    else if (len==2 && str[0]=='-' && str[1]=='i') { real_str = "0"; imag_str = "-1";}
+    else
     {
-        char* tmp = new char [i_pos-expression+2];
-        char* pointer=expression;
-        int tmp_len=0;
-        do
-        {
-            tmp[tmp_len]=expression[tmp_len];
-            ++tmp_len;
-        }while (expression[tmp_len]!='+' &&
-                expression[tmp_len]!='-' &&
-                expression[tmp_len]!='\0');
+        int imag_part_begin = str.length()-1;
+        for (; imag_part_begin>=0; --imag_part_begin)
+            if (str[imag_part_begin] == '+' || str[imag_part_begin] == '-')
+                if (imag_part_begin==0 || (str[imag_part_begin-1]!='e' && str[imag_part_begin-1]!='E'))
+                    break;
 
-        //cout<<tmp<<endl;
-        bool isExact=1;
-        if (tmp[tmp_len-1]!='i')
-        {
-            //first part convert to real
-            tmp[tmp_len]='\0';
-            real = Rational::from_string(tmp);
-            if (!real) { real=Float::from_string(tmp); isExact=0; }
-            if (!real) { delete [] tmp; return NULL; }//if failed
-
-            pointer=expression+tmp_len;
-            delete [] tmp;
-            tmp = new char [i_pos-expression+2];
-            tmp_len = 0;
-            do
-            {
-                tmp[tmp_len]=pointer[tmp_len];
-                ++tmp_len;
-            }while (pointer[tmp_len]!='+' &&
-                    pointer[tmp_len]!='-' &&
-                    pointer[tmp_len]!='\0');
-
-            tmp[tmp_len-1]='\0';// pop i
-            //cout<<tmp<<endl;
-            imag = Rational::from_string(tmp);
-            //imag->print();
-            if (!imag) { imag=Float::from_string(tmp); isExact=0; }
-            if (!imag) { delete [] tmp; return NULL; }
-            //imag->print();
-            delete [] tmp;
-            if (real && imag)
-            {
-                Complex* res;
-                if (!isExact)
-                {
-                    if (real->type_ > imag->type_)
-                    {
-                        Number* con_imag=real->convert(imag);
-                        delete imag;
-                        res = new Complex(real,con_imag);
-                    }
-                    else if (real->type_ < imag->type_)
-                    {
-                        Number* con_real=imag->convert(real);
-                        delete real;
-                        res = new Complex(con_real,imag);
-                    }
-                    else res = new Complex(real,imag);
-                }
-
-                else res = new Complex(real,imag);
-                res->exact_ = isExact;
-                return res;
-            }
-            else return NULL;
-        }
-
-        else if (tmp[tmp_len-1]=='i')
-        {
-            tmp[tmp_len-1]='\0';
-            imag = Rational::from_string(tmp);
-            if (!imag) { imag=Float::from_string(tmp); isExact=0; }
-            if (!imag) { delete [] tmp; return NULL; }
-            delete [] tmp;
-
-            if (imag)
-            {
-                Complex* res;
-                if (isExact) real = new Rational;
-                else real = new Float;
-                res = new Complex(real,imag);
-                res->exact_ = isExact;
-
-                /*cout<<endl;
-                res->print();*/
-
-                return res;
-            }
-            else return NULL;
-        }
+        real_str = (imag_part_begin==0) ? "0" : str.substr(0,imag_part_begin);
+        imag_str = str.substr(imag_part_begin, len - imag_part_begin-1);
+        if (imag_str == "+") imag_str="1";
+        else if (imag_str == "-") imag_str="-1";
     }
-    else return NULL;
+    return new Complex(real_str, imag_str);
 }
 
 void Complex::print()
@@ -387,10 +261,15 @@ void Complex::print()
         int FLAG=BigInt::abs_cmp(tmp_imag_->num_.number_,"0");
         //tmp_imag_->num_.print();
         //cout<<endl;
-        if (FLAG==1 && real_no_zero && !tmp_imag_->num_.sgn_)
-            printf("+");
-        else if (FLAG==0)
-            return;
+        if (FLAG==1 && real_no_zero && !tmp_imag_->num_.sgn_) printf("+");
+        else if (FLAG==0 && !real_no_zero) { cout<<'0'; return; }
+        else if (FLAG==0 && real_no_zero) return;
+        if (tmp_imag_->num_.number_ == "1" && tmp_imag_->den_.number_ == "1" )
+        {
+            //cout<<"LLLL"<<endl;
+            if (!tmp_imag_->num_.sgn_) { printf("i"); return; }
+            else {printf("-i"); return; }
+        }
         tmp_imag_->print();
     }
 
@@ -404,10 +283,25 @@ void Complex::print()
         Float* tmp_imag_ = SCAST_FLOAT(imag_);
         if (tmp_imag_->number_>0 && real_no_zero)
             printf("+");
-        else if (ABS(tmp_imag_->number_)<1e-300)
-            return;
+        else if (ABS(tmp_imag_->number_)<1e-300 && !real_no_zero) { double x=0.0; cout<<x; return; }
+        else if (ABS(tmp_imag_->number_)<1e-300 && real_no_zero) return;
         tmp_imag_->print();
     }
     //cout<<"FUCK"<<endl;
 	printf("i");
 }
+
+Number* Complex::abss() {return NULL; }
+Number* Complex::quo(Number *number2) {return NULL; }
+Number* Complex::rem(Number *number2) {return NULL; }
+Number* Complex::mod(Number *number2) {return NULL; }
+Number* Complex::gcd(Number *number2) {return NULL; }
+Number* Complex::lcm(Number *number2) {return NULL; }
+Number* Complex::expp(Number *number2) {return NULL; }
+Number* Complex::sqt() {return NULL; }
+Number* Complex::flr() {return NULL; }
+Number* Complex::cel() {return NULL; }
+Number* Complex::trc() {return NULL; }
+Number* Complex::rnd() {return NULL; }
+Number* Complex::maxi(Number *number2) {return NULL; }
+Number* Complex::mini(Number *number2) {return NULL; }

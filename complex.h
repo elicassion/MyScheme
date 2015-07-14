@@ -13,7 +13,7 @@ public:
     Number* imag_;
     //bool exact_; // 1 Rational exact, 0 Float inexact
 
-    Complex(Number* real, Number* imag);
+    Complex(string r_s="0", string i_s="0");
     virtual ~Complex();
 
     virtual Number* convert(Number *number2);
@@ -21,6 +21,20 @@ public:
 	virtual Number* sub(Number *number2);
 	virtual Number* mul(Number *number2);
 	virtual Number* div(Number *number2);
+	virtual Number* abss();
+	virtual Number* quo(Number *number2);
+	virtual Number* rem(Number *number2);
+	virtual Number* mod(Number *number2);
+	virtual Number* gcd(Number *number2);
+	virtual Number* lcm(Number *number2);
+	virtual Number* expp(Number *number2);
+	virtual Number* sqt();
+	virtual Number* flr();
+	virtual Number* cel();
+	virtual Number* trc();
+	virtual Number* rnd();
+	virtual Number* maxi(Number *number2);
+	virtual Number* mini(Number *number2);
 
 	virtual void print();
 	static Complex* from_string(char *expression);

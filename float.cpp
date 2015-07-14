@@ -91,3 +91,18 @@ Float *Float::from_string(char *expression)
     //cout<<val<<endl;
     return new Float(val);
 }
+
+Number* Float::abss() {return NULL; }
+Number* Float::quo(Number *number2) {return NULL; }
+Number* Float::rem(Number *number2) {return NULL; }
+Number* Float::mod(Number *number2) {return NULL; }
+Number* Float::gcd(Number *number2) {return NULL; }
+Number* Float::lcm(Number *number2) {return NULL; }
+Number* Float::expp(Number *number2) {return NULL; }
+Number* Float::sqt() {return NULL; }
+Number* Float::flr() {return NULL; }
+Number* Float::cel() {return NULL; }
+Number* Float::trc() {return NULL; }
+Number* Float::rnd() {return NULL; }
+Number* Float::maxi(Number *number2) {return NULL; }
+Number* Float::mini(Number *number2) {return NULL; }

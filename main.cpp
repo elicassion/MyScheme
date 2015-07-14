@@ -7,6 +7,7 @@ int main() {
 		for (Number *res;;) {
 			res = calc_exp();
 			res -> print();
+			printf("\n");
 		}
 	}
 	catch(int){cerr<<"Wrong";}

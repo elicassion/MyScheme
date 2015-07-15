@@ -1,4 +1,5 @@
 #include "rational.h"
+#include "complex.h"
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
@@ -16,6 +17,7 @@ Rational::~Rational()
 {
 
 }
+
 void Rational::reduce()
 {
 	//BigInt ZERO="0";
@@ -53,7 +55,6 @@ void Rational::reduce()
 	}
 	//cout<<num_<<' '<<den_<<endl;
 }
-
 
 Number *Rational::convert(Number *number2)
 {
@@ -199,6 +200,7 @@ Number* Rational::quo(Number *number2)
     return new Rational(num_ / tmp2->num_, ONE_);
 
 }
+
 Number* Rational::rem(Number *number2)
 {
     assert ( number2->type_==1 && "remainder is only for integer" );
@@ -206,6 +208,7 @@ Number* Rational::rem(Number *number2)
     assert ( den_==ONE_ && tmp2->den_==ONE_ && "remainder is only for integer" );
     return new Rational(num_%tmp2->num_, ONE_);
 }
+
 Number* Rational::mod(Number *number2)
 {
     assert ( number2->type_==1 && "modulo is only for integer" );
@@ -215,6 +218,7 @@ Number* Rational::mod(Number *number2)
     if (remi.sgn_ == tmp2->num_.sgn_) return new Rational(remi,ONE_);
     else { remi = remi + tmp2->num_; return new Rational(remi,ONE_); }
 }
+
 Number* Rational::gcd(Number *number2)
 {
     assert ( number2->type_==1 && "gcd is only for integer" );
@@ -236,6 +240,7 @@ Number* Rational::gcd(Number *number2)
     Rational* res = new Rational(small,ONE_);
     return res;
 }
+
 Number* Rational::lcm(Number *number2)
 {
     assert ( number2->type_==1 && "lcm is only for integer" );
@@ -244,6 +249,7 @@ Number* Rational::lcm(Number *number2)
     if (this == number2) {return new Rational(*this); }
     return ((mul(tmp2))->div(gcd(tmp2)))->abss();
 }
+
 Number* Rational::expp(Number *number2)
 {
     Rational* rtmp2 = SCAST_RATIONAL(number2);
@@ -257,13 +263,38 @@ Number* Rational::expp(Number *number2)
     delete ftmp1;
     return res;
 }
+
 Number* Rational::sqt()
 {
     Float* res = new Float;
     Float* tmp2 = SCAST_FLOAT(res->convert(this));
-    res->number_ = sqrt(tmp2->number_);
-    return res;
+    if (tmp2->number_>0.0)
+    {
+        res->number_ = sqrt(tmp2->number_);
+        delete tmp2;
+        return res;
+    }
+    else if ((fabs(tmp2->number_)-0.0)<1e-20)
+    {
+        res->number_ = 0.0;
+        delete tmp2;
+        return res;
+    }
+    else
+    {
+        //cout<<"IMHERE "<<tmp2->number_<<endl;
+        Complex* resc = new Complex;
+        Float* real = new Float(0.0);
+        //cout<<"sqrt: "<<sqrt(fabs(tmp2->number_))<<endl;
+        Float* imag = new Float(sqrt(fabs(tmp2->number_)));
+        resc->real_ = real; resc->imag_ = imag; resc->exact_=false;
+        //cout<<"AA ";resc->print();
+        delete res;
+        delete tmp2;
+        return resc;
+    }
 }
+
 Number* Rational::flr()
 {
     if (den_ == ONE_) return new Rational(num_, den_);
@@ -271,6 +302,7 @@ Number* Rational::flr()
     if (num_.sgn_ == 0) return new Rational(quo,ONE_);
     else return new Rational(quo-ONE_,ONE_);
 }
+
 Number* Rational::cel()
 {
     if (den_ == ONE_) return new Rational(num_, den_);
@@ -278,44 +310,21 @@ Number* Rational::cel()
     if (num_.sgn_ == 0) return new Rational(quo+ONE_,ONE_);
     else return new Rational(quo,ONE_);
 }
+
 Number* Rational::trc()
 {
     if (den_ == ONE_) return new Rational(num_, den_);
     BigInt quo = num_ / den_;
     return new Rational(quo,ONE_);
 }
+
 Number* Rational::rnd()
 {
-    if (den_ == ONE_) return new Rational(num_, den_);
-    BigInt quo = num_ / den_;
-    Rational* quo_r = new Rational(quo,ONE_);
-    BigInt qpo;
-    if (!num_.sgn_) qpo = quo+ONE_;
-    else qpo = quo-ONE_;
-    Rational* qpo_r = new Rational(qpo,ONE_);
-    Rational* dis = SCAST_RATIONAL(((quo_r->add(qpo_r))->sub(this))->sub(this));
-    if (!num_.sgn_)
-    {
-        if (dis->num_ < ZERO_) { delete quo_r; delete dis; return qpo_r; }
-        else if (ZERO_ < dis->num_) {delete qpo_r; delete dis; return quo_r; }
-        else
-        {
-            if (quo%TWO_ == ZERO_) { delete qpo_r; delete dis; return quo_r; }
-            else { delete quo_r; delete dis; return qpo_r; }
-        }
-    }
-    else
-    {
-        if (dis->num_ < ZERO_) { delete qpo_r; delete dis; return quo_r; }
-        else if (ZERO_ < dis->num_) {delete quo_r; delete dis; return qpo_r; }
-        else
-        {
-            if (quo%TWO_ == ZERO_) { delete qpo_r; delete dis; return quo_r; }
-            else { delete quo_r; delete dis; return qpo_r; }
-        }
-    }
-
+    Number* HALF_ = new Rational(ONE_,TWO_);
+    if (!num_.sgn_) return add(HALF_)->flr();
+    else return sub(HALF_)->cel();
 }
+
 Number* Rational::maxi(Number *number2)
 {
     if (this == number2) {return new Rational(*this); }
@@ -324,6 +333,7 @@ Number* Rational::maxi(Number *number2)
     if (!dis->num_.sgn_) return new Rational(*this);
     else return new Rational(*tmp2);
 }
+
 Number* Rational::mini(Number *number2)
 {
     if (this == number2) {return new Rational(*this); }

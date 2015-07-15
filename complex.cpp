@@ -45,7 +45,7 @@ Complex::Complex(string r_s, string i_s):real_(NULL) , imag_(NULL)
             real_ = real;
             imag_ = imag;
         }
-        else if (!r_isExact && !i_isExact)
+        else if (!r_isExact && i_isExact)
         {
             Float* tmp1 = SCAST_FLOAT(real);
             Number* pre_i = imag;
@@ -54,6 +54,7 @@ Complex::Complex(string r_s, string i_s):real_(NULL) , imag_(NULL)
             real_ = real;
             imag_ = imag;
         }
+        else {real_ = real; imag_ = imag; exact_ = false; }
     }
 
 }
@@ -238,9 +239,10 @@ Complex* Complex::from_string(char* expression)
             if (str[imag_part_begin] == '+' || str[imag_part_begin] == '-')
                 if (imag_part_begin==0 || (str[imag_part_begin-1]!='e' && str[imag_part_begin-1]!='E'))
                     break;
-
+        if (imag_part_begin==-1) imag_part_begin=0;
         real_str = (imag_part_begin==0) ? "0" : str.substr(0,imag_part_begin);
         imag_str = str.substr(imag_part_begin, len - imag_part_begin-1);
+        //cout<<real_str<<' '<<imag_str<<endl;
         if (imag_str == "+") imag_str="1";
         else if (imag_str == "-") imag_str="-1";
     }

@@ -3,11 +3,15 @@
 
 
 #include "number.h"
+#include <cstring>
+#include <string>
 
 #define SCAST_FLOAT(x) static_cast<Float*>(x)
 
 class Float : public Number {
 public:
+	double number_;
+
 	Float(double number = 0);
 	virtual ~Float();
 
@@ -32,7 +36,7 @@ public:
 	virtual Number* mini(Number *number2);
 	virtual void print();
 	static Float *from_string(char *expression);
-	double number_;
+
 };
 
 #endif // float_h

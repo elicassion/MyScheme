@@ -33,6 +33,13 @@ Number *calc_exp()
 		else if(strcmp(tk1,"round")==0)opt=new Rnd();
 		else if(strcmp(tk1,"max")==0)opt=new Maxi();
 		else if(strcmp(tk1,"min")==0)opt=new Mini();
+		else if(strcmp(tk1,"numerator")==0)opt=new Numpart();
+		else if(strcmp(tk1,"denominator")==0)opt=new Denpart();
+		else if(strcmp(tk1,"real-part")==0)opt=new Rpart();
+		else if(strcmp(tk1,"imag-part")==0)opt=new Ipart();
+		else if(strcmp(tk1,"exact?")==0)opt=new Isexact();
+		else if(strcmp(tk1,"exact->inexact")==0)opt=new Exttoinext();
+		else if(strcmp(tk1,"inexact->exact")==0)opt=new Inexttoext();
 		else throw 0;
         while ((val = calc_exp()))
         {

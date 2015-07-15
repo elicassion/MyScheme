@@ -260,11 +260,13 @@ class Quo:public Opt{
             assert(0 && "quo only two parameter");
         Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
         Number *res , *last;
-        if (opr1->type_ > 2 || opr2->type_ > 2)
-            assert(0 && "quotient can't calculate complex");
         if (opr1->type_ > opr2->type_)
         {
             res = opr1->quo(conv=opr1->convert(opr2));
+        }
+        else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+        {
+                res = opr1->quo(conv = opr1->convert(opr2));
         }
         else
         {
@@ -292,11 +294,13 @@ class Rem:public Opt{
             assert(0 && "remainder only two parameter");
         Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
         Number *res , *last;
-        if (opr1->type_ > 2 || opr2->type_ > 2)
-            assert(0 && "remainder can't calculate complex");
         if (opr1->type_ > opr2->type_)
         {
             res = opr1->rem(conv=opr1->convert(opr2));
+        }
+        else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+        {
+            res = opr1->rem(conv = opr1->convert(opr2));
         }
         else
         {
@@ -324,11 +328,13 @@ class Mod:public Opt{
             assert(0 && "remainder only two parameter");
         Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
         Number *res , *last;
-        if (opr1->type_ > 2 || opr2->type_ > 2)
-            assert(0 && "remainder can't calculate complex");
         if (opr1->type_ > opr2->type_)
         {
             res = opr1->mod(conv=opr1->convert(opr2));
+        }
+        else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+        {
+            res = opr1->mod(conv = opr1->convert(opr2));
         }
         else
         {
@@ -346,7 +352,7 @@ class Gcd:public Opt{
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>2||tmp->car->type_<1)
+			if(tmp->car->type_>3||tmp->car->type_<1)
 			{
 				throw 0;
 			}
@@ -405,7 +411,7 @@ class Lcm:public Opt{
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>2||tmp->car->type_<1)
+			if(tmp->car->type_>3||tmp->car->type_<1)
 			{
 				throw 0;
 			}
@@ -474,11 +480,13 @@ class Expt:public Opt{
             assert(0 && "remainder only two parameter");
         Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
         Number *res , *last;
-        if (opr1->type_ > 2 || opr2->type_ > 2)
-            assert(0 && "remainder can't calculate complex");
         if (opr1->type_ > opr2->type_)
         {
             res = opr1->expp(conv=opr1->convert(opr2));
+        }
+        else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+        {
+            res = opr1->expp(conv = opr1->convert(opr2));
         }
         else
         {
@@ -587,7 +595,7 @@ class Rnd:public Opt{
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "abs only one parameter");
+            assert(0 && "round only one parameter");
         Number *opr = con->car , *conv;
         Number *res = opr->rnd() , *last;
         return res;
@@ -601,7 +609,7 @@ class Maxi:public Opt{
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>2||tmp->car->type_<1)
+			if(tmp->car->type_>3||tmp->car->type_<1)
 			{
 				throw 0;
 			}
@@ -660,7 +668,7 @@ class Mini:public Opt{
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>2||tmp->car->type_<1)
+			if(tmp->car->type_>3||tmp->car->type_<1)
 			{
 				throw 0;
 			}
@@ -712,6 +720,151 @@ class Mini:public Opt{
 	}
 };
 
+class Numpart:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "numerator only for rational number");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "numerator only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->numpart() , *last;
+        return res;
+    }
+};
 
+class Denpart:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "denominator only for rational number");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "denominator only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->denpart() , *last;
+        return res;
+    }
+};
+
+class Rpart:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "real-part only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->rpart() , *last;
+        return res;
+    }
+};
+
+class Ipart:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "imag-part only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->ipart() , *last;
+        return res;
+    }
+};
+
+class Isexact:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "exact? only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->isexact() , *last;
+        return res;
+    }
+};
+
+class Exttoinext:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "exact to inexact only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->exttoinext() , *last;
+        return res;
+    }
+};
+
+class Inexttoext:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "inexact to exact only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->inexttoext() , *last;
+        return res;
+    }
+};
 
 #endif // compare_h

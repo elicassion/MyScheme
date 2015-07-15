@@ -164,7 +164,7 @@ Number* Complex::convert(Number* number2)
                 result->real_ = tmp1;
 
                 Float* tmp2 = new Float;
-                *tmp2 = *SCAST_FLOAT(tmp1->convert(tmp->imag_));
+                *tmp2 = *SCAST_FLOAT(tmp2->convert(tmp->imag_));
                 result->imag_ = tmp2;
 
                 result->exact_ = exact_;
@@ -278,32 +278,122 @@ void Complex::print()
     else
     {
         Float* tmp_real_ = SCAST_FLOAT(real_);
-        if (ABS(tmp_real_->number_)<1e-300)
-            real_no_zero=0;
-        if (real_no_zero) tmp_real_->print();
+        tmp_real_->print();
 
         Float* tmp_imag_ = SCAST_FLOAT(imag_);
-        if (tmp_imag_->number_>0 && real_no_zero)
+        if (tmp_imag_->number_>=0)
             printf("+");
-        else if (ABS(tmp_imag_->number_)<1e-300 && !real_no_zero) { double x=0.0; cout<<x; return; }
-        else if (ABS(tmp_imag_->number_)<1e-300 && real_no_zero) return;
         tmp_imag_->print();
     }
     //cout<<"FUCK"<<endl;
 	printf("i");
 }
 
-Number* Complex::abss() {return NULL; }
-Number* Complex::quo(Number *number2) {return NULL; }
-Number* Complex::rem(Number *number2) {return NULL; }
-Number* Complex::mod(Number *number2) {return NULL; }
-Number* Complex::gcd(Number *number2) {return NULL; }
-Number* Complex::lcm(Number *number2) {return NULL; }
-Number* Complex::expp(Number *number2) {return NULL; }
-Number* Complex::sqt() {return NULL; }
-Number* Complex::flr() {return NULL; }
-Number* Complex::cel() {return NULL; }
-Number* Complex::trc() {return NULL; }
-Number* Complex::rnd() {return NULL; }
-Number* Complex::maxi(Number *number2) {return NULL; }
-Number* Complex::mini(Number *number2) {return NULL; }
+Number* Complex::abss()
+{
+    /*if (exact_)
+    {
+        Number*
+    }*/
+    return NULL;
+}
+
+Number* Complex::quo(Number *number2)
+{
+    /*Complex* tmp2 =
+    if (exact_)
+    {
+
+        Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+        Rational* tmp2_imag = SCAST_RATIONAL(imag_);
+    }*/
+    return NULL;
+}
+
+Number* Complex::rem(Number *number2) { return NULL; }
+Number* Complex::mod(Number *number2) { return NULL; }
+Number* Complex::gcd(Number *number2) { return NULL; }
+Number* Complex::lcm(Number *number2) { return NULL; }
+Number* Complex::expp(Number *number2) { return NULL; }
+Number* Complex::sqt() { return NULL; }
+Number* Complex::flr() { return NULL; }
+Number* Complex::cel() { return NULL; }
+Number* Complex::trc() { return NULL; }
+Number* Complex::rnd() { return NULL; }
+Number* Complex::maxi(Number *number2) { return NULL; }
+Number* Complex::mini(Number *number2) { return NULL; }
+Number* Complex::numpart() { return NULL; }
+Number* Complex::denpart() { return NULL; }
+
+Number* Complex::rpart()
+{
+    if (exact_)
+    {
+        Rational* tmp = SCAST_RATIONAL(real_);
+        return new Rational(*tmp);
+    }
+    else
+    {
+        Float* tmp = SCAST_FLOAT(real_);
+        return new Float(*tmp);
+    }
+}
+
+Number* Complex::ipart()
+{
+    if (exact_)
+    {
+        Rational* tmp = SCAST_RATIONAL(imag_);
+        return new Rational(*tmp);
+    }
+    else
+    {
+        Float* tmp = SCAST_FLOAT(imag_);
+        return new Float(*tmp);
+    }
+}
+
+Number* Complex::isexact() { return NULL; }
+
+Number* Complex::exttoinext()
+{
+    if (!exact_) assert(0 && "already inexact");
+    Complex* res = new Complex;
+
+    Float* tmp1 = new Float;
+    *tmp1 = *SCAST_FLOAT(tmp1->convert(real_));
+    Number* pre_real = res->real_;
+    res->real_ = tmp1;
+    delete pre_real;
+
+    Float* tmp2 = new Float;
+    *tmp2 = *SCAST_FLOAT(tmp2->convert(imag_));
+    Number* pre_imag = res->imag_;
+    res->imag_ = tmp2;
+    delete pre_imag;
+
+    res->exact_ = !exact_;
+    return res;
+
+}
+
+Number* Complex::inexttoext()
+{
+    if (exact_) assert(0 && "already exact");
+    Complex* res = new Complex;
+
+    Number* tmp1;
+    Number* pre_real = res->real_;
+    tmp1 = real_->inexttoext();
+    res->real_ = tmp1;
+    delete pre_real;
+
+    Number* tmp2;
+    Number* pre_imag = res->imag_;
+    tmp2 = imag_->inexttoext();
+    res->imag_ = tmp2;
+    delete pre_imag;
+
+    res->exact_ = !exact_;
+    return res;
+}

@@ -192,7 +192,7 @@ Number* Rational::abss()
     return res;
 }
 
-Number* Rational::quo(Number *number2)
+Number* Rational::quo(Number* number2)
 {
     //assert ( number2->type_==1 && "quotient is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
@@ -201,7 +201,7 @@ Number* Rational::quo(Number *number2)
 
 }
 
-Number* Rational::rem(Number *number2)
+Number* Rational::rem(Number* number2)
 {
     assert ( number2->type_==1 && "remainder is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
@@ -209,7 +209,7 @@ Number* Rational::rem(Number *number2)
     return new Rational(num_%tmp2->num_, ONE_);
 }
 
-Number* Rational::mod(Number *number2)
+Number* Rational::mod(Number* number2)
 {
     assert ( number2->type_==1 && "modulo is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
@@ -219,7 +219,7 @@ Number* Rational::mod(Number *number2)
     else { remi = remi + tmp2->num_; return new Rational(remi,ONE_); }
 }
 
-Number* Rational::gcd(Number *number2)
+Number* Rational::gcd(Number* number2)
 {
     assert ( number2->type_==1 && "gcd is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
@@ -241,7 +241,7 @@ Number* Rational::gcd(Number *number2)
     return res;
 }
 
-Number* Rational::lcm(Number *number2)
+Number* Rational::lcm(Number* number2)
 {
     assert ( number2->type_==1 && "lcm is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
@@ -250,7 +250,7 @@ Number* Rational::lcm(Number *number2)
     return ((mul(tmp2))->div(gcd(tmp2)))->abss();
 }
 
-Number* Rational::expp(Number *number2)
+Number* Rational::expp(Number* number2)
 {
     Rational* rtmp2 = SCAST_RATIONAL(number2);
     if (num_==ZERO_ && rtmp2->num_==ZERO_) return new Float(1);
@@ -325,7 +325,7 @@ Number* Rational::rnd()
     else return sub(HALF_)->cel();
 }
 
-Number* Rational::maxi(Number *number2)
+Number* Rational::maxi(Number* number2)
 {
     if (this == number2) {return new Rational(*this); }
     Rational* tmp2 = SCAST_RATIONAL(number2);
@@ -342,3 +342,15 @@ Number* Rational::mini(Number *number2)
     if (dis->num_.sgn_) return new Rational(*this);
     else return new Rational(*tmp2);
 }
+
+Number* Rational::numpart() { return new Rational(num_,ONE_); }
+Number* Rational::denpart() { return new Rational(den_,ONE_); }
+Number* Rational::rpart() {return new Rational(*this); }
+Number* Rational::ipart() {return new Rational(ZERO_,ONE_); }
+Number* Rational::isexact() { return NULL;}
+Number* Rational::exttoinext()
+{
+    Float* res = new Float;
+    return res->convert(this);
+}
+Number* Rational::inexttoext() { assert(0 && "already exact"); }

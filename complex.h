@@ -35,7 +35,13 @@ public:
 	virtual Number* rnd();
 	virtual Number* maxi(Number *number2);
 	virtual Number* mini(Number *number2);
-
+    virtual Number* numpart();
+	virtual Number* denpart();
+	virtual Number* rpart();
+	virtual Number* ipart();
+	virtual Number* isexact();
+	virtual Number* exttoinext();
+	virtual Number* inexttoext();
 	virtual void print();
 	static Complex* from_string(char *expression);
 };

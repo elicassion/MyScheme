@@ -12,7 +12,7 @@
 #include <string>
 #include <cmath>
 #define ABS(x) ((x)<0?(-(x)):(x))
-static const double EPS=1e-20;
+static const double EPS=1e-200;
 using namespace std;
 Float::Float(double number) : number_(number)
 {
@@ -137,7 +137,7 @@ Number* Float::quo(Number *number2)
 Number* Float::rem(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(tmp2->number_)<1e-20)
+    if (fabs(tmp2->number_)<EPS)
         assert(0 && "divided by zero");
     assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
             && "quotient is only for integer");
@@ -164,7 +164,7 @@ Number* Float::rem(Number *number2)
 Number* Float::mod(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(tmp2->number_)<1e-20)
+    if (fabs(tmp2->number_)<EPS)
         assert(0 && "divided by zero");
     assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
             && "quotient is only for integer");
@@ -195,7 +195,7 @@ Number* Float::mod(Number *number2)
 Number* Float::gcd(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(tmp2->number_)<1e-20)
+    if (fabs(tmp2->number_)<EPS)
         assert(0 && "divided by zero");
     assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
             && "quotient is only for integer");
@@ -231,7 +231,7 @@ Number* Float::gcd(Number *number2)
 Number* Float::lcm(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(tmp2->number_)<1e-20)
+    if (fabs(tmp2->number_)<EPS)
         assert(0 && "divided by zero");
     assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
             && "quotient is only for integer");
@@ -269,13 +269,13 @@ Number* Float::expp(Number *number2)
     Float* tmp2 = SCAST_FLOAT(number2);
     if (fabs(number_)<EPS && fabs(tmp2->number_)<EPS) return new Float(1);
     else if (fabs(number_)<EPS && fabs(tmp2->number_)>EPS) return new Float(0);
-    return new Float(exp(number_ * log(tmp2->number_)));
+    return new Float(exp(tmp2->number_ * log(number_)));
 }
 
 Number* Float::sqt()
 {
     if (number_>0.0) return new Float(sqrt(number_));
-    else if ((fabs(number_)-0.0)<1e-20) return new Float(0.0);
+    else if (fabs(number_)<EPS) return new Float(0.0);
     else
     {
         Complex* resc = new Complex;

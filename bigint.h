@@ -12,7 +12,6 @@
 #include<cstdio>
 #include<vector>
 using namespace std;
-
 class BigInt{
 public:
     string number_; //natrual
@@ -430,11 +429,35 @@ public:
         return tmp;
     }
 
-    BigInt abs()
+    BigInt abs() const
     {
         BigInt tmp=*this;
         tmp.sgn_=0;
         return tmp;
+    }
+
+    static BigInt gcd(const BigInt &a, const BigInt &b)
+    {
+        const BigInt zero("0");
+        BigInt big, small, tmp;
+        BigInt absnum1_=a.abs();
+        BigInt absnum2_=b.abs();
+        big=max(absnum1_, absnum2_);
+        small=min(absnum1_,absnum2_);
+        tmp=big%small;
+        while(tmp!=zero)
+        {
+            big=small;
+            small=tmp;
+            tmp=big%small;
+        }
+        return small;
+    }
+
+    static BigInt lcm(const BigInt &a, const BigInt &b)
+    {
+        BigInt gcd_num = BigInt::gcd(a,b);
+        return a*b/gcd_num;
     }
 };
 

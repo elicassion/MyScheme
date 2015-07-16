@@ -196,7 +196,7 @@ Number* Rational::quo(Number* number2)
 {
     //assert ( number2->type_==1 && "quotient is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
-    assert ( den_==ONE_ && tmp2->den_==ONE_ && "quotient is only for integer" );
+    assert ( den_==ONE_ && tmp2->den_==ONE_ && "quotient is only for integers" );
     return new Rational(num_ / tmp2->num_, ONE_);
 
 }
@@ -223,21 +223,11 @@ Number* Rational::gcd(Number* number2)
 {
     assert ( number2->type_==1 && "gcd is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
-    assert ( den_==ONE_ && tmp2->den_==ONE_ && "gcd is only for integer" );
+    //assert ( den_==ONE_ && tmp2->den_==ONE_ && "gcd is only for integer" );
     if (this == number2) {return new Rational(*this); }
-    BigInt big, small, tmp;
-	BigInt absnum1_=num_.abs();
-	BigInt absnum2_=tmp2->num_.abs();
-	big=max(absnum1_, absnum2_);
-	small=min(absnum1_,absnum2_);
-	tmp=big%small;
-	while(tmp!=ZERO_)
-    {
-		big=small;
-		small=tmp;
-		tmp=big%small;
-	}
-    Rational* res = new Rational(small,ONE_);
+    BigInt gcd_num = BigInt::gcd(num_,tmp2->num_);
+    BigInt lcm_num = BigInt::lcm(den_,tmp2->den_);
+    Rational* res = new Rational(gcd_num,lcm_num);
     return res;
 }
 
@@ -245,9 +235,12 @@ Number* Rational::lcm(Number* number2)
 {
     assert ( number2->type_==1 && "lcm is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
-    assert ( den_==ONE_ && tmp2->den_==ONE_ && "lcm is only for integer" );
+    //assert ( den_==ONE_ && tmp2->den_==ONE_ && "lcm is only for integer" );
     if (this == number2) {return new Rational(*this); }
-    return ((mul(tmp2))->div(gcd(tmp2)))->abss();
+    BigInt lcm_num = BigInt::lcm(num_,tmp2->num_);
+    BigInt gcd_num = BigInt::gcd(den_,tmp2->den_);
+    Rational* res = new Rational(lcm_num,gcd_num);
+    return res;
 }
 
 Number* Rational::expp(Number* number2)

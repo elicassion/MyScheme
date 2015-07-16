@@ -242,7 +242,6 @@ Complex* Complex::from_string(char* expression)
         if (imag_part_begin==-1) imag_part_begin=0;
         real_str = (imag_part_begin==0) ? "0" : str.substr(0,imag_part_begin);
         imag_str = str.substr(imag_part_begin, len - imag_part_begin-1);
-        //cout<<real_str<<' '<<imag_str<<endl;
         if (imag_str == "+") imag_str="1";
         else if (imag_str == "-") imag_str="-1";
     }
@@ -255,26 +254,19 @@ void Complex::print()
 	if (exact_)
     {
         Rational* tmp_real_ = SCAST_RATIONAL(real_);
-        if (BigInt::abs_cmp(tmp_real_->num_.number_,"0")==0)
-            real_no_zero=0;
-        if (real_no_zero) tmp_real_->print();
+        tmp_real_->print();
 
         Rational* tmp_imag_ = SCAST_RATIONAL(imag_);
         int FLAG=BigInt::abs_cmp(tmp_imag_->num_.number_,"0");
-        //tmp_imag_->num_.print();
-        //cout<<endl;
-        if (FLAG==1 && real_no_zero && !tmp_imag_->num_.sgn_) printf("+");
-        else if (FLAG==0 && !real_no_zero) { cout<<'0'; return; }
-        else if (FLAG==0 && real_no_zero) return;
+        if (FLAG==1 && !tmp_imag_->num_.sgn_) printf("+");
+        else if (FLAG==0) return;
         if (tmp_imag_->num_.number_ == "1" && tmp_imag_->den_.number_ == "1" )
         {
-            //cout<<"LLLL"<<endl;
             if (!tmp_imag_->num_.sgn_) { printf("i"); return; }
             else {printf("-i"); return; }
         }
         tmp_imag_->print();
     }
-
     else
     {
         Float* tmp_real_ = SCAST_FLOAT(real_);
@@ -285,58 +277,320 @@ void Complex::print()
             printf("+");
         tmp_imag_->print();
     }
-    //cout<<"FUCK"<<endl;
 	printf("i");
 }
 
 Number* Complex::abss()
 {
-    /*if (exact_)
-    {
-        Number*
-    }*/
-    return NULL;
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "abs can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->abss();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
 }
 
 Number* Complex::quo(Number *number2)
 {
-    /*Complex* tmp2 =
-    if (exact_)
-    {
-
-        Rational* tmp1_imag = SCAST_RATIONAL(imag_);
-        Rational* tmp2_imag = SCAST_RATIONAL(imag_);
-    }*/
-    return NULL;
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    Rational* tmp1_real = SCAST_RATIONAL(real_);
+    Rational* tmp2_real = SCAST_RATIONAL(tmp2->real_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "quotient is only for integers");
+    assert(tmp1_real->den_ == ONE_ && tmp2_real->den_ == ONE_
+           && "quotient is only for integers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->quo(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
 }
 
-Number* Complex::rem(Number *number2) { return NULL; }
+Number* Complex::rem(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    Rational* tmp1_real = SCAST_RATIONAL(real_);
+    Rational* tmp2_real = SCAST_RATIONAL(tmp2->real_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "remainder is only for integers");
+    assert(tmp1_real->den_ == ONE_ && tmp2_real->den_ == ONE_
+           && "remainder is only for integers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->rem(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::mod(Number *number2) { return NULL; }
+Number* Complex::mod(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    Rational* tmp1_real = SCAST_RATIONAL(real_);
+    Rational* tmp2_real = SCAST_RATIONAL(tmp2->real_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "modulo is only for integers");
+    assert(tmp1_real->den_ == ONE_ && tmp2_real->den_ == ONE_
+           && "modulo is only for integers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->mod(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::gcd(Number *number2) { return NULL; }
+Number* Complex::gcd(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "gcd is only for rational numbers");
+    //assert(real_->den_ == ONE_ && tmp2->real_->den_ == ONE_
+           //&& "gcd is only for integers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->gcd(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::lcm(Number *number2) { return NULL; }
+Number* Complex::lcm(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "lcm is only for rational numbers");
+    //assert(real_->den_ == ONE_ && tmp2->real_->den_ == ONE_
+           //&& "lcm is only for integers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->lcm(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::expp(Number *number2) { return NULL; }
+Number* Complex::expp(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    if (exact_)
+    {
+        Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+        Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+        assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "expt is only for rational numbers");
+        Complex* res = new Complex;
+        Number *preal=res->real_, *pimag=res->imag_;
+        res->real_ = real_->expp(tmp2->real_);
+        res->imag_ = new Float(0.0);
+        res->exact_ = false;
+        delete preal;
+        delete pimag;
+        return res;
+    }
+    else
+    {
+        Float* tmp1_imag = SCAST_FLOAT(imag_);
+        Float* tmp2_imag = SCAST_FLOAT(tmp2->imag_);
+        assert(fabs(tmp1_imag->number_)<1e-200 && fabs(tmp2_imag->number_)<1e-200
+               && "expt is only for rational numbers");
+        Complex* res = new Complex;
+        Number *preal=res->real_, *pimag=res->imag_;
+        res->real_ = real_->expp(tmp2->real_);
+        res->imag_ = new Float(0.0);
+        res->exact_ = false;
+        delete preal;
+        delete pimag;
+        return res;
+    }
+}
 
-Number* Complex::sqt() { return NULL; }
+Number* Complex::sqt()
+{
+    if (exact_)
+    {
+        Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+        assert(tmp1_imag->num_ == ZERO_ && "sqrt is only for rational numbers");
+        Complex* res = new Complex;
+        Number *preal=res->real_, *pimag=res->imag_;
+        res->real_ = real_->sqt();
+        res->imag_ = new Float(0.0);
+        res->exact_ = false;
+        delete preal;
+        delete pimag;
+        return res;
+    }
+    else
+    {
+        Float* tmp1_imag = SCAST_FLOAT(imag_);
+        assert(fabs(tmp1_imag->number_)<1e-200 && "expt is only for rational numbers");
+        Complex* res = new Complex;
+        Number *preal=res->real_, *pimag=res->imag_;
+        res->real_ = real_->sqt();
+        res->imag_ = new Float(0.0);
+        res->exact_ = false;
+        delete preal;
+        delete pimag;
+        return res;
+    }
+}
 
-Number* Complex::flr() { return NULL; }
+Number* Complex::flr()
+{
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "floor can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->flr();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::cel() { return NULL; }
+Number* Complex::cel()
+{
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "ceiling can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->cel();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::trc() { return NULL; }
+Number* Complex::trc()
+{
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "abs can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->trc();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::rnd() { return NULL; }
+Number* Complex::rnd()
+{
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "abs can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->rnd();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::maxi(Number *number2) { return NULL; }
+Number* Complex::maxi(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "max is only for rational numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->maxi(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::mini(Number *number2) { return NULL; }
+Number* Complex::mini(Number *number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "min is only for rational numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->mini(tmp2->real_);
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::numpart() { return NULL; }
+Number* Complex::numpart()
+{
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "numerator can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->numpart();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
-Number* Complex::denpart() { return NULL; }
+Number* Complex::denpart()
+{
+    assert(exact_ && "inexact complex number!");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    assert(tmp1_imag->num_ == ZERO_ && "numerator can't be used in complex numbers");
+    Complex* res = new Complex;
+    Number *preal=res->real_, *pimag=res->imag_;
+    res->real_ = real_->denpart();
+    res->imag_ = new Rational(ZERO_,ONE_);
+    res->exact_ = true;
+    delete preal;
+    delete pimag;
+    return res;
+}
 
 Number* Complex::rpart()
 {

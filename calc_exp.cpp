@@ -40,6 +40,12 @@ Number *calc_exp()
 		else if(strcmp(tk1,"exact?")==0)opt=new Isexact();
 		else if(strcmp(tk1,"exact->inexact")==0)opt=new Exttoinext();
 		else if(strcmp(tk1,"inexact->exact")==0)opt=new Inexttoext();
+		else if(strcmp(tk1,"sin")==0)opt=new Sinn();
+		else if(strcmp(tk1,"cos")==0)opt=new Coss();
+		else if(strcmp(tk1,"tan")==0)opt=new Tann();
+		else if(strcmp(tk1,"asin")==0)opt=new Asinn();
+		else if(strcmp(tk1,"acos")==0)opt=new Acoss();
+		else if(strcmp(tk1,"atan")==0)opt=new Atann();
 		else throw 0;
         while ((val = calc_exp()))
         {

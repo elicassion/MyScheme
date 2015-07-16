@@ -41,6 +41,12 @@ public:
 	virtual Number* isexact();
 	virtual Number* exttoinext();
 	virtual Number* inexttoext();
+	virtual Number* sinn();
+	virtual Number* coss();
+	virtual Number* tann();
+	virtual Number* asinn();
+	virtual Number* acoss();
+	virtual Number* atann();
 	virtual void print();
 	static Float *from_string(char *expression);
 

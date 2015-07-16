@@ -344,13 +344,73 @@ Number* Rational::mini(Number *number2)
 }
 
 Number* Rational::numpart() { return new Rational(num_,ONE_); }
+
 Number* Rational::denpart() { return new Rational(den_,ONE_); }
+
 Number* Rational::rpart() {return new Rational(*this); }
+
 Number* Rational::ipart() {return new Rational(ZERO_,ONE_); }
+
 Number* Rational::isexact() { return NULL;}
+
 Number* Rational::exttoinext()
 {
     Float* res = new Float;
     return res->convert(this);
 }
+
 Number* Rational::inexttoext() { assert(0 && "already exact"); }
+
+Number* Rational::sinn()
+{
+    Float* res = new Float;
+    Float* tmp2 = SCAST_FLOAT(res->convert(this));
+    res->number_ = sin(tmp2->number_);
+    delete tmp2;
+    return res;
+}
+
+Number* Rational::coss()
+{
+    Float* res = new Float;
+    Float* tmp2 = SCAST_FLOAT(res->convert(this));
+    res->number_ = cos(tmp2->number_);
+    delete tmp2;
+    return res;
+}
+
+Number* Rational::tann()
+{
+    Float* res = new Float;
+    Float* tmp2 = SCAST_FLOAT(res->convert(this));
+    res->number_ = tan(tmp2->number_);
+    delete tmp2;
+    return res;
+}
+
+Number* Rational::asinn()
+{
+    Float* res = new Float;
+    Float* tmp2 = SCAST_FLOAT(res->convert(this));
+    res->number_ = asin(tmp2->number_);
+    delete tmp2;
+    return res;
+}
+
+Number* Rational::acoss()
+{
+    Float* res = new Float;
+    Float* tmp2 = SCAST_FLOAT(res->convert(this));
+    res->number_ = acos(tmp2->number_);
+    delete tmp2;
+    return res;
+}
+
+Number* Rational::atann()
+{
+    Float* res = new Float;
+    Float* tmp2 = SCAST_FLOAT(res->convert(this));
+    res->number_ = atan(tmp2->number_);
+    delete tmp2;
+    return res;
+}

@@ -311,18 +311,31 @@ Number* Complex::quo(Number *number2)
 }
 
 Number* Complex::rem(Number *number2) { return NULL; }
+
 Number* Complex::mod(Number *number2) { return NULL; }
+
 Number* Complex::gcd(Number *number2) { return NULL; }
+
 Number* Complex::lcm(Number *number2) { return NULL; }
+
 Number* Complex::expp(Number *number2) { return NULL; }
+
 Number* Complex::sqt() { return NULL; }
+
 Number* Complex::flr() { return NULL; }
+
 Number* Complex::cel() { return NULL; }
+
 Number* Complex::trc() { return NULL; }
+
 Number* Complex::rnd() { return NULL; }
+
 Number* Complex::maxi(Number *number2) { return NULL; }
+
 Number* Complex::mini(Number *number2) { return NULL; }
+
 Number* Complex::numpart() { return NULL; }
+
 Number* Complex::denpart() { return NULL; }
 
 Number* Complex::rpart()
@@ -397,3 +410,10 @@ Number* Complex::inexttoext()
     res->exact_ = !exact_;
     return res;
 }
+
+Number* Complex::sinn() { return NULL; }
+Number* Complex::coss() { return NULL; }
+Number* Complex::tann() { return NULL; }
+Number* Complex::asinn() { return NULL; }
+Number* Complex::acoss() { return NULL; }
+Number* Complex::atann() { return NULL; }

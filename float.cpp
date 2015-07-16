@@ -112,42 +112,26 @@ Number* Float::abss()
 Number* Float::quo(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(tmp2->number_)<1e-20)
-        assert(0 && "divided by zero");
-    bool sgn1 = (number_<0.0);
-    bool sgn2 = (tmp2->number_<0.0);
-    if (fabs(number_) >1e17 && fabs(tmp2->number_) > 1e17)
-    {
-        Float* tmp = new Float(number_/tmp2->number_);
-        Number* res = tmp->trc();
-        delete tmp; return res;
-    }
-    else if (fabs(number_)>1e17 && !(fabs(tmp2->number_)>1e17))
-    {
-        long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-        if (fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-            assert(0 && "quotient is only for integer");
-        Float* tmp = new Float(number_/tmp2->number_);
-        Number* res = tmp->trc();
-        delete tmp; return res;
-    }
-    else if (!(fabs(number_)>1e17) && fabs(tmp2->number_)>1e17)
-    {
-        long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-        if (fabs(fabs(number_)-(double)a_i_num1)>EPS)
-            assert(0 && "quotient is only for integer");
-        return new Float(0.0);
-    }
-    else
-    {
-        long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-        long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-        if (fabs(fabs(number_)-(double)a_i_num1)>EPS ||
-            fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-            assert(0 && "quotient is only for integer");
-        if (!(sgn1^sgn2))   return new Float(a_i_num1/a_i_num2);
-        else return new Float(0-a_i_num1/a_i_num2);
-    }
+    assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
+            && "quotient is only for integer");
+    stringstream ss1;
+    ss1<<fixed<<setprecision(5)<<number_;
+    string s1;
+    ss1>>s1;
+    int dot_pos_1 = s1.find(".");
+    string num1_s = s1.substr(0,dot_pos_1);
+    BigInt num1(num1_s);
+    stringstream ss2;
+    ss2<<fixed<<setprecision(5)<<tmp2->number_;
+    string s2;
+    ss2>>s2;
+    int dot_pos_2 = s2.find(".");
+    string num2_s = s2.substr(0,dot_pos_2);
+    BigInt num2(num2_s);
+    Rational* r_quo = new Rational(num1/num2,ONE_);
+    Number* res = convert(r_quo);
+    delete r_quo;
+    return res;
 }
 
 Number* Float::rem(Number *number2)
@@ -155,50 +139,26 @@ Number* Float::rem(Number *number2)
     Float* tmp2 = SCAST_FLOAT(number2);
     if (fabs(tmp2->number_)<1e-20)
         assert(0 && "divided by zero");
-    bool sgn1 = (number_<0.0);
-    bool sgn2 = (tmp2->number_<0.0);
-    double dquo = number_/tmp2->number_;
-    if (fabs(number_) > 1e17 && fabs(tmp2->number_) > 1e17 && fabs(dquo)>1e17) return new Float(0.0);
-    else if (fabs(number_) > 1e17 && fabs(tmp2->number_) > 1e17 && !(fabs(dquo)>1e17))
-    {
-        if (fabs(number_)<fabs(tmp2->number_))return new Float(number_);
-        else
-        {
-            Float* tmp = new Float(number_-((double)((long long int)dquo))*tmp2->number_);
-            Number* res = tmp->trc();
-            delete tmp; return res;
-        }
-    }
-    else if (fabs(number_)>1e17 && !(fabs(tmp2->number_)>1e17))
-    {
-        long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-            if (fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-                assert(0 && "remainder is only for integer");
-        if (fabs(dquo)>1e17) return new Float(0.0);
-        else
-        {
-            Float* tmp = new Float(number_-((double)((long long int)dquo))*tmp2->number_);
-            Number* res = tmp->trc();
-            delete tmp; return res;
-        }
-    }
-    else if (!(fabs(number_)>1e17) && fabs(tmp2->number_)>1e17)
-    {
-        long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-        if (fabs(fabs(number_)-(double)a_i_num1)>EPS)
-            assert(0 && "quotient is only for integer");
-        return new Float(number_);
-    }
-    else
-    {
-        long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-        long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-        if (fabs(fabs(number_)-(double)a_i_num1)>EPS ||
-            fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-            assert(0 && "remainder is only for integer");
-        if (!sgn1)   return new Float(a_i_num1%a_i_num2);
-        else return new Float(0-a_i_num1%a_i_num2);
-    }
+    assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
+            && "quotient is only for integer");
+    stringstream ss1;
+    ss1<<fixed<<setprecision(5)<<number_;
+    string s1;
+    ss1>>s1;
+    int dot_pos_1 = s1.find(".");
+    string num1_s = s1.substr(0,dot_pos_1);
+    BigInt num1(num1_s);
+    stringstream ss2;
+    ss2<<fixed<<setprecision(5)<<tmp2->number_;
+    string s2;
+    ss2>>s2;
+    int dot_pos_2 = s2.find(".");
+    string num2_s = s2.substr(0,dot_pos_2);
+    BigInt num2(num2_s);
+    Rational* r_rem = new Rational(num1%num2,ONE_);
+    Number* res = convert(r_rem);
+    delete r_rem;
+    return res;
 }
 
 Number* Float::mod(Number *number2)
@@ -206,102 +166,102 @@ Number* Float::mod(Number *number2)
     Float* tmp2 = SCAST_FLOAT(number2);
     if (fabs(tmp2->number_)<1e-20)
         assert(0 && "divided by zero");
-    bool sgn1 = (number_<0.0);
-    bool sgn2 = (tmp2->number_<0.0);
-    double dquo = number_/tmp2->number_;
-    if (fabs(number_) > 1e17 && fabs(tmp2->number_) > 1e17 && fabs(dquo)>1e17) return new Float(0.0);
-    else if (fabs(number_) > 1e17 && fabs(tmp2->number_) > 1e17 && !fabs(dquo)>1e17)
-    {
-        if (fabs(number_)<fabs(tmp2->number_))return new Float(number_);
-        else
-        {
-            Float* tmp = new Float(number_-((double)((long long int)dquo))*tmp2->number_);
-            Float* res = SCAST_FLOAT(tmp->trc());
-            delete tmp;
-            if (!sgn2) return new Float(fabs(res->number_));
-            else return new Float(0.0-fabs(res->number_));
-        }
-    }
-    else if (fabs(number_)>1e17 && !(fabs(tmp2->number_)>1e17))
-    {
-        long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-            if (fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-                assert(0 && "modulo is only for integer");
-        if (fabs(dquo)>1e17) return new Float(0.0);
-        else
-        {
-            Float* tmp = new Float(number_-((double)((long long int)dquo))*tmp2->number_);
-            Float* res = SCAST_FLOAT(tmp->trc());
-            delete tmp;
-            if (!sgn2) return new Float(fabs(res->number_));
-            else return new Float(0.0-fabs(res->number_));
-        }
-    }
-    else if (!(fabs(number_)>1e17) && fabs(tmp2->number_)>1e17)
-    {
-        long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-        if (fabs(fabs(number_)-(double)a_i_num1)>EPS)
-            assert(0 && "modulo is only for integer");
-        if (!sgn2) return new Float(fabs(number_));
-        else return new Float(0.0-fabs(number_));
-    }
-    else
-    {
-        long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-        long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-        if (fabs(fabs(number_)-(double)a_i_num1)>EPS ||
-            fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-            assert(0 && "modulo is only for integer");
-        if (!sgn2)   return new Float(a_i_num1%a_i_num2);
-        else return new Float(0.0-a_i_num1%a_i_num2);
-    }
+    assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
+            && "quotient is only for integer");
+    bool sgn2 = (tmp2->number_<0);
+    stringstream ss1;
+    ss1<<fixed<<setprecision(5)<<number_;
+    string s1;
+    ss1>>s1;
+    int dot_pos_1 = s1.find(".");
+    string num1_s = s1.substr(0,dot_pos_1);
+    BigInt num1(num1_s);
+    stringstream ss2;
+    ss2<<fixed<<setprecision(5)<<tmp2->number_;
+    string s2;
+    ss2>>s2;
+    int dot_pos_2 = s2.find(".");
+    string num2_s = s2.substr(0,dot_pos_2);
+    BigInt num2(num2_s);
+    BigInt i_rem = num1%num2;
+    Rational* r_rem;
+    if (!(sgn2^i_rem.sgn_)) r_rem = new Rational(i_rem,ONE_);
+    else { i_rem = i_rem + num2; r_rem = new Rational(i_rem,ONE_); }
+    Number* res = convert(r_rem);
+    delete r_rem;
+    return res;
 }
 
 Number* Float::gcd(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(number_)<1e-20 || fabs(tmp2->number_)<1e-20)
+    if (fabs(tmp2->number_)<1e-20)
         assert(0 && "divided by zero");
-    long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-    long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-    if (fabs(fabs(number_)-(double)a_i_num1)>EPS ||
-        fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-            assert(0 && "gcd is only for integer");
-    long long int big,small,tmp;
-	big=max(a_i_num1, a_i_num2);
-	small=min(a_i_num1,a_i_num2);
+    assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
+            && "quotient is only for integer");
+    bool sgn2 = (tmp2->number_<0);
+    stringstream ss1;
+    ss1<<fixed<<setprecision(5)<<number_;
+    string s1;
+    ss1>>s1;
+    int dot_pos_1 = s1.find(".");
+    string num1_s = s1.substr(0,dot_pos_1);
+    BigInt num1(num1_s);
+    stringstream ss2;
+    ss2<<fixed<<setprecision(5)<<tmp2->number_;
+    string s2;
+    ss2>>s2;
+    int dot_pos_2 = s2.find(".");
+    string num2_s = s2.substr(0,dot_pos_2);
+    BigInt num2(num2_s);
+    BigInt big,small,tmp;
+	big=max(num1, num2);
+	small=min(num1,num2);
 	tmp=big%small;
-	while(tmp!=0)
+	while(tmp!=ZERO_)
     {
 		big=small;
 		small=tmp;
 		tmp=big%small;
 	}
-    Float* res = new Float((double)small);
+    Float* res = new Float((double)small.abs());
     return res;
 }
 
 Number* Float::lcm(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
-    if (fabs(number_)<1e-20 || fabs(tmp2->number_)<1e-20)
+    if (fabs(tmp2->number_)<1e-20)
         assert(0 && "divided by zero");
-    long long int a_i_num1 = (long long int)(fabs(number_)+0.5);
-    long long int a_i_num2 = (long long int)(fabs(tmp2->number_)+0.5);
-    if (fabs(fabs(number_)-(double)a_i_num1)>EPS ||
-        fabs(fabs(tmp2->number_)-(double)a_i_num2)>EPS)
-            assert(0 && "gcd is only for integer");
-    long long int big,small,tmp;
-	big=max(a_i_num1, a_i_num2);
-	small=min(a_i_num1,a_i_num2);
+    assert((number_==nearbyint(number_) && tmp2->number_ == nearbyint(tmp2->number_))
+            && "quotient is only for integer");
+    bool sgn2 = (tmp2->number_<0);
+    stringstream ss1;
+    ss1<<fixed<<setprecision(5)<<number_;
+    string s1;
+    ss1>>s1;
+    int dot_pos_1 = s1.find(".");
+    string num1_s = s1.substr(0,dot_pos_1);
+    BigInt num1(num1_s);
+    stringstream ss2;
+    ss2<<fixed<<setprecision(5)<<tmp2->number_;
+    string s2;
+    ss2>>s2;
+    int dot_pos_2 = s2.find(".");
+    string num2_s = s2.substr(0,dot_pos_2);
+    BigInt num2(num2_s);
+    BigInt big,small,tmp;
+	big=max(num1, num2);
+	small=min(num1,num2);
 	tmp=big%small;
-	while(tmp!=0)
+	while(tmp!=ZERO_)
     {
 		big=small;
 		small=tmp;
 		tmp=big%small;
 	}
-    Float* res = new Float(number_*tmp2->number_/small);
+    Float* res = new Float((double)((num1*num2/small).abs()));
+    return res;
 }
 
 Number* Float::expp(Number *number2)
@@ -326,13 +286,13 @@ Number* Float::sqt()
     }
 }
 
-Number* Float::flr() {return new Float(floor(number_)); }
+Number* Float::flr() { return new Float(floor(number_)); }
 
-Number* Float::cel() {return new Float(ceil(number_)); }
+Number* Float::cel() { return new Float(ceil(number_)); }
 
-Number* Float::trc() {return new Float((number_>0.0)?floor(number_):ceil(number_)); }
+Number* Float::trc() { return new Float(trunc(number_)); }
 
-Number* Float::rnd() {return new Float((number_>0.0)?floor(number_+0.5):ceil(number_-0.5)); }
+Number* Float::rnd() { return new Float(nearbyint(number_)); }
 
 Number* Float::maxi(Number *number2)
 {
@@ -347,11 +307,17 @@ Number* Float::mini(Number *number2)
 }
 
 Number* Float::numpart() { return NULL; }
+
 Number* Float::denpart() { return NULL; }
+
 Number* Float::rpart() {return new Float(number_); }
+
 Number* Float::ipart() {return new Float(0.0); }
+
 Number* Float::isexact() { return NULL;}
+
 Number* Float::exttoinext() { assert(0 && "already inexact"); }
+
 Number* Float::inexttoext()
 {
     if (fabs(number_)<=1e-6) return new Rational(ZERO_,ONE_);
@@ -363,7 +329,6 @@ Number* Float::inexttoext()
         string s;
         ss>>s;
         int dot_pos = s.find(".");
-        int first_avl_pos = s.find_first_not_of('0');
         BigInt num(s.substr(0,dot_pos)+s.substr(dot_pos+1,s.length()-dot_pos-1));
         string den_s="1";
         for (int i=1;i<s.length()-dot_pos;++i)
@@ -372,91 +337,16 @@ Number* Float::inexttoext()
         Rational* res = new Rational(num,den);
         return res;
     }
-    //stringstream ss;
-    //ss<<number_;
-    //string s;
-    //ss>>s;
-    /*if (fabs(number_)>1e17)
-    {
-        stringstream ss;
-        ss<<fixed<<setprecision(30)<<number_;
-        string s;
-        s<<ss;
-        int dot_pos = s.find(".");
-        int f_l = 5;
-        BigInt num(s.substr(0,dot_pos)),den(s.substr(dot_pos+1,f_l));
-        Rational* res = new Rational(num,den);
-        return res;
-    }
-    else if (fabs(number_)<1e-17)
-    {
-        stringstream ss;
-        ss<<resetiosflags(ios::fixed)<<setprecision(30)<<number_;
-        string s;
-        s<<ss;
-        int dot_pos = s.find(".");
-        int first_avl_pos = s.find_first_not_of('0');
-        BigInt num(s.substr(first_avl_pos, s.length()-first_avl_pos);
-        string den_s="1";
-        for (int i=1;i<s.length()-dot_pos) den_s+="0";
-        BigInt den(den_s);
-        Rational* res = new Rational(num,den);
-        return res;
-    }
-    else
-    {*/
-        /*double num_rnd = (number_>0.0)?floor(number_+0.5):ceil(number_-0.5);
-        if (fabs(number_ - num_rnd)<1e-20)
-        {
-            stringstream ss;
-            ss<<resetiosflags(ios::fixed)<<setprecision(30)<<number_;
-            string s;
-            s<<ss;
-            BigInt num(s.substr(0,s.find("."))),den(ONE_);
-            return new Rational(num,den);
-        }
-        else
-        {
-
-        }*/
-
-    /*Float *lbd = SCAST_FLOAT(flr()) , *ubd = SCAST_FLOAT(cel());
-    stringstream ss_lbd , ss_ubd;
-    ss_lbd<<fixed<<setprecision(30)<<lbd->number_;
-    ss_ubd<<fixed<<setprecision(30)<<ubd->number_;
-    string s_lbd , s_ubd;
-    ss_lbd>>s_lbd; ss_ubd>>s_ubd;
-    Rational* HALF_ = new Rational(ONE_,TWO_);
-    Number* left = new Rational(BigInt(s_lbd.substr(0,s_lbd.find("."))),ONE_);
-    Number* right = new Rational(BigInt(s_ubd.substr(0,s_ubd.find("."))),ONE_);
-    Number* mid = (left->add(right))->mul(HALF_);
-    Float* tmp = SCAST_FLOAT(convert(mid));
-    while (fabs(tmp->number_ - number_) > 1e-10)
-    {
-        if (tmp->number_ > number_)
-        {
-            Number* pre_mid = mid;
-            Number* pre_right = right;
-            right = mid;
-            mid = (right->add(left))->mul(HALF_);
-            delete pre_mid;
-            delete pre_right;
-        }
-        else
-        {
-            Number* pre_mid = mid;
-            Number* pre_left = left;
-            left = mid;
-            mid = (left->add(right))->mul(HALF_);
-            delete pre_mid;
-            delete pre_left;
-        }
-        Number* pre_tmp = tmp;
-        tmp = SCAST_FLOAT(convert(mid));
-        delete pre_tmp;
-    }
-    delete tmp;
-    delete left;
-    delete right;
-    return mid;*/
 }
+
+Number* Float::sinn() { return new Float(sin(number_)); }
+
+Number* Float::coss() { return new Float(cos(number_)); }
+
+Number* Float::tann() { return new Float(tan(number_)); }
+
+Number* Float::asinn() { return new Float(asin(number_)); }
+
+Number* Float::acoss() { return new Float(acos(number_)); }
+
+Number* Float::atann() { return new Float(atan(number_)); }

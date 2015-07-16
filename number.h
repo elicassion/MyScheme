@@ -39,6 +39,12 @@ public:
 	virtual Number* isexact() =0;
 	virtual Number* exttoinext() =0;
 	virtual Number* inexttoext() =0;
+	virtual Number* sinn() =0;
+	virtual Number* coss() =0;
+	virtual Number* tann() =0;
+	virtual Number* asinn() =0;
+	virtual Number* acoss() =0;
+	virtual Number* atann() =0;
 	virtual void print() = 0;
 };
 

@@ -867,4 +867,130 @@ class Inexttoext:public Opt{
     }
 };
 
+class Sinn:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "sin only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->sinn() , *last;
+        return res;
+    }
+};
+
+class Coss:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "cos only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->coss() , *last;
+        return res;
+    }
+};
+
+class Tann:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "tan only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->tann() , *last;
+        return res;
+    }
+};
+
+class Asinn:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "asin only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->asinn() , *last;
+        return res;
+    }
+};
+
+class Acoss:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "acos only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->acoss() , *last;
+        return res;
+    }
+};
+
+class Atann:public Opt{
+    Number* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if(tmp->car->type_>3||tmp->car->type_<1)
+			{
+				assert(0 && "type not defined");
+			}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "atan only one parameter");
+        Number *opr = con->car , *conv;
+        Number *res = opr->atann() , *last;
+        return res;
+    }
+};
+
 #endif // compare_h

@@ -4,6 +4,7 @@
 #include "number.h"
 #include "rational.h"
 #include "float.h"
+#include "boolean.h"
 #define SCAST_COMPLEX(x) static_cast<Complex*>(x)
 
 class Complex : public Number{
@@ -39,7 +40,7 @@ public:
 	virtual Number* denpart();
 	virtual Number* rpart();
 	virtual Number* ipart();
-	virtual Number* isexact();
+	virtual Boolean* isexact();
 	virtual Number* exttoinext();
 	virtual Number* inexttoext();
 	virtual Number* sinn();

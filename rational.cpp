@@ -1,5 +1,6 @@
 #include "rational.h"
 #include "complex.h"
+#include "boolean.h"
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
@@ -344,7 +345,7 @@ Number* Rational::rpart() {return new Rational(*this); }
 
 Number* Rational::ipart() {return new Rational(ZERO_,ONE_); }
 
-Number* Rational::isexact() { return NULL;}
+Boolean* Rational::isexact() { return new Boolean(true);}
 
 Number* Rational::exttoinext()
 {

@@ -1,9 +1,11 @@
 #ifndef number_h
 #define number_h
 
+#include "schemeunit.h"
+#include "boolean.h"
 #define SCAST_NUMBER(x) static_cast<Number*>(x)
 
-class Number {
+class Number:public SchemeUnit {
 public:
 	enum{
 		RATIONAL = 1,
@@ -11,7 +13,7 @@ public:
 		COMPLEX = 3
 	} type_;
 	bool exact_;
-	Number(){}
+	Number();
 	virtual ~Number(){}
 	virtual Number* convert(Number* number2) = 0;
 	virtual Number* add(Number* number2)  = 0;
@@ -36,7 +38,7 @@ public:
 	virtual Number* denpart() =0;
 	virtual Number* rpart() =0;
 	virtual Number* ipart() =0;
-	virtual Number* isexact() =0;
+	virtual Boolean* isexact() =0;
 	virtual Number* exttoinext() =0;
 	virtual Number* inexttoext() =0;
 	virtual Number* sinn() =0;

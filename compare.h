@@ -1,11 +1,14 @@
 #ifndef compare_h
 #define compare_h
 
+#include "schemeunit.h"
+#include "boolean.h"
 #include "opt.h"
 #include "float.h"
 #include "rational.h"
 #include "complex.h"
 #include "number.h"
+
 #include <cmath>
 #include <iomanip>
 #include <sstream>
@@ -13,17 +16,19 @@
 #include <cstdlib>
 #define SCAST_RATIONAL(x) static_cast<Rational*>(x)
 #define SCAST_FLOAT(x) static_cast<Float*>(x)
+#define SCAST_NUMBER(x) static_cast<Number*>(x)
 
 class Add : public Opt {
     /* Use the lowest level type */
-    Number *calc(Cons *con)
+    SchemeUnit *calc(Cons *con)
     {
 		Number *res = new Rational(ZERO_,ONE_);
 		Number *last;
         for (; con; con = con->cdr)
         {
-			if(con->car->type_>3||con->car->type_<1) { throw 0; }
-            Number *opr = con->car, *conv;
+			if (con->car->unitType_!=2) {throw 0;}
+			Number *opr = SCAST_NUMBER(con->car), *conv;
+
             last = res;
             //cout<<"opr type: "<<opr->type_<<endl;
             if (res->type_ > opr->type_)
@@ -48,20 +53,17 @@ class Add : public Opt {
 };
 
 class Sub:public Opt{
-	Number *calc(Cons *con)
+	SchemeUnit *calc(Cons *con)
 	{
 		Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		Number *res=new Rational(ZERO_, ONE_),*last;
-		Number *opr = con->car, *conv;
+		Number *opr = SCAST_NUMBER(con->car), *conv;
 		last=res;
 		if(cnt==1)
 		{
@@ -96,7 +98,7 @@ class Sub:public Opt{
         delete conv;
 		for(;con;con=con->cdr)
 		{
-			opr=con->car;
+			opr=SCAST_NUMBER(con->car);
 			last=res;
 			if(res->type_>opr->type_)
             {
@@ -117,18 +119,15 @@ class Sub:public Opt{
 	}
 };
 
-class Mul : public Opt {
+class Mul:public Opt {
     /* Use the lowest level type */
-    Number* calc(Cons *con)
+    SchemeUnit* calc(Cons *con)
     {
         Number *res = new Rational(ONE_, ONE_), *last;
         for (; con; con = con->cdr)
         {
-			if(con->car->type_>3||con->car->type_<1)
-			{
-				throw 0;
-			}
-            Number *opr = con->car, *conv;
+			if (con->car->unitType_!=2) {throw 0;}
+			Number *opr = SCAST_NUMBER(con->car), *conv;
             last = res;
             if (res->type_ > opr->type_)
             {
@@ -150,20 +149,17 @@ class Mul : public Opt {
 };
 
 class Div:public Opt{
-	Number *calc(Cons *con)
+	SchemeUnit *calc(Cons *con)
 	{
 		Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
-		Number *res = new Rational(ONE_,ONE_),*last;
-		Number *opr = con->car,*conv;
+		Number *res=new Rational(ONE_, ONE_),*last;
+		Number *opr = SCAST_NUMBER(con->car), *conv;
 		last=res;
 		Number *zero = new Float(0.0);
 		if(cnt==1)
@@ -201,7 +197,7 @@ class Div:public Opt{
 		delete conv;
 		for(;con;con=con->cdr)
 		{
-			opr=con->car;
+			opr=SCAST_NUMBER(con->car);
 			last=res;
 			if(res->type_>opr->type_)
             {
@@ -223,42 +219,36 @@ class Div:public Opt{
 };
 
 class Abs:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "abs only one parameter");
-        Number *opr = con->car , *conv;
-        Number *res = opr->abss() , *last;
+        Number *opr = SCAST_NUMBER(con->car);
+        Number *res = opr->abss();
         return res;
     }
 };
 
 class Quo:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>2)
             assert(0 && "quo only two parameter");
-        Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
+        Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
         Number *res , *last;
         if (opr1->type_ > opr2->type_)
         {
@@ -266,7 +256,7 @@ class Quo:public Opt{
         }
         else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
         {
-                res = opr1->quo(conv = opr1->convert(opr2));
+            res = opr1->quo(conv = opr1->convert(opr2));
         }
         else
         {
@@ -278,21 +268,18 @@ class Quo:public Opt{
 };
 
 class Rem:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>2)
             assert(0 && "remainder only two parameter");
-        Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
+        Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
         Number *res , *last;
         if (opr1->type_ > opr2->type_)
         {
@@ -312,21 +299,18 @@ class Rem:public Opt{
 };
 
 class Mod:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>2)
             assert(0 && "remainder only two parameter");
-        Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
+        Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
         Number *res , *last;
         if (opr1->type_ > opr2->type_)
         {
@@ -346,22 +330,19 @@ class Mod:public Opt{
 };
 
 class Gcd:public Opt{
-    Number *calc(Cons *con)
+    SchemeUnit *calc(Cons *con)
 	{
 		Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt==0)
             return new Rational();
-		Number *res = con->car,*last;
-		Number *opr = con->car,*conv;
+		Number *res = SCAST_NUMBER(con->car),*last;
+		Number *opr = SCAST_NUMBER(con->car),*conv;
 		last=res;
 		if(cnt==1)
 		{
@@ -383,7 +364,7 @@ class Gcd:public Opt{
 		}
 		for(;con;con=con->cdr)
 		{
-			opr=con->car;
+			opr=SCAST_NUMBER(con->car);
 			last=res;
 			if(res->type_>opr->type_)
             {
@@ -405,22 +386,19 @@ class Gcd:public Opt{
 };
 
 class Lcm:public Opt{
-    Number *calc(Cons *con)
+    SchemeUnit *calc(Cons *con)
 	{
 		Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt==0)
             return new Rational(ONE_,ONE_);
-		Number *res = con->car,*last;
-		Number *opr = con->car,*conv;
+		Number *res = SCAST_NUMBER(con->car),*last;
+		Number *opr = SCAST_NUMBER(con->car),*conv;
 		last=res;
 		if(cnt==1)
 		{
@@ -442,7 +420,7 @@ class Lcm:public Opt{
 		}
 		for(;con;con=con->cdr)
 		{
-			opr=con->car;
+			opr=SCAST_NUMBER(con->car);
 			last=res;
 			if(res->type_>opr->type_)
             {
@@ -464,21 +442,18 @@ class Lcm:public Opt{
 };
 
 class Expt:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>2)
-            assert(0 && "remainder only two parameter");
-        Number *opr1 = con->car , *opr2 = con->cdr->car , *conv;
+            assert(0 && "expt only two parameter");
+        Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
         Number *res , *last;
         if (opr1->type_ > opr2->type_)
         {
@@ -498,127 +473,109 @@ class Expt:public Opt{
 };
 
 class Sqrt:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "abs only one parameter");
-        Number *opr = con->car , *conv;
+            assert(0 && "sqrt only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->sqt() , *last;
         return res;
     }
 };
 
 class Flr:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "abs only one parameter");
-        Number *opr = con->car , *conv;
+            assert(0 && "floor only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->flr() , *last;
         return res;
     }
 };
 
 class Cel:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "abs only one parameter");
-        Number *opr = con->car , *conv;
+            assert(0 && "ceiling only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->cel() , *last;
         return res;
     }
 };
 
 class Trc:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "abs only one parameter");
-        Number *opr = con->car , *conv;
+            assert(0 && "truncate only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->trc() , *last;
         return res;
     }
 };
 
 class Rnd:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "round only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->rnd() , *last;
         return res;
     }
 };
 
 class Maxi:public Opt{
-    Number *calc(Cons *con)
+    SchemeUnit *calc(Cons *con)
 	{
 		Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt==0)
             assert(0 && "parameter empty");
-		Number *res = con->car,*last;
-		Number *opr = con->car,*conv;
+		Number *res = SCAST_NUMBER(con->car),*last;
+		Number *opr = SCAST_NUMBER(con->car),*conv;
 		last=res;
 		if(cnt==1)
 		{
@@ -640,7 +597,7 @@ class Maxi:public Opt{
 		}
 		for(;con;con=con->cdr)
 		{
-			opr=con->car;
+			opr=SCAST_NUMBER(con->car);
 			last=res;
 			if(res->type_>opr->type_)
             {
@@ -662,22 +619,19 @@ class Maxi:public Opt{
 };
 
 class Mini:public Opt{
-    Number *calc(Cons *con)
+    SchemeUnit *calc(Cons *con)
 	{
 		Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				throw 0;
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt==0)
             assert(0 && "parameter empty");
-		Number *res = con->car,*last;
-		Number *opr = con->car,*conv;
+		Number *res = SCAST_NUMBER(con->car),*last;
+		Number *opr = SCAST_NUMBER(con->car),*conv;
 		last=res;
 		if(cnt==1)
 		{
@@ -699,7 +653,7 @@ class Mini:public Opt{
 		}
 		for(;con;con=con->cdr)
 		{
-			opr=con->car;
+			opr=SCAST_NUMBER(con->car);
 			last=res;
 			if(res->type_>opr->type_)
             {
@@ -721,273 +675,234 @@ class Mini:public Opt{
 };
 
 class Numpart:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "numerator only for rational number");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "numerator only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->numpart() , *last;
         return res;
     }
 };
 
 class Denpart:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "denominator only for rational number");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "denominator only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->denpart() , *last;
         return res;
     }
 };
 
 class Rpart:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "real-part only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->rpart() , *last;
         return res;
     }
 };
 
 class Ipart:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "imag-part only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->ipart() , *last;
         return res;
     }
 };
 
 class Isexact:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "exact? only one parameter");
-        Number *opr = con->car , *conv;
-        Number *res = opr->isexact() , *last;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        Boolean *res = opr->isexact() , *last;
         return res;
     }
 };
 
 class Exttoinext:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "exact to inexact only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->exttoinext() , *last;
         return res;
     }
 };
 
 class Inexttoext:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "inexact to exact only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->inexttoext() , *last;
         return res;
     }
 };
 
 class Sinn:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "sin only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->sinn() , *last;
         return res;
     }
 };
 
 class Coss:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "cos only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->coss() , *last;
         return res;
     }
 };
 
 class Tann:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "tan only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->tann() , *last;
         return res;
     }
 };
 
 class Asinn:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "asin only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->asinn() , *last;
         return res;
     }
 };
 
 class Acoss:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "acos only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->acoss() , *last;
         return res;
     }
 };
 
 class Atann:public Opt{
-    Number* calc (Cons *con)
+    SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
 		int cnt=0;
 		for(;tmp;tmp=tmp->cdr)
 		{
-			if(tmp->car->type_>3||tmp->car->type_<1)
-			{
-				assert(0 && "type not defined");
-			}
+			if (tmp->car->unitType_!=2) {throw 0;}
 			cnt++;
 		}
 		if (cnt>1)
             assert(0 && "atan only one parameter");
-        Number *opr = con->car , *conv;
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->atann() , *last;
         return res;
     }

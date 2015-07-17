@@ -4,7 +4,7 @@
 #include "float.h"
 #include "rational.h"
 
-Number *calc_exp();
+SchemeUnit *calc_exp();
 
 
 #endif // calc_exp_h

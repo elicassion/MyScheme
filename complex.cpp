@@ -1,4 +1,5 @@
 #include "complex.h"
+#include "boolean.h"
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
@@ -620,7 +621,7 @@ Number* Complex::ipart()
     }
 }
 
-Number* Complex::isexact() { return NULL; }
+Boolean* Complex::isexact() { return new Boolean(exact_); }
 
 Number* Complex::exttoinext()
 {

@@ -5,6 +5,7 @@
 #include "number.h"
 #include "bigint.h"
 #include "float.h"
+#include "boolean.h"
 
 #define SCAST_RATIONAL(x) static_cast<Rational*>(x)
 
@@ -43,7 +44,7 @@ public:
 	virtual Number* denpart();
 	virtual Number* rpart();
 	virtual Number* ipart();
-	virtual Number* isexact();
+	virtual Boolean* isexact();
 	virtual Number* exttoinext();
 	virtual Number* inexttoext();
 	virtual Number* sinn();

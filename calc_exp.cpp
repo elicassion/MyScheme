@@ -4,16 +4,16 @@
 #include "next_token.h"
 #include <cstdio>
 
-Number *calc_exp()
+SchemeUnit *calc_exp()
 {
     char *tk0 = next_token();
-    Number *res;
+    SchemeUnit *res;
     if (*tk0 == '(')
     {
         char *tk1 = next_token();
         Opt *opt;
         Cons *cons = new Cons(NULL, NULL), *tail = cons;
-        Number *val;
+        SchemeUnit *val;
 		if(tk1==NULL){printf("123");throw 0;}
 		if(strcmp(tk1,"+")==0)opt=new Add();
 		else if(strcmp(tk1,"-")==0)opt=new Sub();

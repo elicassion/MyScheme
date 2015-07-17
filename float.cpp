@@ -1,6 +1,7 @@
 #include "float.h"
 #include "rational.h"
 #include "complex.h"
+#include "boolean.h"
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -314,7 +315,7 @@ Number* Float::rpart() {return new Float(number_); }
 
 Number* Float::ipart() {return new Float(0.0); }
 
-Number* Float::isexact() { return NULL;}
+Boolean* Float::isexact() { return new Boolean(false);}
 
 Number* Float::exttoinext() { assert(0 && "already inexact"); }
 

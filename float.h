@@ -3,6 +3,7 @@
 
 
 #include "number.h"
+#include "boolean.h"
 #include <cstring>
 #include <string>
 
@@ -38,7 +39,7 @@ public:
 	virtual Number* denpart();
 	virtual Number* rpart();
 	virtual Number* ipart();
-	virtual Number* isexact();
+	virtual Boolean* isexact();
 	virtual Number* exttoinext();
 	virtual Number* inexttoext();
 	virtual Number* sinn();

@@ -625,7 +625,15 @@ Boolean* Complex::isexact() { return new Boolean(exact_); }
 
 Number* Complex::exttoinext()
 {
-    if (!exact_) assert(0 && "already inexact");
+    if (!exact_)
+    {
+        Complex* res = new Complex;
+        res->real_ = new Float(SCAST_FLOAT(real_));
+        res->imag_ = new Float(SCAST_FLOAT(imag_));
+        res->exact_=false;
+        return res;
+    }
+
     Complex* res = new Complex;
 
     Float* tmp1 = new Float;
@@ -647,7 +655,15 @@ Number* Complex::exttoinext()
 
 Number* Complex::inexttoext()
 {
-    if (exact_) assert(0 && "already exact");
+    if (exact_)
+    {
+        Complex* res = new Complex;
+        res->real_ = new Rational(SCAST_RATIONAL(real_));
+        res->imag_ = new Rational(SCAST_RATIONAL(imag_));
+        res->exact_=true;
+        return res;
+    }
+
     Complex* res = new Complex;
 
     Number* tmp1;

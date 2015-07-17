@@ -8,6 +8,7 @@
 #include "rational.h"
 #include "complex.h"
 #include "number.h"
+#include "character.h"
 
 #include <cmath>
 #include <iomanip>
@@ -904,6 +905,24 @@ class Atann:public Opt{
             assert(0 && "atan only one parameter");
         Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->atann() , *last;
+        return res;
+    }
+};
+
+class Nott:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_>4) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "not only one parameter");
+        SchemeUnit *opr = con->car , *conv;
+        SchemeUnit *res = opr->nott() , *last;
         return res;
     }
 };

@@ -9,6 +9,7 @@ public:
     bool value_;
     Boolean(bool value = false);
     ~Boolean();
+    virtual SchemeUnit* nott();
     virtual void print();
 };
 

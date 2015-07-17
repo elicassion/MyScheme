@@ -46,6 +46,7 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"asin")==0)opt=new Asinn();
 		else if(strcmp(tk1,"acos")==0)opt=new Acoss();
 		else if(strcmp(tk1,"atan")==0)opt=new Atann();
+		else if(strcmp(tk1,"not")==0)opt=new Nott();
 		else throw 0;
         while ((val = calc_exp()))
         {
@@ -65,9 +66,10 @@ SchemeUnit *calc_exp()
 	}
     else
     {
-		res=Rational::from_string(tk0);
-		if(!res) {res = Float::from_string(tk0); }
-		if(!res) {res = Complex::from_string(tk0); }
+		res = Character::from_string(tk0);
+		if(!res) res = Rational::from_string(tk0);
+		if(!res) res = Float::from_string(tk0);
+		if(!res) res = Complex::from_string(tk0);
 		if(res==NULL){throw 0;}
     }
     return res;

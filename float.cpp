@@ -317,7 +317,7 @@ Number* Float::ipart() {return new Float(0.0); }
 
 Boolean* Float::isexact() { return new Boolean(false);}
 
-Number* Float::exttoinext() { assert(0 && "already inexact"); }
+Number* Float::exttoinext() { return new Float(number_); }
 
 Number* Float::inexttoext()
 {

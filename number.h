@@ -15,6 +15,9 @@ public:
 	bool exact_;
 	Number();
 	virtual ~Number(){}
+
+	virtual SchemeUnit* nott();
+
 	virtual Number* convert(Number* number2) = 0;
 	virtual Number* add(Number* number2)  = 0;
 	virtual Number* sub(Number* number2)  = 0;

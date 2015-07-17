@@ -353,7 +353,7 @@ Number* Rational::exttoinext()
     return res->convert(this);
 }
 
-Number* Rational::inexttoext() { assert(0 && "already exact"); }
+Number* Rational::inexttoext() { return new Rational(num_,den_); }
 
 Number* Rational::sinn()
 {

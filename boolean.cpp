@@ -8,6 +8,11 @@ Boolean::Boolean(bool value):value_(value)
 
 Boolean::~Boolean() {}
 
+SchemeUnit* Boolean::nott()
+{
+    return new Boolean(!value_);
+}
+
 void Boolean::print()
 {
     if (value_) cout<<"#t";

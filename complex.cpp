@@ -1,5 +1,6 @@
 #include "complex.h"
 #include "boolean.h"
+#include <complex>
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
@@ -405,66 +406,31 @@ Number* Complex::lcm(Number *number2)
 Number* Complex::expp(Number *number2)
 {
     Complex* tmp2 = SCAST_COMPLEX(number2);
-    if (exact_)
-    {
-        Rational* tmp1_imag = SCAST_RATIONAL(imag_);
-        Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
-        assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
-           && "expt is only for rational numbers");
-        Complex* res = new Complex;
-        Number *preal=res->real_, *pimag=res->imag_;
-        res->real_ = real_->expp(tmp2->real_);
-        res->imag_ = new Float(0.0);
-        res->exact_ = false;
-        delete preal;
-        delete pimag;
-        return res;
-    }
-    else
-    {
-        Float* tmp1_imag = SCAST_FLOAT(imag_);
-        Float* tmp2_imag = SCAST_FLOAT(tmp2->imag_);
-        assert(fabs(tmp1_imag->number_)<1e-200 && fabs(tmp2_imag->number_)<1e-200
-               && "expt is only for rational numbers");
-        Complex* res = new Complex;
-        Number *preal=res->real_, *pimag=res->imag_;
-        res->real_ = real_->expp(tmp2->real_);
-        res->imag_ = new Float(0.0);
-        res->exact_ = false;
-        delete preal;
-        delete pimag;
-        return res;
-    }
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    Complex* b = SCAST_COMPLEX(tmp2->exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_b(SCAST_FLOAT(b->real_)->number_,SCAST_FLOAT(b->imag_)->number_);
+    complex<double> c_res = exp(c_b*log(c_a));
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    delete b;
+    return res;
 }
 
 Number* Complex::sqt()
 {
-    if (exact_)
-    {
-        Rational* tmp1_imag = SCAST_RATIONAL(imag_);
-        assert(tmp1_imag->num_ == ZERO_ && "sqrt is only for rational numbers");
-        Complex* res = new Complex;
-        Number *preal=res->real_, *pimag=res->imag_;
-        res->real_ = real_->sqt();
-        res->imag_ = new Float(0.0);
-        res->exact_ = false;
-        delete preal;
-        delete pimag;
-        return res;
-    }
-    else
-    {
-        Float* tmp1_imag = SCAST_FLOAT(imag_);
-        assert(fabs(tmp1_imag->number_)<1e-200 && "expt is only for rational numbers");
-        Complex* res = new Complex;
-        Number *preal=res->real_, *pimag=res->imag_;
-        res->real_ = real_->sqt();
-        res->imag_ = new Float(0.0);
-        res->exact_ = false;
-        delete preal;
-        delete pimag;
-        return res;
-    }
+    Complex* C_HALF_ = new Complex;
+    Number* pre_real = C_HALF_->real_;
+    Number* pre_imag = C_HALF_->imag_;
+    C_HALF_->real_ = new Float(0.5);
+    C_HALF_->imag_ = new Float(0.0);
+    C_HALF_->exact_ = false;
+    delete pre_real;
+    delete pre_imag;
+    return expp(C_HALF_);
 }
 
 Number* Complex::flr()
@@ -628,8 +594,8 @@ Number* Complex::exttoinext()
     if (!exact_)
     {
         Complex* res = new Complex;
-        res->real_ = new Float(SCAST_FLOAT(real_));
-        res->imag_ = new Float(SCAST_FLOAT(imag_));
+        res->real_ = new Float(*SCAST_FLOAT(real_));
+        res->imag_ = new Float(*SCAST_FLOAT(imag_));
         res->exact_=false;
         return res;
     }
@@ -658,8 +624,8 @@ Number* Complex::inexttoext()
     if (exact_)
     {
         Complex* res = new Complex;
-        res->real_ = new Rational(SCAST_RATIONAL(real_));
-        res->imag_ = new Rational(SCAST_RATIONAL(imag_));
+        res->real_ = new Rational(*SCAST_RATIONAL(real_));
+        res->imag_ = new Rational(*SCAST_RATIONAL(imag_));
         res->exact_=true;
         return res;
     }

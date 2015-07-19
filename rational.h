@@ -12,6 +12,7 @@
 static const BigInt ZERO_("0");
 static const BigInt ONE_("1");
 static const BigInt TWO_("2");
+static const BigInt BASE_("4503599627370496");
 class Rational:public Number{
 public:
     BigInt num_;

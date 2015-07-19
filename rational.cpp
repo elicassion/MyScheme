@@ -224,6 +224,8 @@ Number* Rational::gcd(Number* number2)
 {
     assert ( number2->type_==1 && "gcd is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
+    if (num_ == ZERO_) return new Rational(tmp2->num_,tmp2->den_);
+    if (tmp2->num_ == ZERO_) return new Rational(num_,den_);
     //assert ( den_==ONE_ && tmp2->den_==ONE_ && "gcd is only for integer" );
     if (this == number2) {return new Rational(*this); }
     BigInt gcd_num = BigInt::gcd(num_,tmp2->num_);
@@ -236,6 +238,7 @@ Number* Rational::lcm(Number* number2)
 {
     assert ( number2->type_==1 && "lcm is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
+    if (num_ == ZERO_ || tmp2->num_ == ZERO_) return new Rational(ZERO_,ONE_);
     //assert ( den_==ONE_ && tmp2->den_==ONE_ && "lcm is only for integer" );
     if (this == number2) {return new Rational(*this); }
     BigInt lcm_num = BigInt::lcm(num_,tmp2->num_);
@@ -249,42 +252,30 @@ Number* Rational::expp(Number* number2)
     Rational* rtmp2 = SCAST_RATIONAL(number2);
     if (num_==ZERO_ && rtmp2->num_==ZERO_) return new Float(1);
     else if (num_==ZERO_ && rtmp2->num_!=ZERO_) return new Float(0);
-    Float* res = new Float;
-    Float* ftmp2 = SCAST_FLOAT(res->convert(number2));
-    Float* ftmp1 = SCAST_FLOAT(res->convert(this));
-    res->number_ = exp(ftmp2->number_ * log(ftmp1->number_));
-    delete ftmp2;
-    delete ftmp1;
-    return res;
+    if(num_.sgn_)
+    {
+        Complex* c = new Complex;
+        c = SCAST_COMPLEX(c->convert(this));
+        Complex* d = SCAST_COMPLEX(c->convert(rtmp2));
+        return c->expp(d);
+    }
+    else
+    {
+        Float* tmpf = new Float;
+        tmpf = SCAST_FLOAT(tmpf->convert(rtmp2));
+        return new Float(pow(SCAST_FLOAT(tmpf->convert(this))->number_, tmpf->number_));
+    }
 }
 
 Number* Rational::sqt()
 {
-    Float* res = new Float;
-    Float* tmp2 = SCAST_FLOAT(res->convert(this));
-    if (tmp2->number_>0.0)
-    {
-        res->number_ = sqrt(tmp2->number_);
-        delete tmp2;
-        return res;
-    }
-    else if ((fabs(tmp2->number_)-0.0)<1e-20)
-    {
-        res->number_ = 0.0;
-        delete tmp2;
-        return res;
-    }
+    if (!num_.sgn_) return new Float(sqrt((double)num_/(double)den_));
     else
     {
-        //cout<<"IMHERE "<<tmp2->number_<<endl;
         Complex* resc = new Complex;
         Float* real = new Float(0.0);
-        //cout<<"sqrt: "<<sqrt(fabs(tmp2->number_))<<endl;
-        Float* imag = new Float(sqrt(fabs(tmp2->number_)));
+        Float* imag = new Float(sqrt(fabs(SCAST_FLOAT(real->convert(this))->number_)));
         resc->real_ = real; resc->imag_ = imag; resc->exact_=false;
-        //cout<<"AA ";resc->print();
-        delete res;
-        delete tmp2;
         return resc;
     }
 }

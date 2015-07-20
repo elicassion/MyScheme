@@ -86,10 +86,10 @@ Number *Float::div(Number *number2)
 
 void Float::print()
 {
-    if ((fabs(number_)<=1e-20 || fabs(number_)>=1e20) && fabs(number_)>1e-300)
-        cout<<resetiosflags(ios::fixed)<<setprecision(30)<<number_;
+    if ((fabs(number_)<=1e-10 || fabs(number_)>=1e10) && fabs(number_)>1e-300)
+        cout<<resetiosflags(ios::fixed)<<setprecision(10)<<number_;
     else
-        cout<<fixed<<setprecision(30)<<number_;
+        cout<<fixed<<setprecision(10)<<number_;
 }
 
 Float *Float::from_string(char *expression)
@@ -276,3 +276,33 @@ Number* Float::asinn() { return new Float(asin(number_)); }
 Number* Float::acoss() { return new Float(acos(number_)); }
 
 Number* Float::atann() { return new Float(atan(number_)); }
+
+Boolean* Float::eql(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    return new Boolean(fabs(number_-tmp2->number_)<1e-307);
+}
+
+Boolean* Float::monoinc(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    return new Boolean(tmp2->number_>number_);
+}
+
+Boolean* Float::mononondec(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    return new Boolean(tmp2->number_>=number_);
+}
+
+Boolean* Float::monodec(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    return new Boolean(tmp2->number_<number_);
+}
+
+Boolean* Float::monononinc(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    return new Boolean(tmp2->number_<=number_);
+}

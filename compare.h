@@ -909,6 +909,206 @@ class Atann:public Opt{
     }
 };
 
+class Eql:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt<2)
+            assert(0 && "parameter at least 2");
+		SchemeUnit *res = new Boolean,*last;
+		Number *opr1;
+		Number *opr2 ,*conv;
+		do
+		{
+			last=res;
+			opr1 = SCAST_NUMBER(con->car);
+			opr2 = SCAST_NUMBER(con->cdr->car);
+			con=con->cdr;
+			if(opr1->type_>opr2->type_)
+            {
+                res = opr1->eql(conv=opr1->convert(opr2));
+            }
+            else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+            {
+                res = opr1->eql(conv = opr1->convert(opr2));
+            }
+			else
+            {
+                res = (conv=opr2->convert(opr1))->eql(opr2);
+            }
+			delete last;
+			delete conv;
+		}while(con->cdr);
+		return res;
+    }
+};
+
+class Monoinc:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt<2)
+            assert(0 && "parameter at least 2");
+		SchemeUnit *res = new Boolean,*last;
+		Number *opr1;
+		Number *opr2 ,*conv;
+		do
+		{
+			last=res;
+			opr1 = SCAST_NUMBER(con->car);
+			opr2 = SCAST_NUMBER(con->cdr->car);
+			con=con->cdr;
+			if(opr1->type_>opr2->type_)
+            {
+                res = opr1->monoinc(conv=opr1->convert(opr2));
+            }
+            else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+            {
+                res = opr1->monoinc(conv = opr1->convert(opr2));
+            }
+			else
+            {
+                res = (conv=opr2->convert(opr1))->monoinc(opr2);
+            }
+			delete last;
+			delete conv;
+		}while(con->cdr);
+		return res;
+    }
+};
+
+class Mononondec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt<2)
+            assert(0 && "parameter at least 2");
+		SchemeUnit *res = new Boolean,*last;
+		Number *opr1;
+		Number *opr2 ,*conv;
+		do
+		{
+			last=res;
+			opr1 = SCAST_NUMBER(con->car);
+			opr2 = SCAST_NUMBER(con->cdr->car);
+			con=con->cdr;
+			if(opr1->type_>opr2->type_)
+            {
+                res = opr1->mononondec(conv=opr1->convert(opr2));
+            }
+            else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+            {
+                res = opr1->mononondec(conv = opr1->convert(opr2));
+            }
+			else
+            {
+                res = (conv=opr2->convert(opr1))->mononondec(opr2);
+            }
+			delete last;
+			delete conv;
+		}while(con->cdr);
+		return res;
+    }
+};
+
+class Monodec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt<2)
+            assert(0 && "parameter at least 2");
+		SchemeUnit *res = new Boolean,*last;
+		Number *opr1;
+		Number *opr2 ,*conv;
+		do
+		{
+			last=res;
+			opr1 = SCAST_NUMBER(con->car);
+			opr2 = SCAST_NUMBER(con->cdr->car);
+			con=con->cdr;
+			if(opr1->type_>opr2->type_)
+            {
+                res = opr1->monodec(conv=opr1->convert(opr2));
+            }
+            else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+            {
+                res = opr1->monodec(conv = opr1->convert(opr2));
+            }
+			else
+            {
+                res = (conv=opr2->convert(opr1))->monodec(opr2);
+            }
+			delete last;
+			delete conv;
+		}while(con->cdr);
+		return res;
+    }
+};
+
+class Monononinc:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt<2)
+            assert(0 && "parameter at least 2");
+		SchemeUnit *res = new Boolean,*last;
+		Number *opr1;
+		Number *opr2 ,*conv;
+		do
+		{
+			last=res;
+			opr1 = SCAST_NUMBER(con->car);
+			opr2 = SCAST_NUMBER(con->cdr->car);
+			con=con->cdr;
+			if(opr1->type_>opr2->type_)
+            {
+                res = opr1->monononinc(conv=opr1->convert(opr2));
+            }
+            else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+            {
+                res = opr1->monononinc(conv = opr1->convert(opr2));
+            }
+			else
+            {
+                res = (conv=opr2->convert(opr1))->monononinc(opr2);
+            }
+			delete last;
+			delete conv;
+		}while(con->cdr);
+		return res;
+    }
+};
+
 class Nott:public Opt{
     SchemeUnit* calc (Cons *con)
     {
@@ -926,5 +1126,6 @@ class Nott:public Opt{
         return res;
     }
 };
+
 
 #endif // compare_h

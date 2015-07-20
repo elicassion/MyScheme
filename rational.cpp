@@ -399,3 +399,32 @@ Number* Rational::atann()
     delete tmp2;
     return res;
 }
+
+Boolean* Rational::eql(Number* number2)
+{
+    Rational* dif = SCAST_RATIONAL(sub(number2));
+    return new Boolean(dif->num_==ZERO_);
+}
+
+Boolean* Rational::monoinc(Number* number2)
+{
+    Rational* dif = SCAST_RATIONAL(sub(number2));
+    return new Boolean(dif->num_.sgn_);
+}
+
+Boolean* Rational::mononondec(Number* number2)
+{
+    Rational* dif = SCAST_RATIONAL(sub(number2));
+    return new Boolean((dif->num_.sgn_) || (!dif->num_.sgn_ && dif->num_==ZERO_));
+}
+
+Boolean* Rational::monodec(Number* number2)
+{
+    Rational* dif = SCAST_RATIONAL(sub(number2));
+    return new Boolean(!dif->num_.sgn_ &&  dif->num_!=ZERO_);
+}
+Boolean* Rational::monononinc(Number* number2)
+{
+    Rational* dif = SCAST_RATIONAL(sub(number2));
+    return new Boolean(!dif->num_.sgn_);
+}

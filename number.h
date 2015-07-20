@@ -50,6 +50,11 @@ public:
 	virtual Number* asinn() =0;
 	virtual Number* acoss() =0;
 	virtual Number* atann() =0;
+	virtual Boolean* eql(Number* number2) =0;
+	virtual Boolean* monoinc(Number* number2) =0;
+	virtual Boolean* mononondec(Number* number2) =0;
+	virtual Boolean* monodec(Number* number2) =0;
+	virtual Boolean* monononinc(Number* number2) =0;
 	virtual void print() = 0;
 };
 

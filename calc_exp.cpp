@@ -46,6 +46,11 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"asin")==0)opt=new Asinn();
 		else if(strcmp(tk1,"acos")==0)opt=new Acoss();
 		else if(strcmp(tk1,"atan")==0)opt=new Atann();
+		else if(strcmp(tk1,"=")==0)opt=new Eql();
+		else if(strcmp(tk1,"<")==0)opt=new Monoinc();
+		else if(strcmp(tk1,"<=")==0)opt=new Mononondec();
+		else if(strcmp(tk1,">")==0)opt=new Monodec();
+		else if(strcmp(tk1,">=")==0)opt=new Monononinc();
 		else if(strcmp(tk1,"not")==0)opt=new Nott();
 		else throw 0;
         while ((val = calc_exp()))

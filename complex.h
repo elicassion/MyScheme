@@ -49,6 +49,11 @@ public:
 	virtual Number* asinn();
 	virtual Number* acoss();
 	virtual Number* atann();
+	virtual Boolean* eql(Number* number2);
+	virtual Boolean* monoinc(Number* number2);
+	virtual Boolean* mononondec(Number* number2);
+	virtual Boolean* monodec(Number* number2);
+	virtual Boolean* monononinc(Number* number2);
 	virtual void print();
 	static Complex* from_string(char *expression);
 };

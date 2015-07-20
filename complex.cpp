@@ -654,3 +654,9 @@ Number* Complex::tann() { return NULL; }
 Number* Complex::asinn() { return NULL; }
 Number* Complex::acoss() { return NULL; }
 Number* Complex::atann() { return NULL; }
+
+Boolean* Complex::eql(Number* number2) { return NULL; }
+Boolean* Complex::monoinc(Number* number2) { return NULL; }
+Boolean* Complex::mononondec(Number* number2) { return NULL; }
+Boolean* Complex::monodec(Number* number2) { return NULL; }
+Boolean* Complex::monononinc(Number* number2) { return NULL; }

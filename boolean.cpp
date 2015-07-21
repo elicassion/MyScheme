@@ -18,3 +18,13 @@ void Boolean::print()
     if (value_) cout<<"#t";
     else cout<<"#f";
 }
+
+SchemeUnit* Boolean::isInteger() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isRational() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isReal() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isComplex() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isNumber() { return new Boolean(false); }

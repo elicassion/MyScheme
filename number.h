@@ -17,6 +17,7 @@ public:
 	virtual ~Number(){}
 
 	virtual SchemeUnit* nott();
+	virtual SchemeUnit* isNumber();
 
 	virtual Number* convert(Number* number2) = 0;
 	virtual Number* add(Number* number2)  = 0;
@@ -41,7 +42,8 @@ public:
 	virtual Number* denpart() =0;
 	virtual Number* rpart() =0;
 	virtual Number* ipart() =0;
-	virtual Boolean* isexact() =0;
+	virtual SchemeUnit* isExact() =0;
+	virtual SchemeUnit* isInexact() =0;
 	virtual Number* exttoinext() =0;
 	virtual Number* inexttoext() =0;
 	virtual Number* sinn() =0;
@@ -50,11 +52,20 @@ public:
 	virtual Number* asinn() =0;
 	virtual Number* acoss() =0;
 	virtual Number* atann() =0;
-	virtual Boolean* eql(Number* number2) =0;
-	virtual Boolean* monoinc(Number* number2) =0;
-	virtual Boolean* mononondec(Number* number2) =0;
-	virtual Boolean* monodec(Number* number2) =0;
-	virtual Boolean* monononinc(Number* number2) =0;
+	virtual SchemeUnit* eql(Number* number2) =0;
+	virtual SchemeUnit* monoinc(Number* number2) =0;
+	virtual SchemeUnit* mononondec(Number* number2) =0;
+	virtual SchemeUnit* monodec(Number* number2) =0;
+	virtual SchemeUnit* monononinc(Number* number2) =0;
+	virtual SchemeUnit* isZero() =0;
+	virtual SchemeUnit* isNegative() =0;
+	virtual SchemeUnit* isPositive() =0;
+	virtual SchemeUnit* isOdd() =0;
+	virtual SchemeUnit* isEven() =0;
+	virtual SchemeUnit* isInteger() =0;
+    virtual SchemeUnit* isRational() =0;
+    virtual SchemeUnit* isReal() =0;
+    virtual SchemeUnit* isComplex() =0;
 	virtual void print() = 0;
 };
 

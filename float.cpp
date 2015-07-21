@@ -225,44 +225,31 @@ Number* Float::rpart() {return new Float(number_); }
 
 Number* Float::ipart() {return new Float(0.0); }
 
-Boolean* Float::isexact() { return new Boolean(false);}
+SchemeUnit* Float::isExact() { return new Boolean(false); }
+
+SchemeUnit* Float::isInexact() { return new Boolean(true); }
 
 Number* Float::exttoinext() { return new Float(number_); }
 
 Number* Float::inexttoext()
 {
-    if (fabs(nearbyint(number_)-number_)<1e-300)
+    double c_number_ = number_;
+    double bs = 1.0;
+    while(fabs(c_number_-nearbyint(c_number_))>1e-300)
     {
-        stringstream ss1;
-        ss1<<fixed<<setprecision(5)<<number_;
-        string s1;
-        ss1>>s1;
-        int dot_pos_1 = s1.find(".");
-        string num1_s = s1.substr(0,dot_pos_1);
-        BigInt num1(num1_s);
-        return new Rational(num1,ONE_);
+        c_number_*=2;
+        bs*=2;
     }
-    double *px = &number_;
-    long long int* py=reinterpret_cast<long long int*>(px);
-    long long int y=*py;
-    long long int p=1;
-    bool v[100]={0};
-    for (int i=1;i<=64;++i) { v[i] = y&p; y>>=1; }
-    int tmp=0;
-    for (int i=63;i>=53;--i) { tmp<<=1; tmp+=v[i]; }
-    tmp-=1022;
-    for (int i=1;i<=11;++i) { v[52+i] = tmp&p; tmp>>=1; }
-    long long int i_num=0;
-    for (int i=63;i>=1;--i) { i_num<<=1; i_num+=v[i]; }
-    string s_num="";
-    while (i_num!=0)
-    {
-        s_num+=(char)(i_num%10+'0');
-        i_num/=10;
-    }
-    std::reverse(s_num.begin(),s_num.end());
-    BigInt num = s_num;
-    return new Rational(num,BASE_);
+    stringstream ss1,ss2;
+    string s1,s2;
+    ss1<<fixed<<setprecision(5)<<c_number_;
+    ss2<<fixed<<setprecision(5)<<bs;
+    ss1>>s1; ss2>>s2;
+    s1=s1.substr(0,s1.find("."));
+    s2=s2.substr(0,s2.find("."));
+    BigInt num(s1),den(s2);
+    return new Rational(num,den);
+
 }
 
 Number* Float::sinn() { return new Float(sin(number_)); }
@@ -277,32 +264,79 @@ Number* Float::acoss() { return new Float(acos(number_)); }
 
 Number* Float::atann() { return new Float(atan(number_)); }
 
-Boolean* Float::eql(Number* number2)
+SchemeUnit* Float::eql(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(fabs(number_-tmp2->number_)<1e-307);
 }
 
-Boolean* Float::monoinc(Number* number2)
+SchemeUnit* Float::monoinc(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_>number_);
 }
 
-Boolean* Float::mononondec(Number* number2)
+SchemeUnit* Float::mononondec(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_>=number_);
 }
 
-Boolean* Float::monodec(Number* number2)
+SchemeUnit* Float::monodec(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_<number_);
 }
 
-Boolean* Float::monononinc(Number* number2)
+SchemeUnit* Float::monononinc(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_<=number_);
+}
+
+SchemeUnit* Float::isZero()
+{
+    return new Boolean(fabs(number_)<1e-307);
+}
+
+SchemeUnit* Float::isNegative()
+{
+    return new Boolean(number_<0);
+}
+
+SchemeUnit* Float::isPositive()
+{
+    return new Boolean(number_>0);
+}
+
+SchemeUnit* Float::isOdd()
+{
+    return isEven()->nott();
+}
+
+SchemeUnit* Float::isEven()
+{
+    assert(fabs(number_-nearbyint(number_))<1e-300 && "even? is only for integer");
+    double half_number_ = number_ /2.0;
+    return new Boolean(fabs(half_number_-nearbyint(half_number_))<1e-300);
+}
+
+SchemeUnit* Float::isInteger()
+{
+    return new Boolean(fabs(number_-nearbyint(number_))<1e-300);
+}
+
+SchemeUnit* Float::isRational()
+{
+    return new Boolean(true);
+}
+
+SchemeUnit* Float::isReal()
+{
+    return new Boolean(true);
+}
+
+SchemeUnit* Float::isComplex()
+{
+    return new Boolean(false);
 }

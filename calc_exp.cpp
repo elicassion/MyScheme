@@ -38,6 +38,7 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"real-part")==0)opt=new Rpart();
 		else if(strcmp(tk1,"imag-part")==0)opt=new Ipart();
 		else if(strcmp(tk1,"exact?")==0)opt=new Isexact();
+		else if(strcmp(tk1,"inexact?")==0)opt=new IsInexact();
 		else if(strcmp(tk1,"exact->inexact")==0)opt=new Exttoinext();
 		else if(strcmp(tk1,"inexact->exact")==0)opt=new Inexttoext();
 		else if(strcmp(tk1,"sin")==0)opt=new Sinn();
@@ -52,6 +53,16 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,">")==0)opt=new Monodec();
 		else if(strcmp(tk1,">=")==0)opt=new Monononinc();
 		else if(strcmp(tk1,"not")==0)opt=new Nott();
+		else if(strcmp(tk1,"zero?")==0)opt=new IsZero();
+		else if(strcmp(tk1,"negative?")==0)opt=new IsNegative();
+		else if(strcmp(tk1,"positive?")==0)opt=new IsPositive();
+		else if(strcmp(tk1,"odd?")==0)opt=new IsOdd();
+		else if(strcmp(tk1,"even?")==0)opt=new IsEven();
+		else if(strcmp(tk1,"integer?")==0)opt=new IsInteger();
+		else if(strcmp(tk1,"rational?")==0)opt=new IsRational();
+		else if(strcmp(tk1,"real?")==0)opt=new IsReal();
+		else if(strcmp(tk1,"complex?")==0)opt=new IsComplex();
+		else if(strcmp(tk1,"number?")==0)opt=new IsNumber();
 		else throw 0;
         while ((val = calc_exp()))
         {

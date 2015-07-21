@@ -9,3 +9,8 @@ SchemeUnit* Number::nott()
 {
     return new Boolean(false);
 }
+
+SchemeUnit* Number::isNumber()
+{
+    return new Boolean(true);
+}

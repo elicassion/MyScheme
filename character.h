@@ -10,6 +10,11 @@ public:
     ~Character();
 
     virtual SchemeUnit* nott();
+    virtual SchemeUnit* isInteger();
+    virtual SchemeUnit* isRational();
+    virtual SchemeUnit* isReal();
+    virtual SchemeUnit* isComplex();
+    virtual SchemeUnit* isNumber();
     virtual void print();
     static Character* from_string(char* expression);
 

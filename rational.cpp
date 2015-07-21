@@ -336,7 +336,9 @@ Number* Rational::rpart() {return new Rational(*this); }
 
 Number* Rational::ipart() {return new Rational(ZERO_,ONE_); }
 
-Boolean* Rational::isexact() { return new Boolean(true);}
+SchemeUnit* Rational::isExact() { return new Boolean(true); }
+
+SchemeUnit* Rational::isInexact() { return new Boolean(false); }
 
 Number* Rational::exttoinext()
 {
@@ -400,31 +402,77 @@ Number* Rational::atann()
     return res;
 }
 
-Boolean* Rational::eql(Number* number2)
+SchemeUnit* Rational::eql(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(dif->num_==ZERO_);
 }
 
-Boolean* Rational::monoinc(Number* number2)
+SchemeUnit* Rational::monoinc(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(dif->num_.sgn_);
 }
 
-Boolean* Rational::mononondec(Number* number2)
+SchemeUnit* Rational::mononondec(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean((dif->num_.sgn_) || (!dif->num_.sgn_ && dif->num_==ZERO_));
 }
 
-Boolean* Rational::monodec(Number* number2)
+SchemeUnit* Rational::monodec(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(!dif->num_.sgn_ &&  dif->num_!=ZERO_);
 }
-Boolean* Rational::monononinc(Number* number2)
+SchemeUnit* Rational::monononinc(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(!dif->num_.sgn_);
+}
+
+SchemeUnit* Rational::isZero()
+{
+    return new Boolean(num_==ZERO_);
+}
+
+SchemeUnit* Rational::isNegative()
+{
+    return new Boolean(num_.sgn_);
+}
+
+SchemeUnit* Rational::isPositive()
+{
+    return new Boolean(!num_.sgn_ && num_!=ZERO_);
+}
+
+SchemeUnit* Rational::isOdd()
+{
+    return isEven()->nott();
+}
+
+SchemeUnit* Rational::isEven()
+{
+    assert(den_==ONE_ && "even? is only for integer");
+    return new Boolean(num_%TWO_==ZERO_);
+}
+
+SchemeUnit* Rational::isInteger()
+{
+    return new Boolean(den_==ZERO_);
+}
+
+SchemeUnit* Rational::isRational()
+{
+    return new Boolean(true);
+}
+
+SchemeUnit* Rational::isReal()
+{
+    return new Boolean(true);
+}
+
+SchemeUnit* Rational::isComplex()
+{
+    return new Boolean(false);
 }

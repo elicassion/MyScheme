@@ -39,7 +39,8 @@ public:
 	virtual Number* denpart();
 	virtual Number* rpart();
 	virtual Number* ipart();
-	virtual Boolean* isexact();
+	virtual SchemeUnit* isExact();
+	virtual SchemeUnit* isInexact();
 	virtual Number* exttoinext();
 	virtual Number* inexttoext();
 	virtual Number* sinn();
@@ -48,11 +49,20 @@ public:
 	virtual Number* asinn();
 	virtual Number* acoss();
 	virtual Number* atann();
-	virtual Boolean* eql(Number* number2);
-	virtual Boolean* monoinc(Number* number2);
-	virtual Boolean* mononondec(Number* number2);
-	virtual Boolean* monodec(Number* number2);
-	virtual Boolean* monononinc(Number* number2);
+	virtual SchemeUnit* eql(Number* number2);
+	virtual SchemeUnit* monoinc(Number* number2);
+	virtual SchemeUnit* mononondec(Number* number2);
+	virtual SchemeUnit* monodec(Number* number2);
+	virtual SchemeUnit* monononinc(Number* number2);
+	virtual SchemeUnit* isZero();
+	virtual SchemeUnit* isNegative();
+	virtual SchemeUnit* isPositive();
+	virtual SchemeUnit* isOdd();
+	virtual SchemeUnit* isEven();
+	virtual SchemeUnit* isInteger();
+    virtual SchemeUnit* isRational();
+    virtual SchemeUnit* isReal();
+    virtual SchemeUnit* isComplex();
 	virtual void print();
 	static Float *from_string(char *expression);
 

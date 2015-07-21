@@ -31,3 +31,13 @@ SchemeUnit* Character::nott()
 {
     return new Boolean(false);
 }
+
+SchemeUnit* Character::isInteger() { return new Boolean(false); }
+
+SchemeUnit* Character::isRational() { return new Boolean(false); }
+
+SchemeUnit* Character::isReal() { return new Boolean(false); }
+
+SchemeUnit* Character::isComplex() { return new Boolean(false); }
+
+SchemeUnit* Character::isNumber() { return new Boolean(false); }

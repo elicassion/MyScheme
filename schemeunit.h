@@ -12,6 +12,11 @@ public:
     SchemeUnit() {};
     virtual ~SchemeUnit() {};
     virtual SchemeUnit* nott() =0;
+    virtual SchemeUnit* isInteger() =0;
+    virtual SchemeUnit* isRational() =0;
+    virtual SchemeUnit* isReal() =0;
+    virtual SchemeUnit* isComplex() =0;
+    virtual SchemeUnit* isNumber() =0;
     virtual void print() =0;
 };
 

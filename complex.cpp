@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstring>
 #define ABS(x) ((x)<0?(-(x)):(x))
+#define SCAST_BOOLEAN static_cast<Boolean*>(x)
 Complex::Complex(string r_s, string i_s):real_(NULL) , imag_(NULL)
 {
     //cout<<"real s: "<<r_s<<" imag s:"<<i_s<<endl;
@@ -587,7 +588,8 @@ Number* Complex::ipart()
     }
 }
 
-Boolean* Complex::isexact() { return new Boolean(exact_); }
+SchemeUnit* Complex::isExact() { return new Boolean(exact_); }
+SchemeUnit* Complex::isInexact() { return new Boolean(!exact_); }
 
 Number* Complex::exttoinext()
 {
@@ -648,15 +650,254 @@ Number* Complex::inexttoext()
     return res;
 }
 
-Number* Complex::sinn() { return NULL; }
-Number* Complex::coss() { return NULL; }
-Number* Complex::tann() { return NULL; }
-Number* Complex::asinn() { return NULL; }
-Number* Complex::acoss() { return NULL; }
-Number* Complex::atann() { return NULL; }
+Number* Complex::sinn()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = sin(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
 
-Boolean* Complex::eql(Number* number2) { return NULL; }
-Boolean* Complex::monoinc(Number* number2) { return NULL; }
-Boolean* Complex::mononondec(Number* number2) { return NULL; }
-Boolean* Complex::monodec(Number* number2) { return NULL; }
-Boolean* Complex::monononinc(Number* number2) { return NULL; }
+}
+
+Number* Complex::coss()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = cos(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+
+}
+
+Number* Complex::tann()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = tan(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+
+}
+
+Number* Complex::asinn()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = asin(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+
+}
+
+Number* Complex::acoss()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = acos(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+
+}
+
+Number* Complex::atann()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = atan(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+
+}
+
+SchemeUnit* Complex::eql(Number* number2)
+{
+    Complex* dif = SCAST_COMPLEX(sub(number2));
+    if (exact_)
+    {
+        Rational* dif_real = SCAST_RATIONAL(dif->real_);
+        Rational* dif_imag = SCAST_RATIONAL(dif->imag_);
+        return new Boolean(dif_real->num_==ZERO_ && dif_imag->num_==ZERO_);
+    }
+    else
+    {
+        Float* dif_real = SCAST_FLOAT(dif->real_);
+        Float* dif_imag = SCAST_FLOAT(dif->imag_);
+        return new Boolean(fabs(dif_real->number_-nearbyint(dif_real->number_))<1e-300
+                           && fabs(dif_imag->number_-nearbyint(dif_imag->number_))<1e-300);
+    }
+
+}
+
+SchemeUnit* Complex::monoinc(Number* number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "< is only for real");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+           && "< is only for real");
+    return real_->monoinc(tmp2->real_);
+}
+
+SchemeUnit* Complex::mononondec(Number* number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "< is only for real");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+           && "< is only for real");
+    return real_->mononondec(tmp2->real_);
+}
+
+SchemeUnit* Complex::monodec(Number* number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "< is only for real");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+           && "< is only for real");
+    return real_->monodec(tmp2->real_);
+}
+
+SchemeUnit* Complex::monononinc(Number* number2)
+{
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    assert(exact_ && tmp2->exact_ && "< is only for real");
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+           && "< is only for real");
+    return real_->monononinc(tmp2->real_);
+}
+
+SchemeUnit* Complex::isZero()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        if (tmp_real->num_!=ZERO_) return new Boolean(false);
+        else return new Boolean(true);
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isNegative()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        if (!tmp_real->num_.sgn_) return new Boolean(false);
+        else return new Boolean(true);
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isPositive()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        if (tmp_real->num_.sgn_ || tmp_real->num_==ZERO_) return new Boolean(false);
+        else return new Boolean(true);
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isOdd()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        return tmp_real->isOdd();
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isEven()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        return tmp_real->isEven();
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isInteger()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        if (tmp_real->den_!=ONE_) return new Boolean(false);
+        else return new Boolean(true);
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isRational()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        else return new Boolean(true);
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isReal()
+{
+    if (exact_)
+    {
+        Rational* tmp_real = SCAST_RATIONAL(real_);
+        Rational* tmp_imag = SCAST_RATIONAL(imag_);
+        if (tmp_imag->num_!=ZERO_) return new Boolean(false);
+        else return new Boolean(true);
+    }
+    else return new Boolean(false);
+}
+
+SchemeUnit* Complex::isComplex()
+{
+    return new Boolean(true);
+}

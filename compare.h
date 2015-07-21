@@ -760,7 +760,25 @@ class Isexact:public Opt{
 		if (cnt>1)
             assert(0 && "exact? only one parameter");
         Number *opr = SCAST_NUMBER(con->car) , *conv;
-        Boolean *res = opr->isexact() , *last;
+        SchemeUnit *res = opr->isExact() , *last;
+        return res;
+    }
+};
+
+class IsInexact:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "inexact? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isInexact() , *last;
         return res;
     }
 };
@@ -1123,6 +1141,186 @@ class Nott:public Opt{
             assert(0 && "not only one parameter");
         SchemeUnit *opr = con->car , *conv;
         SchemeUnit *res = opr->nott() , *last;
+        return res;
+    }
+};
+
+class IsZero:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "zero? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isZero() , *last;
+        return res;
+    }
+};
+
+class IsNegative:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "negative? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isNegative() , *last;
+        return res;
+    }
+};
+
+class IsPositive:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "positive? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isPositive() , *last;
+        return res;
+    }
+};
+
+class IsOdd:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "odd? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isOdd() , *last;
+        return res;
+    }
+};
+
+class IsEven:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "even? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isEven() , *last;
+        return res;
+    }
+};
+
+class IsInteger:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_>4) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "even? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isInteger() , *last;
+        return res;
+    }
+};
+
+class IsRational:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_>4) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "even? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isRational() , *last;
+        return res;
+    }
+};
+
+class IsReal:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_>4) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "even? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isReal() , *last;
+        return res;
+    }
+};
+
+class IsComplex:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_>4) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "even? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isComplex() , *last;
+        return res;
+    }
+};
+
+class IsNumber:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_>4) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "even? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        SchemeUnit *res = opr->isNumber() , *last;
         return res;
     }
 };

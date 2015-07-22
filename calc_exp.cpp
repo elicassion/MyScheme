@@ -26,6 +26,8 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"gcd")==0)opt=new Gcd();
 		else if(strcmp(tk1,"lcm")==0)opt=new Lcm();
 		else if(strcmp(tk1,"expt")==0)opt=new Expt();
+		else if(strcmp(tk1,"exp")==0)opt=new Exp();
+		else if(strcmp(tk1,"log")==0)opt=new Log();
 		else if(strcmp(tk1,"sqrt")==0)opt=new Sqrt();
 		else if(strcmp(tk1,"floor")==0)opt=new Flr();
 		else if(strcmp(tk1,"ceiling")==0)opt=new Cel();
@@ -37,6 +39,10 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"denominator")==0)opt=new Denpart();
 		else if(strcmp(tk1,"real-part")==0)opt=new Rpart();
 		else if(strcmp(tk1,"imag-part")==0)opt=new Ipart();
+		else if(strcmp(tk1,"make-rectangular")==0)opt=new MakeRec();
+		else if(strcmp(tk1,"make-polar")==0)opt=new MakePol();
+		else if(strcmp(tk1,"magnitude")==0)opt=new Magnt();
+		else if(strcmp(tk1,"angle")==0)opt=new Ang();
 		else if(strcmp(tk1,"exact?")==0)opt=new Isexact();
 		else if(strcmp(tk1,"inexact?")==0)opt=new IsInexact();
 		else if(strcmp(tk1,"exact->inexact")==0)opt=new Exttoinext();

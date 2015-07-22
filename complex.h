@@ -29,6 +29,8 @@ public:
 	virtual Number* gcd(Number *number2);
 	virtual Number* lcm(Number *number2);
 	virtual Number* expp(Number *number2);
+	virtual Number* expe();
+	virtual Number* logg();
 	virtual Number* sqt();
 	virtual Number* flr();
 	virtual Number* cel();
@@ -40,6 +42,10 @@ public:
 	virtual Number* denpart();
 	virtual Number* rpart();
 	virtual Number* ipart();
+	virtual Number* makeRec(Number* number2);
+	virtual Number* makePol(Number* number2);
+	virtual Number* magnt();
+	virtual Number* ang();
 	virtual SchemeUnit* isExact();
 	virtual SchemeUnit* isInexact();
 	virtual Number* exttoinext();

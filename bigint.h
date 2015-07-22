@@ -457,7 +457,7 @@ public:
     static BigInt lcm(const BigInt &a, const BigInt &b)
     {
         BigInt gcd_num = BigInt::gcd(a,b);
-        return a*b/gcd_num;
+        return (a*b/gcd_num).abs();
     }
 };
 

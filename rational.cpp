@@ -1,6 +1,7 @@
 #include "rational.h"
 #include "complex.h"
 #include "boolean.h"
+#include <complex>
 #include <cassert>
 #include <cstdlib>
 #include <cstdio>
@@ -224,10 +225,10 @@ Number* Rational::gcd(Number* number2)
 {
     assert ( number2->type_==1 && "gcd is only for integer" );
     Rational* tmp2 = SCAST_RATIONAL(number2);
-    if (num_ == ZERO_) return new Rational(tmp2->num_,tmp2->den_);
-    if (tmp2->num_ == ZERO_) return new Rational(num_,den_);
+    if (num_ == ZERO_) return new Rational(tmp2->num_.abs(),tmp2->den_);
+    if (tmp2->num_ == ZERO_) return new Rational(num_.abs(),den_);
     //assert ( den_==ONE_ && tmp2->den_==ONE_ && "gcd is only for integer" );
-    if (this == number2) {return new Rational(*this); }
+    if (this == number2) {return new Rational(num_.abs(),den_); }
     BigInt gcd_num = BigInt::gcd(num_,tmp2->num_);
     BigInt lcm_num = BigInt::lcm(den_,tmp2->den_);
     Rational* res = new Rational(gcd_num,lcm_num);
@@ -240,7 +241,7 @@ Number* Rational::lcm(Number* number2)
     Rational* tmp2 = SCAST_RATIONAL(number2);
     if (num_ == ZERO_ || tmp2->num_ == ZERO_) return new Rational(ZERO_,ONE_);
     //assert ( den_==ONE_ && tmp2->den_==ONE_ && "lcm is only for integer" );
-    if (this == number2) {return new Rational(*this); }
+    if (this == number2) {return new Rational(num_.abs(),den_); }
     BigInt lcm_num = BigInt::lcm(num_,tmp2->num_);
     BigInt gcd_num = BigInt::gcd(den_,tmp2->den_);
     Rational* res = new Rational(lcm_num,gcd_num);
@@ -264,6 +265,37 @@ Number* Rational::expp(Number* number2)
         Float* tmpf = new Float;
         tmpf = SCAST_FLOAT(tmpf->convert(rtmp2));
         return new Float(pow(SCAST_FLOAT(tmpf->convert(this))->number_, tmpf->number_));
+    }
+}
+
+Number* Rational::expe()
+{
+    Float* tmpf = new Float;
+    tmpf = SCAST_FLOAT(tmpf->convert(this));
+    return new Float(exp(tmpf->number_));
+}
+
+Number* Rational::logg()
+{
+    assert(num_!=ZERO_ && "undefined log0");
+    if (!num_.sgn_)
+    {
+        Float* tmpf = new Float;
+        tmpf = SCAST_FLOAT(tmpf->convert(this));
+        return new Float(log(tmpf->number_));
+    }
+    else
+    {
+        Float* tmp = new Float;
+        tmp = SCAST_FLOAT(tmp->convert(this));
+        complex<double> c_x(tmp->number_,0.0);
+        complex<double> c_res = log(c_x);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res));
+        res->imag_ = new Float(::imag(c_res));
+        delete tmp;
+        return res;
     }
 }
 
@@ -335,6 +367,40 @@ Number* Rational::denpart() { return new Rational(den_,ONE_); }
 Number* Rational::rpart() {return new Rational(*this); }
 
 Number* Rational::ipart() {return new Rational(ZERO_,ONE_); }
+
+Number* Rational::makeRec(Number* number2)
+{
+    Rational* tmp2 = SCAST_RATIONAL(number2);
+    Complex* c = new Complex;
+    c->exact_ = true;
+    c->real_ = new Rational(num_,den_);
+    c->imag_ = new Rational(tmp2->num_,tmp2->den_);
+    return c;
+}
+
+Number* Rational::makePol(Number* number2)
+{
+    Float* tmp1 = SCAST_FLOAT(exttoinext());
+    Float* tmp2 = SCAST_FLOAT(number2->exttoinext());
+    complex<double> c_res = polar(tmp1->number_,tmp2->number_);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete tmp1;
+    delete tmp2;
+    return res;
+}
+
+Number* Rational::magnt()
+{
+    return new Rational(num_,den_);
+}
+
+Number* Rational::ang()
+{
+    return new Rational(ZERO_,ONE_);
+}
 
 SchemeUnit* Rational::isExact() { return new Boolean(true); }
 

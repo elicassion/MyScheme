@@ -3,6 +3,7 @@
 #include "complex.h"
 #include "boolean.h"
 #include <iostream>
+#include <complex>
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
@@ -144,12 +145,12 @@ Number* Float::gcd(Number *number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     if (fabs(number_)<1e-300)
-        return new Float(tmp2->number_);
+        return new Float(fabs(tmp2->number_));
     if (fabs(tmp2->number_)<1e-300)
-        return new Float(number_);
+        return new Float(fabs(number_));
     Rational* r_tmp2 = SCAST_RATIONAL(tmp2->inexttoext());
     Rational* r_tmp1 = SCAST_RATIONAL(inexttoext());
-    return convert(r_tmp1->lcm(r_tmp2));
+    return convert(r_tmp1->gcd(r_tmp2));
 }
 
 Number* Float::lcm(Number *number2)
@@ -159,7 +160,7 @@ Number* Float::lcm(Number *number2)
         return new Float(0.0);
     Rational* r_tmp2 = SCAST_RATIONAL(tmp2->inexttoext());
     Rational* r_tmp1 = SCAST_RATIONAL(inexttoext());
-    return convert(r_tmp1->rem(r_tmp2));
+    return convert(r_tmp1->lcm(r_tmp2));
 }
 
 Number* Float::expp(Number *number2)
@@ -173,6 +174,29 @@ Number* Float::expp(Number *number2)
         c = SCAST_COMPLEX(c->convert(this));
         Complex* d = SCAST_COMPLEX(c->convert(tmp2));
         return c->expp(d);
+    }
+}
+
+Number* Float::expe()
+{
+    return new Float(exp(number_));
+}
+
+Number* Float::logg()
+{
+    if (number_>0)
+    {
+        return new Float(log(number_));
+    }
+    else
+    {
+        complex<double> c_x(number_,0.0);
+        complex<double> c_res = log(c_x);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res));
+        res->imag_ = new Float(::imag(c_res));
+        return res;
     }
 }
 
@@ -224,6 +248,37 @@ Number* Float::denpart()
 Number* Float::rpart() {return new Float(number_); }
 
 Number* Float::ipart() {return new Float(0.0); }
+
+Number* Float::makeRec(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    Complex* c = new Complex;
+    c->exact_ = false;
+    c->real_ = new Float(number_);
+    c->imag_ = new Float(tmp2->number_);
+    return c;
+}
+
+Number* Float::makePol(Number* number2)
+{
+    Float* tmp2 = SCAST_FLOAT(number2);
+    complex<double> c_res = polar(number_,tmp2->number_);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    return res;
+}
+
+Number* Float::magnt()
+{
+    return new Float(number_);
+}
+
+Number* Float::ang()
+{
+    return new Float(0.0);
+}
 
 SchemeUnit* Float::isExact() { return new Boolean(false); }
 

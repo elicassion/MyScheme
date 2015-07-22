@@ -31,6 +31,8 @@ public:
 	virtual Number* gcd(Number* number2) = 0;
 	virtual Number* lcm(Number* number2) = 0;
 	virtual Number* expp(Number* number2) = 0;
+	virtual Number* expe() =0;
+	virtual Number* logg() =0;
 	virtual Number* sqt() = 0;
 	virtual Number* flr() = 0;
 	virtual Number* cel() = 0;
@@ -42,6 +44,10 @@ public:
 	virtual Number* denpart() =0;
 	virtual Number* rpart() =0;
 	virtual Number* ipart() =0;
+	virtual Number* makeRec(Number* number2) =0;
+	virtual Number* makePol(Number* number2) =0;
+	virtual Number* magnt() =0;
+	virtual Number* ang() =0;
 	virtual SchemeUnit* isExact() =0;
 	virtual SchemeUnit* isInexact() =0;
 	virtual Number* exttoinext() =0;

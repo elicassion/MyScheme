@@ -421,6 +421,32 @@ Number* Complex::expp(Number *number2)
     return res;
 }
 
+Number* Complex::expe()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = exp(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+}
+
+Number* Complex::logg()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    complex<double> c_res = log(c_a);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete a;
+    return res;
+}
+
 Number* Complex::sqt()
 {
     Complex* C_HALF_ = new Complex;
@@ -586,6 +612,65 @@ Number* Complex::ipart()
         Float* tmp = SCAST_FLOAT(imag_);
         return new Float(*tmp);
     }
+}
+
+Number* Complex::makeRec(Number* number2)
+{
+    assert(exact_ && "make-rectangular is only for real");
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    Rational* tmp1_real = SCAST_RATIONAL(real_);
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_real = SCAST_RATIONAL(tmp2->real_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "make-rectangular is only for real");
+    Complex* res = new Complex;
+    res->exact_ = true;
+    res->real_ = new Rational(tmp1_real->num_,tmp1_real->den_);
+    res->imag_ = new Rational(tmp2_real->num_,tmp2_real->den_);
+    return res;
+
+}
+
+Number* Complex::makePol(Number* number2)
+{
+    assert(exact_ && "make-rectangular is only for real");
+    Complex* tmp2 = SCAST_COMPLEX(number2);
+    Rational* tmp1_real = SCAST_RATIONAL(real_);
+    Rational* tmp1_imag = SCAST_RATIONAL(imag_);
+    Rational* tmp2_real = SCAST_RATIONAL(tmp2->real_);
+    Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+    assert(tmp1_imag->num_ == ZERO_ && tmp2_imag->num_ == ZERO_
+           && "make-rectangular is only for real");
+    Float* tmp = new Float;
+    Float* f_tmp1 = SCAST_FLOAT(tmp->convert(tmp1_real));
+    Float* f_tmp2 = SCAST_FLOAT(tmp->convert(tmp2_real));
+    complex<double> c_res = polar(f_tmp1->number_,f_tmp2->number_);
+    Complex* res = new Complex;
+    res->exact_ = false;
+    res->real_ = new Float(::real(c_res));
+    res->imag_ = new Float(::imag(c_res));
+    delete f_tmp1;
+    delete f_tmp2;
+    return res;
+}
+
+Number* Complex::magnt()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    Float* res = new Float(abs(c_a));
+    delete a;
+    return res;
+}
+
+Number* Complex::ang()
+{
+    Complex* a = SCAST_COMPLEX(exttoinext());
+    complex<double> c_a(SCAST_FLOAT(a->real_)->number_,SCAST_FLOAT(a->imag_)->number_);
+    Float* res = new Float(arg(c_a));
+    delete a;
+    return res;
 }
 
 SchemeUnit* Complex::isExact() { return new Boolean(exact_); }

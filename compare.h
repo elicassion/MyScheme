@@ -473,6 +473,42 @@ class Expt:public Opt{
     }
 };
 
+class Exp:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "exp only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        Number *res = opr->expe() , *last;
+        return res;
+    }
+};
+
+class Log:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "exp only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        Number *res = opr->logg() , *last;
+        return res;
+    }
+};
+
 class Sqrt:public Opt{
     SchemeUnit* calc (Cons *con)
     {
@@ -743,6 +779,108 @@ class Ipart:public Opt{
             assert(0 && "imag-part only one parameter");
         Number *opr = SCAST_NUMBER(con->car) , *conv;
         Number *res = opr->ipart() , *last;
+        return res;
+    }
+};
+
+class MakeRec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>2)
+            assert(0 && "make-rectangular only two parameter");
+        Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
+        assert((opr1->type_ <=2 && opr2->type_ <=2)
+               && "make-rectangular is only for real");
+        Number *res , *last;
+        if (opr1->type_ > opr2->type_)
+        {
+            res = opr1->makeRec(conv=opr1->convert(opr2));
+        }
+        else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+        {
+            res = opr1->makeRec(conv = opr1->convert(opr2));
+        }
+        else
+        {
+            res = (conv=opr2->convert(opr1))->makeRec(opr2);
+        }
+        delete conv;
+        return res;
+    }
+};
+
+class MakePol:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>2)
+            assert(0 && "make-polar only two parameter");
+        Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
+        assert((opr1->type_ <=2 && opr2->type_ <=2)
+               && "make-polar is only for real");
+        Number *res , *last;
+        if (opr1->type_ > opr2->type_)
+        {
+            res = opr1->makePol(conv=opr1->convert(opr2));
+        }
+        else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
+        {
+            res = opr1->makePol(conv = opr1->convert(opr2));
+        }
+        else
+        {
+            res = (conv=opr2->convert(opr1))->makePol(opr2);
+        }
+        delete conv;
+        return res;
+    }
+};
+
+class Magnt:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "magnitude only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        Number *res = opr->magnt() , *last;
+        return res;
+    }
+};
+
+class Ang:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+		int cnt=0;
+		for(;tmp;tmp=tmp->cdr)
+		{
+			if (tmp->car->unitType_!=2) {throw 0;}
+			cnt++;
+		}
+		if (cnt>1)
+            assert(0 && "angle only one parameter");
+        Number *opr = SCAST_NUMBER(con->car) , *conv;
+        Number *res = opr->ang() , *last;
         return res;
     }
 };

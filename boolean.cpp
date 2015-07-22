@@ -28,3 +28,7 @@ SchemeUnit* Boolean::isReal() { return new Boolean(false); }
 SchemeUnit* Boolean::isComplex() { return new Boolean(false); }
 
 SchemeUnit* Boolean::isNumber() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isChar() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isString() { return new Boolean(false); }

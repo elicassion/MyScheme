@@ -9,6 +9,7 @@
 #include "complex.h"
 #include "number.h"
 #include "character.h"
+#include "mystring.h"
 
 #include <cmath>
 #include <iomanip>
@@ -1105,7 +1106,7 @@ class Eql:public Opt{
     }
 };
 
-class Monoinc:public Opt{
+class MoInc:public Opt{
     SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
@@ -1128,15 +1129,15 @@ class Monoinc:public Opt{
 			con=con->cdr;
 			if(opr1->type_>opr2->type_)
             {
-                res = opr1->monoinc(conv=opr1->convert(opr2));
+                res = opr1->moInc(conv=opr1->convert(opr2));
             }
             else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
             {
-                res = opr1->monoinc(conv = opr1->convert(opr2));
+                res = opr1->moInc(conv = opr1->convert(opr2));
             }
 			else
             {
-                res = (conv=opr2->convert(opr1))->monoinc(opr2);
+                res = (conv=opr2->convert(opr1))->moInc(opr2);
             }
 			delete last;
 			delete conv;
@@ -1145,7 +1146,7 @@ class Monoinc:public Opt{
     }
 };
 
-class Mononondec:public Opt{
+class NonDec:public Opt{
     SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
@@ -1168,15 +1169,15 @@ class Mononondec:public Opt{
 			con=con->cdr;
 			if(opr1->type_>opr2->type_)
             {
-                res = opr1->mononondec(conv=opr1->convert(opr2));
+                res = opr1->nonDec(conv=opr1->convert(opr2));
             }
             else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
             {
-                res = opr1->mononondec(conv = opr1->convert(opr2));
+                res = opr1->nonDec(conv = opr1->convert(opr2));
             }
 			else
             {
-                res = (conv=opr2->convert(opr1))->mononondec(opr2);
+                res = (conv=opr2->convert(opr1))->nonDec(opr2);
             }
 			delete last;
 			delete conv;
@@ -1185,7 +1186,7 @@ class Mononondec:public Opt{
     }
 };
 
-class Monodec:public Opt{
+class MoDec:public Opt{
     SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
@@ -1208,15 +1209,15 @@ class Monodec:public Opt{
 			con=con->cdr;
 			if(opr1->type_>opr2->type_)
             {
-                res = opr1->monodec(conv=opr1->convert(opr2));
+                res = opr1->moDec(conv=opr1->convert(opr2));
             }
             else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
             {
-                res = opr1->monodec(conv = opr1->convert(opr2));
+                res = opr1->moDec(conv = opr1->convert(opr2));
             }
 			else
             {
-                res = (conv=opr2->convert(opr1))->monodec(opr2);
+                res = (conv=opr2->convert(opr1))->moDec(opr2);
             }
 			delete last;
 			delete conv;
@@ -1225,7 +1226,7 @@ class Monodec:public Opt{
     }
 };
 
-class Monononinc:public Opt{
+class NonInc:public Opt{
     SchemeUnit* calc (Cons *con)
     {
         Cons *tmp=con;
@@ -1248,15 +1249,15 @@ class Monononinc:public Opt{
 			con=con->cdr;
 			if(opr1->type_>opr2->type_)
             {
-                res = opr1->monononinc(conv=opr1->convert(opr2));
+                res = opr1->nonInc(conv=opr1->convert(opr2));
             }
             else if (opr1->type_ == opr2->type_ && opr1->exact_ < opr2->exact_)
             {
-                res = opr1->monononinc(conv = opr1->convert(opr2));
+                res = opr1->nonInc(conv = opr1->convert(opr2));
             }
 			else
             {
-                res = (conv=opr2->convert(opr1))->monononinc(opr2);
+                res = (conv=opr2->convert(opr1))->nonInc(opr2);
             }
 			delete last;
 			delete conv;
@@ -1384,8 +1385,8 @@ class IsInteger:public Opt{
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "even? only one parameter");
-        Number *opr = SCAST_NUMBER(con->car) , *conv;
+            assert(0 && "integer? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
         SchemeUnit *res = opr->isInteger() , *last;
         return res;
     }
@@ -1402,8 +1403,8 @@ class IsRational:public Opt{
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "even? only one parameter");
-        Number *opr = SCAST_NUMBER(con->car) , *conv;
+            assert(0 && "rational? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
         SchemeUnit *res = opr->isRational() , *last;
         return res;
     }
@@ -1420,8 +1421,8 @@ class IsReal:public Opt{
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "even? only one parameter");
-        Number *opr = SCAST_NUMBER(con->car) , *conv;
+            assert(0 && "real? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
         SchemeUnit *res = opr->isReal() , *last;
         return res;
     }
@@ -1438,8 +1439,8 @@ class IsComplex:public Opt{
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "even? only one parameter");
-        Number *opr = SCAST_NUMBER(con->car) , *conv;
+            assert(0 && "complex? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
         SchemeUnit *res = opr->isComplex() , *last;
         return res;
     }
@@ -1456,12 +1457,550 @@ class IsNumber:public Opt{
 			cnt++;
 		}
 		if (cnt>1)
-            assert(0 && "even? only one parameter");
-        Number *opr = SCAST_NUMBER(con->car) , *conv;
+            assert(0 && "number? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
         SchemeUnit *res = opr->isNumber() , *last;
         return res;
     }
 };
 
+class IsChar:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_>4) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
+        SchemeUnit *res = opr->isChar() , *last;
+        return res;
+    }
+};
+
+class IsString:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_>4) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "string? only one parameter");
+        SchemeUnit *opr = con->car , *conv;
+        SchemeUnit *res = opr->isString() , *last;
+        return res;
+    }
+};
+
+class ChEql:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chEql(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChMoInc:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chMoInc(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChNonDec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chNonDec(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChMoDec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chMoDec(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChNonInc:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chNonInc(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChCiEql:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chCiEql(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChCiMoInc:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chCiMoInc(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChCiNonDec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chCiNonDec(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChCiMoDec:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chCiMoDec(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChCiNonInc:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt<2)
+            assert(0 && "parameter at least 2");
+        SchemeUnit *res = new Boolean,*last;
+        Character *opr1;
+        Character *opr2;
+        do
+        {
+            last=res;
+            opr1 = SCAST_CHARACTER(con->car);
+            opr2 = SCAST_CHARACTER(con->cdr->car);
+            con=con->cdr;
+            res = opr1->chCiNonInc(opr2);
+            delete last;
+        }while(con->cdr);
+        return res;
+    }
+};
+
+class ChIsAlpha:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char-alphabetic? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->isChar();
+        return res;
+    }
+};
+
+class ChIsNum:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char-numeric? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chIsNum();
+        return res;
+    }
+};
+
+class ChIsSpace:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char-whitespace? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chIsSpace();
+        return res;
+    }
+};
+
+class ChIsUpCase:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char-upper-case? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chIsUpCase();
+        return res;
+    }
+};
+
+class ChIsLowCase:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char-lower-case? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chIsLowCase();
+        return res;
+    }
+};
+
+class ChToInt:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char->integer? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chToInt();
+        return res;
+    }
+};
+
+class IntToCh:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=2) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "integer->char? only one parameter");
+        Number *opr = SCAST_NUMBER(con->car);
+        SchemeUnit *res = opr->intToCh();
+        return res;
+    }
+};
+
+class ChToUp:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char->integer? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chToUp();
+        return res;
+    }
+};
+
+class ChToDown:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>1)
+            assert(0 && "char->integer? only one parameter");
+        Character *opr = SCAST_CHARACTER(con->car);
+        SchemeUnit *res = opr->chToDown();
+        return res;
+    }
+};
+
+class MakeString:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_>3) {throw 0;}
+            cnt++;
+        }
+        if (cnt>2 || cnt<1)
+            assert(0 && "make-string only one or two parameters");
+        else if (cnt == 2)
+        {
+            SchemeUnit* opr1 = con->car;
+            SchemeUnit* opr2 = con->cdr->car;
+            if (opr1->unitType_!=2 && opr2->unitType_!=3)
+                assert(0 && "make-string parameter type error");
+            Number* tmp1 = SCAST_NUMBER(opr1);
+            Character* tmp2 = SCAST_CHARACTER(opr2);
+            SchemeUnit* res = String::makeString(tmp1,tmp2);
+            return res;
+        }
+        else if (cnt == 1)
+        {
+            SchemeUnit* opr1 = con->car;
+            if (opr1->unitType_!=2)
+                assert(0 && "make-string parameter type error");
+            Number* tmp1 = SCAST_NUMBER(opr1);
+            Character* tmp2 = new Character('\0');
+            SchemeUnit* res = String::makeString(tmp1,tmp2);
+            return res;
+        }
+    }
+};
+
+class FormString:public Opt{
+    SchemeUnit *calc(Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_!=3) {throw 0;}
+            cnt++;
+        }
+        if (cnt==0)
+            assert(0 && "parameter empty");
+        String *res = new String(""),*last;
+        Character *opr;
+        for(;con;con=con->cdr)
+        {
+            opr=SCAST_CHARACTER(con->car);
+            last=res;
+            res = res->formString(opr);
+            delete last;
+        }
+        return res;
+    }
+};
 
 #endif // compare_h

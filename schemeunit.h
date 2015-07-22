@@ -17,6 +17,8 @@ public:
     virtual SchemeUnit* isReal() =0;
     virtual SchemeUnit* isComplex() =0;
     virtual SchemeUnit* isNumber() =0;
+    virtual SchemeUnit* isChar() =0;
+    virtual SchemeUnit* isString() =0;
     virtual void print() =0;
 };
 

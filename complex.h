@@ -57,10 +57,10 @@ public:
 	virtual Number* acoss();
 	virtual Number* atann();
 	virtual SchemeUnit* eql(Number* number2);
-	virtual SchemeUnit* monoinc(Number* number2);
-	virtual SchemeUnit* mononondec(Number* number2);
-	virtual SchemeUnit* monodec(Number* number2);
-	virtual SchemeUnit* monononinc(Number* number2);
+	virtual SchemeUnit* moInc(Number* number2);
+	virtual SchemeUnit* nonDec(Number* number2);
+	virtual SchemeUnit* moDec(Number* number2);
+	virtual SchemeUnit* nonInc(Number* number2);
 	virtual SchemeUnit* isZero();
 	virtual SchemeUnit* isNegative();
 	virtual SchemeUnit* isPositive();

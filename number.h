@@ -3,6 +3,7 @@
 
 #include "schemeunit.h"
 #include "boolean.h"
+#include "character.h"
 #define SCAST_NUMBER(x) static_cast<Number*>(x)
 
 class Number:public SchemeUnit {
@@ -18,6 +19,9 @@ public:
 
 	virtual SchemeUnit* nott();
 	virtual SchemeUnit* isNumber();
+	virtual SchemeUnit* isChar();
+    virtual SchemeUnit* isString();
+    virtual SchemeUnit* intToCh();
 
 	virtual Number* convert(Number* number2) = 0;
 	virtual Number* add(Number* number2)  = 0;
@@ -59,10 +63,10 @@ public:
 	virtual Number* acoss() =0;
 	virtual Number* atann() =0;
 	virtual SchemeUnit* eql(Number* number2) =0;
-	virtual SchemeUnit* monoinc(Number* number2) =0;
-	virtual SchemeUnit* mononondec(Number* number2) =0;
-	virtual SchemeUnit* monodec(Number* number2) =0;
-	virtual SchemeUnit* monononinc(Number* number2) =0;
+	virtual SchemeUnit* moInc(Number* number2) =0;
+	virtual SchemeUnit* nonDec(Number* number2) =0;
+	virtual SchemeUnit* moDec(Number* number2) =0;
+	virtual SchemeUnit* nonInc(Number* number2) =0;
 	virtual SchemeUnit* isZero() =0;
 	virtual SchemeUnit* isNegative() =0;
 	virtual SchemeUnit* isPositive() =0;

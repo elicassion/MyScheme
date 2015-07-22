@@ -54,10 +54,10 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"acos")==0)opt=new Acoss();
 		else if(strcmp(tk1,"atan")==0)opt=new Atann();
 		else if(strcmp(tk1,"=")==0)opt=new Eql();
-		else if(strcmp(tk1,"<")==0)opt=new Monoinc();
-		else if(strcmp(tk1,"<=")==0)opt=new Mononondec();
-		else if(strcmp(tk1,">")==0)opt=new Monodec();
-		else if(strcmp(tk1,">=")==0)opt=new Monononinc();
+		else if(strcmp(tk1,"<")==0)opt=new MoInc();
+		else if(strcmp(tk1,"<=")==0)opt=new NonDec();
+		else if(strcmp(tk1,">")==0)opt=new MoDec();
+		else if(strcmp(tk1,">=")==0)opt=new NonInc();
 		else if(strcmp(tk1,"not")==0)opt=new Nott();
 		else if(strcmp(tk1,"zero?")==0)opt=new IsZero();
 		else if(strcmp(tk1,"negative?")==0)opt=new IsNegative();
@@ -69,6 +69,29 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"real?")==0)opt=new IsReal();
 		else if(strcmp(tk1,"complex?")==0)opt=new IsComplex();
 		else if(strcmp(tk1,"number?")==0)opt=new IsNumber();
+		else if(strcmp(tk1,"char?")==0)opt=new IsChar();
+		else if(strcmp(tk1,"string?")==0)opt=new IsString();
+		else if(strcmp(tk1,"char=?")==0)opt=new ChEql();
+		else if(strcmp(tk1,"char<?")==0)opt=new ChMoInc();
+		else if(strcmp(tk1,"char<=?")==0)opt=new ChNonDec();
+		else if(strcmp(tk1,"char>?")==0)opt=new ChMoDec();
+		else if(strcmp(tk1,"char>=?")==0)opt=new ChNonInc();
+		else if(strcmp(tk1,"char-ci=?")==0)opt=new ChCiEql();
+		else if(strcmp(tk1,"char-ci<?")==0)opt=new ChCiMoInc();
+		else if(strcmp(tk1,"char-ci<=?")==0)opt=new ChCiNonDec();
+		else if(strcmp(tk1,"char-ci>?")==0)opt=new ChCiMoDec();
+		else if(strcmp(tk1,"char-ci>=?")==0)opt=new ChCiNonInc();
+		else if(strcmp(tk1,"char-alphabetic?")==0)opt=new ChIsAlpha();
+		else if(strcmp(tk1,"char-numeric?")==0)opt=new ChIsNum();
+		else if(strcmp(tk1,"char-whitespace?")==0)opt=new ChIsSpace();
+		else if(strcmp(tk1,"char-upper-case?")==0)opt=new ChIsUpCase();
+		else if(strcmp(tk1,"char-lower-case?")==0)opt=new ChIsLowCase();
+		else if(strcmp(tk1,"char->integer")==0)opt=new ChToInt();
+		else if(strcmp(tk1,"integer->char")==0)opt=new IntToCh();
+		else if(strcmp(tk1,"char-upcase")==0)opt=new ChToUp();
+		else if(strcmp(tk1,"char-downcase")==0)opt=new ChToDown();
+		else if(strcmp(tk1,"make-string")==0)opt=new MakeString();
+		else if(strcmp(tk1,"string")==0)opt=new FormString();
 		else throw 0;
         while ((val = calc_exp()))
         {
@@ -88,7 +111,8 @@ SchemeUnit *calc_exp()
 	}
     else
     {
-		res = Character::from_string(tk0);
+		res = String::from_string(tk0);
+		if(!res) res = Character::from_string(tk0);
 		if(!res) res = Rational::from_string(tk0);
 		if(!res) res = Float::from_string(tk0);
 		if(!res) res = Complex::from_string(tk0);

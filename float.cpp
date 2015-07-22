@@ -325,25 +325,25 @@ SchemeUnit* Float::eql(Number* number2)
     return new Boolean(fabs(number_-tmp2->number_)<1e-307);
 }
 
-SchemeUnit* Float::monoinc(Number* number2)
+SchemeUnit* Float::moInc(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_>number_);
 }
 
-SchemeUnit* Float::mononondec(Number* number2)
+SchemeUnit* Float::nonDec(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_>=number_);
 }
 
-SchemeUnit* Float::monodec(Number* number2)
+SchemeUnit* Float::moDec(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_<number_);
 }
 
-SchemeUnit* Float::monononinc(Number* number2)
+SchemeUnit* Float::nonInc(Number* number2)
 {
     Float* tmp2 = SCAST_FLOAT(number2);
     return new Boolean(tmp2->number_<=number_);

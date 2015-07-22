@@ -2,7 +2,7 @@
 #define boolean_h
 
 #include "schemeunit.h"
-#define SCAST_BOOLEAN static_cast<Boolean*>(x)
+#define SCAST_BOOLEAN(x) static_cast<Boolean*>(x)
 
 class Boolean:public SchemeUnit{
 public:
@@ -15,6 +15,8 @@ public:
     virtual SchemeUnit* isReal();
     virtual SchemeUnit* isComplex();
     virtual SchemeUnit* isNumber();
+    virtual SchemeUnit* isChar();
+    virtual SchemeUnit* isString();
     virtual void print();
 };
 

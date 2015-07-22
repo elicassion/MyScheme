@@ -18,6 +18,22 @@ public:
     bool sgn_;//sign 0 pos 1 neg
     static const int BASE=10;
 
+    BigInt(long long int num)
+    {
+        sgn_ = num<=0;
+        num = num>0?num:-num;
+        if (num==0) number_="";
+        else
+        {
+            while(num!=0)
+            {
+                number_+=(char)(num%10+'0');
+                num/=10;
+            }
+            reverse(number_.begin(),number_.end());
+        }
+    }
+
 	BigInt(string s="0"):number_(""),sgn_(0)
 	{
 	    //cout<<"S: "<<s<<endl;

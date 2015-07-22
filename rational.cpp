@@ -474,24 +474,24 @@ SchemeUnit* Rational::eql(Number* number2)
     return new Boolean(dif->num_==ZERO_);
 }
 
-SchemeUnit* Rational::monoinc(Number* number2)
+SchemeUnit* Rational::moInc(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(dif->num_.sgn_);
 }
 
-SchemeUnit* Rational::mononondec(Number* number2)
+SchemeUnit* Rational::nonDec(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean((dif->num_.sgn_) || (!dif->num_.sgn_ && dif->num_==ZERO_));
 }
 
-SchemeUnit* Rational::monodec(Number* number2)
+SchemeUnit* Rational::moDec(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(!dif->num_.sgn_ &&  dif->num_!=ZERO_);
 }
-SchemeUnit* Rational::monononinc(Number* number2)
+SchemeUnit* Rational::nonInc(Number* number2)
 {
     Rational* dif = SCAST_RATIONAL(sub(number2));
     return new Boolean(!dif->num_.sgn_);

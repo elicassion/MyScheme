@@ -7,7 +7,6 @@
 #include <cstdio>
 #include <cstring>
 #define ABS(x) ((x)<0?(-(x)):(x))
-#define SCAST_BOOLEAN static_cast<Boolean*>(x)
 Complex::Complex(string r_s, string i_s):real_(NULL) , imag_(NULL)
 {
     //cout<<"real s: "<<r_s<<" imag s:"<<i_s<<endl;
@@ -838,7 +837,7 @@ SchemeUnit* Complex::eql(Number* number2)
 
 }
 
-SchemeUnit* Complex::monoinc(Number* number2)
+SchemeUnit* Complex::moInc(Number* number2)
 {
     Complex* tmp2 = SCAST_COMPLEX(number2);
     assert(exact_ && tmp2->exact_ && "< is only for real");
@@ -846,10 +845,10 @@ SchemeUnit* Complex::monoinc(Number* number2)
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
     assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
            && "< is only for real");
-    return real_->monoinc(tmp2->real_);
+    return real_->moInc(tmp2->real_);
 }
 
-SchemeUnit* Complex::mononondec(Number* number2)
+SchemeUnit* Complex::nonDec(Number* number2)
 {
     Complex* tmp2 = SCAST_COMPLEX(number2);
     assert(exact_ && tmp2->exact_ && "< is only for real");
@@ -857,10 +856,10 @@ SchemeUnit* Complex::mononondec(Number* number2)
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
     assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
            && "< is only for real");
-    return real_->mononondec(tmp2->real_);
+    return real_->nonDec(tmp2->real_);
 }
 
-SchemeUnit* Complex::monodec(Number* number2)
+SchemeUnit* Complex::moDec(Number* number2)
 {
     Complex* tmp2 = SCAST_COMPLEX(number2);
     assert(exact_ && tmp2->exact_ && "< is only for real");
@@ -868,10 +867,10 @@ SchemeUnit* Complex::monodec(Number* number2)
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
     assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
            && "< is only for real");
-    return real_->monodec(tmp2->real_);
+    return real_->moDec(tmp2->real_);
 }
 
-SchemeUnit* Complex::monononinc(Number* number2)
+SchemeUnit* Complex::nonInc(Number* number2)
 {
     Complex* tmp2 = SCAST_COMPLEX(number2);
     assert(exact_ && tmp2->exact_ && "< is only for real");
@@ -879,7 +878,7 @@ SchemeUnit* Complex::monononinc(Number* number2)
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
     assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
            && "< is only for real");
-    return real_->monononinc(tmp2->real_);
+    return real_->nonInc(tmp2->real_);
 }
 
 SchemeUnit* Complex::isZero()

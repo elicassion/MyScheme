@@ -843,7 +843,7 @@ SchemeUnit* Complex::moInc(Number* number2)
     assert(exact_ && tmp2->exact_ && "< is only for real");
     Rational* tmp1_imag = SCAST_RATIONAL(imag_);
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
-    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+    assert(tmp1_imag->num_==ZERO_ && tmp2_imag->num_==ZERO_
            && "< is only for real");
     return real_->moInc(tmp2->real_);
 }
@@ -854,7 +854,7 @@ SchemeUnit* Complex::nonDec(Number* number2)
     assert(exact_ && tmp2->exact_ && "< is only for real");
     Rational* tmp1_imag = SCAST_RATIONAL(imag_);
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
-    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+    assert(tmp1_imag->num_==ZERO_ && tmp2_imag->num_==ZERO_
            && "< is only for real");
     return real_->nonDec(tmp2->real_);
 }
@@ -865,7 +865,7 @@ SchemeUnit* Complex::moDec(Number* number2)
     assert(exact_ && tmp2->exact_ && "< is only for real");
     Rational* tmp1_imag = SCAST_RATIONAL(imag_);
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
-    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+    assert(tmp1_imag->num_==ZERO_ && tmp2_imag->num_==ZERO_
            && "< is only for real");
     return real_->moDec(tmp2->real_);
 }
@@ -876,7 +876,7 @@ SchemeUnit* Complex::nonInc(Number* number2)
     assert(exact_ && tmp2->exact_ && "< is only for real");
     Rational* tmp1_imag = SCAST_RATIONAL(imag_);
     Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
-    assert(tmp1_imag->num_!=ZERO_ && tmp2_imag->num_!=ZERO_
+    assert(tmp1_imag->num_==ZERO_ && tmp2_imag->num_==ZERO_
            && "< is only for real");
     return real_->nonInc(tmp2->real_);
 }
@@ -891,7 +891,14 @@ SchemeUnit* Complex::isZero()
         if (tmp_real->num_!=ZERO_) return new Boolean(false);
         else return new Boolean(true);
     }
-    else return new Boolean(false);
+    else
+    {
+        Float* tmp_real = SCAST_FLOAT(real_);
+        Float* tmp_imag = SCAST_FLOAT(imag_);
+        if (fabs(tmp_imag->number_)>1e-300) return new Boolean(false);
+        if (fabs(tmp_real->number_)>1e-300) return new Boolean(false);
+        else return new Boolean(true);
+    }
 }
 
 SchemeUnit* Complex::isNegative()
@@ -954,7 +961,15 @@ SchemeUnit* Complex::isInteger()
         if (tmp_real->den_!=ONE_) return new Boolean(false);
         else return new Boolean(true);
     }
-    else return new Boolean(false);
+    else
+    {
+        Float* tmp_real = SCAST_FLOAT(real_);
+        Float* tmp_imag = SCAST_FLOAT(imag_);
+        if (fabs(tmp_imag->number_)>1e-300) return new Boolean(false);
+        if (fabs(tmp_real->number_-nearbyint(tmp_real->number_))>1e-300)
+            return new Boolean(false);
+        else return new Boolean(true);
+    }
 }
 
 SchemeUnit* Complex::isRational()
@@ -966,7 +981,13 @@ SchemeUnit* Complex::isRational()
         if (tmp_imag->num_!=ZERO_) return new Boolean(false);
         else return new Boolean(true);
     }
-    else return new Boolean(false);
+    else
+    {
+        Float* tmp_real = SCAST_FLOAT(real_);
+        Float* tmp_imag = SCAST_FLOAT(imag_);
+        if (fabs(tmp_imag->number_)>1e-300) return new Boolean(false);
+        else return new Boolean(true);
+    }
 }
 
 SchemeUnit* Complex::isReal()
@@ -978,7 +999,13 @@ SchemeUnit* Complex::isReal()
         if (tmp_imag->num_!=ZERO_) return new Boolean(false);
         else return new Boolean(true);
     }
-    else return new Boolean(false);
+    else
+    {
+        Float* tmp_real = SCAST_FLOAT(real_);
+        Float* tmp_imag = SCAST_FLOAT(imag_);
+        if (fabs(tmp_imag->number_)>1e-300) return new Boolean(false);
+        else return new Boolean(true);
+    }
 }
 
 SchemeUnit* Complex::isComplex()

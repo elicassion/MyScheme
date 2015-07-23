@@ -26,11 +26,16 @@ String* String::from_string(char* expression)
 {
 	int len = strlen(expression);
 	if (len<2) return NULL;
-	if (len == 3 && !(expression[0]=='\"' && expression[len-1]=='\"' && expression[len-2]!='\\'))
+	else if (expression[0]!='\"' || expression[len-1]!='\"')
 		return NULL;
-	else if (len >= 4 && !(expression[0]=='\"' && expression[len-1]=='\"' 
-			&& expression[len-2]=='\\' && expression[len-3]!='\\'))
-		return NULL;
+	else if (expression[0]=='\"' && expression[len-1]=='\"')
+	{
+		if (len == 3 && expression[len-2]=='\\') return NULL;
+		else if (len>=4 && expression[len-2]=='\\')
+		{
+			if (expression[len-3]!='\\') return NULL;
+		}
+	}
 	string s = "";
 	for (int i=1;i<len-1;++i)
 	{
@@ -77,7 +82,7 @@ SchemeUnit* String::isChar()
 
 SchemeUnit* String::isString()
 {
-	return new Boolean(false);
+	return new Boolean(true);
 }
 
 String* String::makeString(Number* number, Character* c)

@@ -272,12 +272,13 @@ Number* Float::makePol(Number* number2)
 
 Number* Float::magnt()
 {
-    return new Float(number_);
+    return new Float(fabs(number_));
 }
 
 Number* Float::ang()
 {
-    return new Float(0.0);
+    if (number_>=0.0) return new Rational(ZERO_,ONE_);
+    else return new Float(3.1415926535897932384);
 }
 
 SchemeUnit* Float::isExact() { return new Boolean(false); }

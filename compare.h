@@ -797,7 +797,7 @@ class MakeRec:public Opt{
 		if (cnt>2)
             assert(0 && "make-rectangular only two parameter");
         Number *opr1 = SCAST_NUMBER(con->car) , *opr2 = SCAST_NUMBER(con->cdr->car) , *conv;
-        assert((opr1->type_ <=2 && opr2->type_ <=2)
+        assert((opr1->type_ <=3 && opr2->type_ <=3)
                && "make-rectangular is only for real");
         Number *res , *last;
         if (opr1->type_ > opr2->type_)
@@ -1077,7 +1077,7 @@ class Eql:public Opt{
 			cnt++;
 		}
 		if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "= parameter at least 2");
 		SchemeUnit *res = new Boolean,*last;
 		Number *opr1;
 		Number *opr2 ,*conv;
@@ -1117,7 +1117,7 @@ class MoInc:public Opt{
 			cnt++;
 		}
 		if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "< parameter at least 2");
 		SchemeUnit *res = new Boolean,*last;
 		Number *opr1;
 		Number *opr2 ,*conv;
@@ -1157,7 +1157,7 @@ class NonDec:public Opt{
 			cnt++;
 		}
 		if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "<= parameter at least 2");
 		SchemeUnit *res = new Boolean,*last;
 		Number *opr1;
 		Number *opr2 ,*conv;
@@ -1197,7 +1197,7 @@ class MoDec:public Opt{
 			cnt++;
 		}
 		if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "> parameter at least 2");
 		SchemeUnit *res = new Boolean,*last;
 		Number *opr1;
 		Number *opr2 ,*conv;
@@ -1237,7 +1237,7 @@ class NonInc:public Opt{
 			cnt++;
 		}
 		if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && ">= parameter at least 2");
 		SchemeUnit *res = new Boolean,*last;
 		Number *opr1;
 		Number *opr2 ,*conv;
@@ -1511,7 +1511,7 @@ class ChEql:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char=? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1539,7 +1539,7 @@ class ChMoInc:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char<? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1567,7 +1567,7 @@ class ChNonDec:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char<=? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1595,7 +1595,7 @@ class ChMoDec:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char>? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1623,7 +1623,7 @@ class ChNonInc:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char>=? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1651,7 +1651,7 @@ class ChCiEql:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char-ci=? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1679,7 +1679,7 @@ class ChCiMoInc:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char-ci<? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1707,7 +1707,7 @@ class ChCiNonDec:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char-ci<=? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1735,7 +1735,7 @@ class ChCiMoDec:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char-ci>? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1763,7 +1763,7 @@ class ChCiNonInc:public Opt{
             cnt++;
         }
         if (cnt<2)
-            assert(0 && "parameter at least 2");
+            assert(0 && "char-ci>=? parameter at least 2");
         SchemeUnit *res = new Boolean,*last;
         Character *opr1;
         Character *opr2;
@@ -1881,7 +1881,7 @@ class ChToInt:public Opt{
             cnt++;
         }
         if (cnt>1)
-            assert(0 && "char->integer? only one parameter");
+            assert(0 && "char->integer only one parameter");
         Character *opr = SCAST_CHARACTER(con->car);
         SchemeUnit *res = opr->chToInt();
         return res;
@@ -1899,7 +1899,7 @@ class IntToCh:public Opt{
             cnt++;
         }
         if (cnt>1)
-            assert(0 && "integer->char? only one parameter");
+            assert(0 && "integer->char only one parameter");
         Number *opr = SCAST_NUMBER(con->car);
         SchemeUnit *res = opr->intToCh();
         return res;
@@ -1917,7 +1917,7 @@ class ChToUp:public Opt{
             cnt++;
         }
         if (cnt>1)
-            assert(0 && "char->integer? only one parameter");
+            assert(0 && "char-upcase only one parameter");
         Character *opr = SCAST_CHARACTER(con->car);
         SchemeUnit *res = opr->chToUp();
         return res;
@@ -1935,7 +1935,7 @@ class ChToDown:public Opt{
             cnt++;
         }
         if (cnt>1)
-            assert(0 && "char->integer? only one parameter");
+            assert(0 && "char-downcase only one parameter");
         Character *opr = SCAST_CHARACTER(con->car);
         SchemeUnit *res = opr->chToDown();
         return res;

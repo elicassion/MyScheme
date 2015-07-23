@@ -394,12 +394,13 @@ Number* Rational::makePol(Number* number2)
 
 Number* Rational::magnt()
 {
-    return new Rational(num_,den_);
+    return new Rational(num_.abs(),den_);
 }
 
 Number* Rational::ang()
 {
-    return new Rational(ZERO_,ONE_);
+    if (!num_.sgn_) return new Rational(ZERO_,ONE_);
+    else return new Float(3.1415926535897932384);
 }
 
 SchemeUnit* Rational::isExact() { return new Boolean(true); }
@@ -525,7 +526,7 @@ SchemeUnit* Rational::isEven()
 
 SchemeUnit* Rational::isInteger()
 {
-    return new Boolean(den_==ZERO_);
+    return new Boolean(den_==ONE_);
 }
 
 SchemeUnit* Rational::isRational()

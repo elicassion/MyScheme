@@ -818,6 +818,11 @@ Number* Complex::atann()
 
 }
 
+Number* Complex::atann(Number* number2)
+{
+    return (number2->makeRec(this))->ang();
+}
+
 SchemeUnit* Complex::eql(Number* number2)
 {
     Complex* dif = SCAST_COMPLEX(sub(number2));

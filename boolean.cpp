@@ -13,6 +13,12 @@ SchemeUnit* Boolean::nott()
     return new Boolean(!value_);
 }
 
+SchemeUnit* Boolean::boolAnd(SchemeUnit* b2)
+{
+	Boolean* tmp = SCAST_BOOLEAN(b2);
+	return new Boolean(value_ && tmp->value_);
+}
+
 void Boolean::print()
 {
     if (value_) cout<<"#t";

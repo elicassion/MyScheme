@@ -15,6 +15,7 @@
 #include <cmath>
 #define ABS(x) ((x)<0?(-(x)):(x))
 static const double EPS=1e-200;
+static const double PI=3.1415926535897932384626;
 using namespace std;
 Float::Float(double number) : number_(number)
 {
@@ -87,10 +88,10 @@ Number *Float::div(Number *number2)
 
 void Float::print()
 {
-    if ((fabs(number_)<=1e-10 || fabs(number_)>=1e10) && fabs(number_)>1e-300)
-        cout<<resetiosflags(ios::fixed)<<setprecision(10)<<number_;
+    if ((fabs(number_)<=1e-4 || fabs(number_)>=1e20) && fabs(number_)>1e-300)
+        cout<<resetiosflags(ios::fixed)<<setprecision(30)<<number_;
     else
-        cout<<fixed<<setprecision(10)<<number_;
+        cout<<fixed<<setprecision(30)<<number_;
 }
 
 Float *Float::from_string(char *expression)
@@ -314,11 +315,64 @@ Number* Float::coss() { return new Float(cos(number_)); }
 
 Number* Float::tann() { return new Float(tan(number_)); }
 
-Number* Float::asinn() { return new Float(asin(number_)); }
+Number* Float::asinn() 
+{ 
+    if (fabs(number_)<=1.0)
+        return new Float(asin(number_));
+    else if (number_>0)
+    {
+        complex<double> c_a(number_,0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res));
+        res->imag_ = new Float(::imag(c_res));
+        return res;
+    }
+    else
+    {
+        complex<double> c_a(fabs(number_),0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res)-PI);
+        res->imag_ = new Float(0.0-::imag(c_res));
+        return res;
+    }
+}
 
-Number* Float::acoss() { return new Float(acos(number_)); }
+Number* Float::acoss() 
+{ 
+    if (fabs(number_)<=1.0)
+        return new Float(asin(number_));
+    else if (number_>0)
+    {
+        complex<double> c_a(number_,0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res));
+        res->imag_ = new Float(::imag(c_res));
+        return res;
+    }
+    else
+    {
+        complex<double> c_a(fabs(number_),0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res)+PI);
+        res->imag_ = new Float(0.0-::imag(c_res));
+        return res;
+    } 
+}
 
 Number* Float::atann() { return new Float(atan(number_)); }
+
+Number* Float::atann(Number* number2)
+{
+    return (number2->makeRec(this))->ang();
+}
 
 SchemeUnit* Float::eql(Number* number2)
 {

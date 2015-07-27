@@ -8,6 +8,7 @@
 #include <cstring>
 #include <cmath>
 
+static const double PI=3.1415926535897932384626;
 Rational::Rational(BigInt num, BigInt den):num_(num),den_(den)
 {
         type_=RATIONAL;
@@ -445,19 +446,69 @@ Number* Rational::tann()
 Number* Rational::asinn()
 {
     Float* res = new Float;
-    Float* tmp2 = SCAST_FLOAT(res->convert(this));
-    res->number_ = asin(tmp2->number_);
-    delete tmp2;
-    return res;
+    Float* tmp = SCAST_FLOAT(res->convert(this));
+    if (fabs(tmp->number_)<=1.0)
+    {
+        res->number_=asin(tmp->number_);
+        delete tmp;
+        return res;
+    }
+    else if (tmp->number_>0)
+    {
+        complex<double> c_a(tmp->number_,0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res));
+        res->imag_ = new Float(::imag(c_res));
+        delete tmp;
+        return res;
+    }
+    else
+    {
+        complex<double> c_a(fabs(tmp->number_),0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res)-PI);
+        res->imag_ = new Float(0.0-::imag(c_res));
+        delete tmp;
+        return res;
+    }
 }
 
 Number* Rational::acoss()
 {
     Float* res = new Float;
-    Float* tmp2 = SCAST_FLOAT(res->convert(this));
-    res->number_ = acos(tmp2->number_);
-    delete tmp2;
-    return res;
+    Float* tmp = SCAST_FLOAT(res->convert(this));
+    if (fabs(tmp->number_)<=1.0)
+    {
+        res->number_=asin(tmp->number_);
+        delete tmp;
+        return res;
+    }
+    else if (tmp->number_>0)
+    {
+        complex<double> c_a(tmp->number_,0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res));
+        res->imag_ = new Float(::imag(c_res));
+        delete tmp;
+        return res;
+    }
+    else
+    {
+        complex<double> c_a(fabs(tmp->number_),0.0);
+        complex<double> c_res = asin(c_a);
+        Complex* res = new Complex;
+        res->exact_ = false;
+        res->real_ = new Float(::real(c_res)+PI);
+        res->imag_ = new Float(0.0-::imag(c_res));
+        delete tmp;
+        return res;
+    }
 }
 
 Number* Rational::atann()
@@ -467,6 +518,11 @@ Number* Rational::atann()
     res->number_ = atan(tmp2->number_);
     delete tmp2;
     return res;
+}
+
+Number* Rational::atann(Number* number2)
+{
+    return (number2->makeRec(this))->ang();
 }
 
 SchemeUnit* Rational::eql(Number* number2)

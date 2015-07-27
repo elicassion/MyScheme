@@ -55,6 +55,7 @@ public:
 	virtual Number* asinn();
 	virtual Number* acoss();
 	virtual Number* atann();
+	virtual Number* atann(Number* number2);
 	virtual SchemeUnit* eql(Number* number2);
 	virtual SchemeUnit* moInc(Number* number2);
 	virtual SchemeUnit* nonDec(Number* number2);

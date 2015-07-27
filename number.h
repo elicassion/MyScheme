@@ -22,6 +22,8 @@ public:
 	virtual SchemeUnit* isChar();
     virtual SchemeUnit* isString();
     virtual SchemeUnit* intToCh();
+    virtual SchemeUnit* numToStr();
+    virtual SchemeUnit* numToStr(Number* number2);
 
 	virtual Number* convert(Number* number2) = 0;
 	virtual Number* add(Number* number2)  = 0;
@@ -62,6 +64,7 @@ public:
 	virtual Number* asinn() =0;
 	virtual Number* acoss() =0;
 	virtual Number* atann() =0;
+	virtual Number* atann(Number* number2) =0;
 	virtual SchemeUnit* eql(Number* number2) =0;
 	virtual SchemeUnit* moInc(Number* number2) =0;
 	virtual SchemeUnit* nonDec(Number* number2) =0;

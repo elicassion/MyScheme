@@ -9,6 +9,7 @@ public:
     bool value_;
     Boolean(bool value = false);
     ~Boolean();
+    SchemeUnit* boolAnd(SchemeUnit* b2);
     virtual SchemeUnit* nott();
     virtual SchemeUnit* isInteger();
     virtual SchemeUnit* isRational();

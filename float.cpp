@@ -450,3 +450,18 @@ SchemeUnit* Float::isComplex()
 {
     return new Boolean(false);
 }
+
+SchemeUnit* Float::isEql(Number* number2)
+{
+    if (number2->exact_)
+        return new Boolean(false);
+    else if (number2->type_ == 2)
+    {
+        Float* tmp2 = SCAST_FLOAT(number2);
+        return new Boolean(fabs(number_-tmp2->number_)<1e-300);
+    }
+    else if (number2->type_ == 3)
+    {
+        return new Boolean(false);
+    }
+}

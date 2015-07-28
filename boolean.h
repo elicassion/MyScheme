@@ -18,6 +18,7 @@ public:
     virtual SchemeUnit* isNumber();
     virtual SchemeUnit* isChar();
     virtual SchemeUnit* isString();
+    virtual SchemeUnit* isEql(Boolean* b2);
     virtual void print();
 };
 

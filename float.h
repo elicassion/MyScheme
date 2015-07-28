@@ -70,6 +70,7 @@ public:
     virtual SchemeUnit* isRational();
     virtual SchemeUnit* isReal();
     virtual SchemeUnit* isComplex();
+    virtual SchemeUnit* isEql(Number* number2);
 	virtual void print();
 	static Float *from_string(char *expression);
 

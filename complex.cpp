@@ -1017,3 +1017,54 @@ SchemeUnit* Complex::isComplex()
 {
     return new Boolean(true);
 }
+
+SchemeUnit* Complex::isEql(Number* number2)
+{
+    if (exact_!=number2->exact_)
+        return new Boolean(false);
+    else if (exact_)
+    {
+        if (number2->type_ == 1)
+        {
+            Rational* tmp2 = SCAST_RATIONAL(number2);
+            Rational* tmp_real = SCAST_RATIONAL(real_);
+            Rational* tmp_imag = SCAST_RATIONAL(imag_);
+            if (tmp_imag->num_!=ZERO_)
+                return new Boolean(false);
+            else
+            {
+                Rational* tmp_dif = SCAST_RATIONAL(tmp2->sub(tmp_real));
+                if (tmp_dif->num_ == ZERO_)
+                    return new Boolean(true);
+                else return new Boolean(false);
+            }
+        }
+        else if (number2->type_ == 3)
+        {
+            Complex* tmp2 = SCAST_COMPLEX(number2);
+            Complex* tmp_dif = SCAST_COMPLEX(sub(tmp2));
+            Rational* tmp_dif_real = SCAST_RATIONAL(tmp_dif->real_);
+            Rational* tmp_dif_imag = SCAST_RATIONAL(tmp_dif->imag_);
+            if (tmp_dif_real->num_ == ZERO_ && tmp_dif_imag->num_ == ZERO_)
+                return new Boolean(true);
+            else return new Boolean(false);
+        }
+    }
+    else if (!exact_)
+    {
+        if (number2->type_ == 2)
+        {
+            return new Boolean(false);
+        }
+        else if (number2->type_ == 3)
+        {
+            Complex* tmp2 = SCAST_COMPLEX(number2);
+            Complex* tmp_dif = SCAST_COMPLEX(sub(tmp2));
+            Float* tmp_dif_real = SCAST_FLOAT(tmp_dif->real_);
+            Float* tmp_dif_imag = SCAST_FLOAT(tmp_dif->imag_);
+            if (fabs(tmp_dif_real->number_)<1e-300 && fabs(tmp_dif_imag->number_)<1e-300)
+                return new Boolean(true);
+            else return new Boolean(false);
+        }
+    }
+}

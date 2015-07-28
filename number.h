@@ -79,6 +79,7 @@ public:
     virtual SchemeUnit* isRational() =0;
     virtual SchemeUnit* isReal() =0;
     virtual SchemeUnit* isComplex() =0;
+    virtual SchemeUnit* isEql(Number* number2) =0;
 	virtual void print() = 0;
 };
 

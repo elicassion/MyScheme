@@ -37,6 +37,7 @@ public:
     virtual SchemeUnit* strCpy();
     virtual SchemeUnit* strToNum();
     virtual SchemeUnit* strToNum(Number* number2);
+    virtual SchemeUnit* isEql(String* str2);
     virtual String* strApd(String* str2);
     virtual String* formString(Character* c);
 

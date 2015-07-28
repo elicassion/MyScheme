@@ -2491,5 +2491,51 @@ class StrToNum:public Opt{
     }
 };
 
+class IsEql:public Opt{
+    SchemeUnit* calc (Cons *con)
+    {
+        Cons *tmp=con;
+        int cnt=0;
+        for(;tmp;tmp=tmp->cdr)
+        {
+            if (tmp->car->unitType_>4) {throw 0;}
+            cnt++;
+        }
+        if (cnt>2)
+            assert(0 && "equal? only two parameter");
+        SchemeUnit *opr1 = con->car , *opr2 = con->cdr->car;
+        if (opr1->unitType_!=opr2->unitType_)
+            return new Boolean(false);
+        else
+        {
+            SchemeUnit* res;
+            if (opr1->unitType_==1)
+            {
+                Boolean* tmp1 = SCAST_BOOLEAN(opr1);
+                Boolean* tmp2 = SCAST_BOOLEAN(opr2);
+                res = tmp1->isEql(tmp2);
+            }
+            else if (opr1->unitType_==2)
+            {
+                Number* tmp1 = SCAST_NUMBER(opr1);
+                Number* tmp2 = SCAST_NUMBER(opr2);
+                res = tmp1->isEql(tmp2);
+            }
+            else if (opr1->unitType_==3)
+            {
+                Character* tmp1 = SCAST_CHARACTER(opr1);
+                Character* tmp2 = SCAST_CHARACTER(opr2);
+                res = tmp1->isEql(tmp2);
+            }
+            else if (opr1->unitType_==4)
+            {
+                String* tmp1 = SCAST_STRING(opr1);
+                String* tmp2 = SCAST_STRING(opr2);
+                res = tmp1->isEql(tmp2);
+            }
+        }
+        
+    }
+};
 
 #endif // compare_h

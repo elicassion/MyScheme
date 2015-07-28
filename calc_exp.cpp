@@ -109,6 +109,7 @@ SchemeUnit *calc_exp()
 		else if(strcmp(tk1,"string-copy")==0)opt=new StrCpy();
 		else if(strcmp(tk1,"number->string")==0)opt=new NumToStr();
 		else if(strcmp(tk1,"string->number")==0)opt=new StrToNum();
+		else if(strcmp(tk1,"equal?")==0)opt=new IsEql();
 		else throw 0;
         while ((val = calc_exp()))
         {

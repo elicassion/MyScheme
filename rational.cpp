@@ -599,3 +599,35 @@ SchemeUnit* Rational::isComplex()
 {
     return new Boolean(false);
 }
+
+SchemeUnit* Rational::isEql(Number* number2)
+{
+    if (!number2->exact_)
+    {
+        return new Boolean(false);
+    }
+    else if (number2->type_ == 1)
+    {
+        Rational* tmp2 = SCAST_RATIONAL(number2);
+        Rational* tmp_dif = SCAST_RATIONAL(sub(tmp2));
+        if (tmp_dif->num_ == ZERO_)
+            return new Boolean(true);
+        else return new Boolean(false);
+    }
+    else if (number2->type_ == 3)
+    {
+        Complex* tmp2 = SCAST_COMPLEX(number2);
+        Rational* tmp2_real = SCAST_RATIONAL(tmp2->real_);
+        Rational* tmp2_imag = SCAST_RATIONAL(tmp2->imag_);
+        if (tmp2_imag->num_!=ZERO_)
+            return new Boolean(false);
+        else
+        {
+            Rational* tmp_dif = SCAST_RATIONAL(sub(tmp2_real));
+            if (tmp_dif->num_ == ZERO_)
+                return new Boolean(true);
+            else return new Boolean(false);
+        }
+
+    }
+}

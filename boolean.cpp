@@ -38,3 +38,5 @@ SchemeUnit* Boolean::isNumber() { return new Boolean(false); }
 SchemeUnit* Boolean::isChar() { return new Boolean(false); }
 
 SchemeUnit* Boolean::isString() { return new Boolean(false); }
+
+SchemeUnit* Boolean::isEql(Boolean* b2) { return new Boolean(value_ == b2->value_); }

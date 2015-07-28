@@ -34,6 +34,8 @@ char Character::to_lower_case(char ch)
 
 Character* Character::from_string(char* expression)
 {
+    if (strcmp(expression,"#\\newline")==0) return new Character('\n');
+    if (strcmp(expression,"#\\space")==0) return new Character(' ');
     if (strlen(expression)!=3) return NULL; //to be continued
     if (!(expression[0]=='#' && expression[1]=='\\'))
         return NULL;
@@ -196,4 +198,9 @@ SchemeUnit* Character::chToDown()
 	if (ch_>='A' && ch_<='Z')
 		return new Character((char)(ch_+32));
 	else return new Character(ch_);
+}
+
+SchemeUnit* Character::isEql(Character* ch2)
+{
+	return new Boolean(ch_ == ch2->ch_);
 }

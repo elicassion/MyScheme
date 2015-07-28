@@ -38,6 +38,7 @@ public:
     virtual SchemeUnit* chToInt();
     virtual SchemeUnit* chToUp();
     virtual SchemeUnit* chToDown();
+    virtual SchemeUnit* isEql(Character* ch2);
     virtual void print();
     static Character* from_string(char* expression);
 

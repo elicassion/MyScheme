@@ -427,6 +427,11 @@ SchemeUnit* String::strToNum()
 	else {delete cstr; return res; }
 }
 
+SchemeUnit* String::isEql(String* str2)
+{
+	return new Boolean(str_ == str2->str_);
+}
+
 SchemeUnit* String::strToNum(Number* number2)
 {
 	assert(number2->exact_ 
